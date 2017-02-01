@@ -1,0 +1,3 @@
+.bin/*.jar
+dist
+node_modules
