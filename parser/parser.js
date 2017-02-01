@@ -12867,10 +12867,10 @@ class Interpreter extends ExprListener {
         ctx.value = ctx.children[0].value
         break
       case 'range':
-        ctx.value = ctx.children[0].value
+        ctx.value = ctx.children[0].value.evaluate(this._lookup('$data'))
         break
       case 'cell':
-        ctx.value = ctx.children[0].value.evaluate(this.scope['$data'])
+        ctx.value = ctx.children[0].value.evaluate(this._lookup('$data'))
         break
       case 'var':
         ctx.value = this._lookup(ctx.children[0].getText())
@@ -12902,8 +12902,15 @@ class Interpreter extends ExprListener {
   }
 
   exitRange(ctx) {
-    console.warn('TODO: create Range')
-    ctx.value = undefined
+    let [startRow, startCol] = getRowCol(ctx.children[0].toString())
+    let [endRow, endCol] = getRowCol(ctx.children[2].toString())
+    if (startRow > endRow) {
+      [startRow, endRow] = [endRow, startRow]
+    }
+    if (startCol > endCol) {
+      [startCol, endCol] = [endCol, startCol]
+    }
+    ctx.value = new Range(startRow, startCol, endRow, endCol)
   }
 
   exitNumber(ctx) {
@@ -12965,6 +12972,31 @@ class Cell {
   evaluate(matrix) {
     if (matrix) {
       return matrix[this.row][this.col]
+    } else {
+      return undefined
+    }
+  }
+}
+
+class Range {
+  constructor(startRow, startCol, endRow, endCol) {
+    this.startRow = startRow
+    this.startCol = startCol
+    this.endRow = endRow
+    this.endCol = endCol
+  }
+
+  evaluate(matrix) {
+    if (matrix) {
+      let result = []
+      for (let i = this.startRow; i <= this.endRow; i++) {
+        let row = []
+        for (let j = this.startCol; j <= this.endCol; j++) {
+          row.push(matrix[i][j])
+        }
+        result.push(row)
+      }
+      return result
     } else {
       return undefined
     }
