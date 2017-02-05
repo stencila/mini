@@ -7,17 +7,24 @@ let count = 1
 for (var i = 0; i < 10; i++) {
   let row = []
   for (var j = 0; j < 10; j++) {
-    row[j] = count++
+    let val = count++
+    row[j] = new Promise((resolve, reject)=> {
+      let delay = Math.floor(Math.random() * 10000)
+      setTimeout(() => {
+        resolve(val)
+      }, delay)
+    })
   }
   data.push(row)
 }
+
 scope.$data = data
 scope.sum = sum
 
 const expr = process.argv[2]
-parser.evaluate(expr, scope)
-.then((val)=>{
-  console.info()
+expression.evaluate(expr, scope)
+.then((val) => {
+  console.info(val)
 })
 .catch((err)=>{
   console.error(err)

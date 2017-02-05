@@ -2,14 +2,18 @@
   "name": "expr",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/expression.cjs.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node make lib test -s -w",
+    "dev": "node make lib test -s -w",
+    "test": "node make test && (node .test/run-tests.js | node ./node_modules/substance-test/dist/tap-spec.js)"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "browserify": "^14.0.0",
-    "substance-bundler": "^0.7.2"
+    "substance": "https://github.com/substance/substance.git#e0f1fd42b59d8f9f40fe853688d6bc39e97c4d29",
+    "substance-bundler": "^0.7.2",
+    "substance-test": "^0.6.0"
   }
 }

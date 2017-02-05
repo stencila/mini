@@ -16,7 +16,8 @@ module.exports = {
     "Promise": true,
     "Map": true,
     "Set": true,
-    "WeakMap": true
+    "WeakMap": true,
+    "Symbol": true
   },
   "rules": {
     // 0 - off, 1 - warning, 2 - error

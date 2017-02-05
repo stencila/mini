@@ -1,15 +1,12 @@
 let b = require('substance-bundler')
+let tests = require('substance-test/install')
+let path = require('path')
 
-b.task('antlr4', () => {
-  b.copy('../antlr4/runtime/JavaScript/src/antlr4', './node_modules/antlr4')
-})
+const DIST = 'dist/'
+const TEST ='.test/'
+const TMP ='tmp/'
 
-b.task('clean', () => {
-  b.rm('tmp')
-  b.rm('dist')
-})
-
-b.task('parser', () => {
+function _generateParser() {
   // TODO: generate parser using
   // java -jar ./.bin/antlr-4.6-complete.jar -Dlanguage=JavaScript -no-listener -no-visitor parser/Expr.g4
   b.custom('Generating parser', {
@@ -28,16 +25,57 @@ b.task('parser', () => {
       });
     }
   })
-  b.browserify('./parser/.parser.js', {
-    dest: 'parser/parser.js',
-    exports: ['parseExpression', 'evaluateExpression']
-  })
-  b.js('./parser/parser.js', {
+  b.js('./parser/.parser.js', {
     target: {
-      dest: 'dist/parser.cjs.js',
+      dest: './parser/parser.js',
+      format: 'es'
+    },
+    alias: {
+      'antlr4/index': path.join(__dirname, '/vendor/antlr4.js')
+    },
+    commonjs: true
+  })
+}
+
+function _buildLib() {
+  b.js('src/index.js', {
+    targets: [{
+      dest: DIST+'expression.cjs.js',
       format: 'cjs'
-    }
+    }, {
+      dest: DIST+'expression.js',
+      format: 'umd', moduleName: 'substanceExpression'
+    }],
+  })
+}
+
+// ATM you we need to checkout the whole project and build a vendor bundle
+b.task('antlr4', () => {
+  b.browserify('../antlr4/runtime/JavaScript/src/antlr4/index', {
+    dest: './vendor/antlr4.js',
+    exports: ['default'],
+    debug: false
   })
 })
 
-b.task('default', ['clean', 'parser'])
+b.task('clean', () => {
+  b.rm('tmp')
+  b.rm('dist')
+})
+
+b.task('parser', _generateParser)
+
+b.task('lib', ['parser'], _buildLib)
+
+// EXPERIMENTAL: helper to create task for building test-suite
+tests.install(b, 'test', {
+  src: './test/index.js',
+  dest: TEST,
+  title: 'Substance Expression'
+})
+
+b.task('default', ['clean', 'lib'])
+
+b.setServerPort(5551)
+b.serve({ static: true, route: '/test', folder: TEST })
+b.serve({ static: true, route: '/', folder: '.' })

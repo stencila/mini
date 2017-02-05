@@ -1,4 +1,12 @@
-let parser = require('../dist/parser.cjs.js')
-let scope = require('./scope.js')
+let expression = require('../')
+let scope = require('./example-scope.js')
+
 const expr = process.argv[2]
-console.log(parser.evaluateExpression(expr, scope))
+expression.evaluate(expr, scope)
+.then((val) => {
+  console.log(val)
+})
+.catch((err)=>{
+  console.error(err)
+})
+
