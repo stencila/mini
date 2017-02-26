@@ -21,17 +21,15 @@
         // then register the expression with ExpressionGraph
         // -> look how the topology is computed
         // -> then move towards evaluation
-        let { parse, Sheet } = window.substanceExpression
-        let expr1 = parse('A1+B1')
-        let expr2 = parse('A2*4')
-        let data = [[4, 5], [expr1, expr2]]
+        let { Sheet } = window.substanceExpression
+        let data = [[4, 5], ['=A1+B1', '=A2*4']]
         let sheet = new Sheet()
-        debugger
         sheet.setData(data)
+        debugger
       }
 
       window.onload = function() {
-        example1()
+        example2()
       }
     </script>
   </head>

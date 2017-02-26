@@ -14,6 +14,9 @@ export default class Sheet extends ExpressionGraph {
     super()
 
     this.data = []
+    // TODO: don't know yet what the best way is for exposing data
+    // we also want functions, and maybe variables
+    this.values['$data'] = this.data
   }
 
   setData(data) {
@@ -29,8 +32,9 @@ export default class Sheet extends ExpressionGraph {
   }
 
   _setCell(rowIdx, colIdx, cellStr) {
-    if (!this.data[rowIdx]) this.data[rowIdx] = []
-    let row = this.data[rowIdx]
+    const data = this.data
+    if (!data[rowIdx]) data[rowIdx] = []
+    let row = data[rowIdx]
     let val = cellStr
     let oldVal = row[colIdx]
     if (oldVal instanceof Expression) {
@@ -38,7 +42,7 @@ export default class Sheet extends ExpressionGraph {
       this.values[oldVal] = undefined
     }
     if (isString(cellStr)) {
-      let prefix = /^\s=\s/.exec(cellStr)
+      let prefix = /^\s*=\s*/.exec(cellStr)
       if (prefix) {
         let exprStr = cellStr.slice(prefix[0].length)
         let expr = parse(exprStr)

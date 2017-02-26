@@ -24,9 +24,14 @@ class ExpressionGraph extends AbstractContext {
   }
 
   _addExpression(expr) {
-    this._entries[expr.id] = {
+    const id = expr.id
+    let state = new Expression.State(expr, this)
+    state.on('value:updated', (val) => {
+      this.setValue(id, val)
+    })
+    this._entries[id] = {
       expr: expr,
-      state: new Expression.State(expr, this),
+      state: state,
       level: -1,
       position: -1
     }
@@ -59,15 +64,12 @@ class ExpressionGraph extends AbstractContext {
   */
   _propagate() {
     try {
-      const expressions = this.expressions
       const entries = this._entries
       const order = this._order
-      for (let i = 0; i < order; i++) {
-        const id = order[i]
-        const expr = expressions[id]
-        const entry = entries[id]
+      for (let i = 0; i < order.length; i++) {
+        const entry = entries[order[i]]
         this._cursor = entry.position
-        expr.propagate()
+        entry.expr._propagate(entry.state, this)
       }
     } finally {
       this._cursor = -1
@@ -94,8 +96,8 @@ class ExpressionGraph extends AbstractContext {
     }
   }
 
-  // level = max of distances to all leafs
-  _computeLevel(expr, levels, leafs) {
+  // level = maximum distance to any leaf
+  _computeLevel(expr, levels) {
     const id = expr.id
     if (levels.hasOwnProperty(id)) {
       if (levels[id] === -1) {
@@ -116,8 +118,14 @@ class ExpressionGraph extends AbstractContext {
       level = Math.max(level, level+this._computeLevel(dep, levels))
     })
     levels[id] = level
-    if (level === 1) leafs[id] = expr
     return level
+  }
+
+  _getExpr(id) {
+    const entry = this._entries[id]
+    if (entry) {
+      return entry.expr
+    }
   }
 
   // TODO: this is pretty redundant to AbstractContext.lookup
@@ -126,7 +134,7 @@ class ExpressionGraph extends AbstractContext {
     inputs.forEach((node) => {
       switch(node.type) {
         case 'var': {
-          let expr = this.expressions[node.name]
+          let expr = this._getExpr(node.name)
           if (expr) deps.push(expr)
           break
         }
@@ -137,7 +145,7 @@ class ExpressionGraph extends AbstractContext {
           if (!row) return
           const cell = row[node.col]
           if (cell && cell instanceof Expression) {
-            let expr = this.expressions[cell.id]
+            let expr = this._getExpr(cell.id)
             if (expr) deps.push(expr)
           }
           break
@@ -152,7 +160,7 @@ class ExpressionGraph extends AbstractContext {
             for (let j = 0; j < M; j++) {
               let cell = row[node.startCol+j]
               if (cell && cell instanceof Expression) {
-                let expr = this.expressions[cell.id]
+                let expr = this._getExpr(cell.id)
                 if (expr) deps.push(expr)
               }
             }
