@@ -7,6 +7,6 @@ export default function parse(expr) {
   parser.buildParseTrees = true
   // NOTE: 'expr' is the start rule as defined in the grammar file
   let ast = parser.expr()
-  let result = Expression.createFromAST(ast)
+  let result = Expression.createFromAST(expr, ast)
   return result
 }

@@ -21,6 +21,7 @@ class ExpressionGraph extends AbstractContext {
   update() {
     this._computeTopologicalOrder()
     this._propagate()
+    this.emit('sheet:updated')
   }
 
   _addExpression(expr) {
@@ -29,12 +30,28 @@ class ExpressionGraph extends AbstractContext {
     state.on('value:updated', (val) => {
       this.setValue(id, val)
     })
-    this._entries[id] = {
+    let entry = {
+      type: 'expression',
+      id: expr.id,
       expr: expr,
       state: state,
       level: -1,
-      position: -1
+      position: -1,
+      getSource() {
+        return this.expr.source
+      },
+      getValue() {
+        return this.state.getValue()
+      },
+      on(...args) {
+        return this.state.on(...args)
+      },
+      off(...args) {
+        return this.state.off(...args)
+      }
     }
+    this._entries[id] = entry
+    return entry
   }
 
   _removeExpression(id) {
@@ -144,7 +161,7 @@ class ExpressionGraph extends AbstractContext {
           const row = table[node.row]
           if (!row) return
           const cell = row[node.col]
-          if (cell && cell instanceof Expression) {
+          if (cell && cell.type === 'expression') {
             let expr = this._getExpr(cell.id)
             if (expr) deps.push(expr)
           }
@@ -159,7 +176,7 @@ class ExpressionGraph extends AbstractContext {
             const row = table[node.startRow+i] || []
             for (let j = 0; j < M; j++) {
               let cell = row[node.startCol+j]
-              if (cell && cell instanceof Expression) {
+              if (cell && cell.type === 'expression') {
                 let expr = this._getExpr(cell.id)
                 if (expr) deps.push(expr)
               }

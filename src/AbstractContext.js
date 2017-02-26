@@ -1,8 +1,9 @@
+import EventEmitter from 'substance/util/EventEmitter'
 import isString from 'substance/util/isString'
 import Expression from './Expression'
 
 // exposes a child scope with a parent scope
-export default class AbstractContext {
+export default class AbstractContext extends EventEmitter {
 
   lookup(val) {
     if (isString(val)) {
@@ -21,8 +22,8 @@ export default class AbstractContext {
         const row = table[node.row]
         if (!row) return undefined
         const cell = row[node.col]
-        if (cell && cell instanceof Expression) {
-          return this.getValue(cell.id)
+        if (cell && cell.type === 'expression') {
+          return cell.getValue()
         } else {
           return cell
         }

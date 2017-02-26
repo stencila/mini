@@ -5,9 +5,10 @@ const MIN_INTERVAL = 100
 
 class Expression extends EventEmitter {
 
-  constructor(root, nodes, inputs) {
+  constructor(source, root, nodes, inputs) {
     super()
 
+    this.source = source
     this.root = root
     this.nodes = nodes
     this.inputs = inputs
@@ -49,10 +50,10 @@ class Expression extends EventEmitter {
 
 }
 
-Expression.createFromAST = function(ast) {
+Expression.createFromAST = function(source, ast) {
   let state = { nodeId: 0, nodes: {}, inputs: [] }
   let root = createFromAST(state, ast)
-  return new Expression(root, state.nodes, state.inputs)
+  return new Expression(source, root, state.nodes, state.inputs)
 }
 
 class ExpressionState extends EventEmitter {
@@ -68,6 +69,7 @@ class ExpressionState extends EventEmitter {
   }
 
   getValue(id) {
+    if (!id) id = this.expr.root.id
     return this.values[id]
   }
 

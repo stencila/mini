@@ -11,4 +11,4 @@ export function evaluate(exprStr, scope) {
   return expr.evaluate(context)
 }
 
-export { parse, Sheet }
+export { parse, Sheet, Expression }

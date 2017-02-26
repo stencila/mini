@@ -17,17 +17,32 @@ export default class Sheet extends ExpressionGraph {
     // TODO: don't know yet what the best way is for exposing data
     // we also want functions, and maybe variables
     this.values['$data'] = this.data
+
+    this.nrows = 0
+    this.ncols = 0
   }
 
   setData(data) {
-    for (let rowIdx = 0; rowIdx < data.length; rowIdx++) {
+    const N = data.length
+    this.nrows = Math.max(this.nrows, N)
+    for (let rowIdx = 0; rowIdx < N; rowIdx++) {
       const row = data[rowIdx]
       if (row) {
+        const M = row.length
+        this.ncols = Math.max(this.ncols, M)
         for (let colIdx = 0; colIdx < row.length; colIdx++) {
           this._setCell(rowIdx, colIdx, row[colIdx])
         }
       }
     }
+    this.update()
+  }
+
+  setCell(rowIdx, colIdx, cellStr) {
+    this.nrows = Math.max(this.nrows, rowIdx+1)
+    this.ncols = Math.max(this.ncols, colIdx+1)
+    this._setCell(rowIdx, colIdx, cellStr)
+
     this.update()
   }
 
@@ -47,8 +62,8 @@ export default class Sheet extends ExpressionGraph {
         let exprStr = cellStr.slice(prefix[0].length)
         let expr = parse(exprStr)
         expr.id = uuid()
-        this._addExpression(expr)
-        val = expr
+        let entry = this._addExpression(expr)
+        val = entry
       }
     }
     row[colIdx] = val
