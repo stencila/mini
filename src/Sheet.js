@@ -10,8 +10,12 @@ import parse from './parse'
 */
 export default class Sheet extends ExpressionGraph {
 
-  constructor() {
+  constructor(scope) {
     super()
+
+    if (scope) {
+      Object.assign(this.values, scope)
+    }
 
     this.data = []
     // TODO: don't know yet what the best way is for exposing data

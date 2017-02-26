@@ -23,9 +23,10 @@
         // -> look how the topology is computed
         // -> then move towards evaluation
         let { Sheet } = window.substanceExpression
+        let scope = window.EXAMPLE.scope
         let SheetComponent = window.EXAMPLE.SheetComponent
         let data = [[4, 5], ['=A1+B1', '=A2*4']]
-        let sheet = new Sheet()
+        let sheet = new Sheet(scope)
         SheetComponent.mount({ sheet }, window.document.body)
         sheet.setData(data)
       }
