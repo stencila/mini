@@ -1,17 +1,14 @@
 import { ExprLexer, ExprParser, InputStream, CommonTokenStream } from '../parser/parser'
-import Interpreter from './Interpreter'
+import Expression from './Expression'
+import ExpressionGraph from './ExpressionGraph'
+import parse from './parse'
+import Sheet from './Sheet'
+import StaticContext from './StaticContext'
 
-export function parse(expr) {
-  const lexer = new ExprLexer(new InputStream(expr))
-  const parser = new ExprParser(new CommonTokenStream(lexer))
-  parser.buildParseTrees = true
-  // NOTE: this is the start rule as defined in the grammar file
-  return parser.expr()
+export function evaluate(exprStr, scope) {
+  let expr = parse(exprStr)
+  let context = new StaticContext(scope)
+  return expr.evaluate(context)
 }
 
-export function evaluate(expr, scope) {
-  let tree = parse(expr)
-  let interpreter = new Interpreter(scope)
-  // console.log('## scope', scope)
-  return interpreter.eval(tree)
-}
+export { parse, Sheet }

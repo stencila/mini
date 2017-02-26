@@ -1,3 +1,5 @@
+// DEPRECATED: we will replace this, but still keep it here for re-use.
+
 import { ExprListener, treeWalker } from '../parser/parser'
 
 const PLUS = Symbol('plus')
