@@ -1,0 +1,24 @@
+.sc-sheet {
+  border-collapse: collapse;
+  width: 100%;
+  overflow-x:auto;
+  table-layout: fixed;
+}
+
+.sc-sheet .se-new-cell {
+  border: 1px solid black;
+  overflow-x:hidden;
+}
+
+.sc-sheet .se-new-cell > input {
+  border: none;
+}
+
+.sc-cell {
+  border: 1px solid black;
+  padding: 15px;
+}
+
+.sc-cell.sm-expression {
+  background: #ddd;
+}

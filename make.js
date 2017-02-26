@@ -49,7 +49,7 @@ function _buildLib() {
 }
 
 function _buildExample() {
-  b.js('examples/example-scope.js', {
+  b.js('examples/example.js', {
     target: {
       dest: DIST+'example.js',
       format: 'umd', moduleName: 'EXAMPLE'
