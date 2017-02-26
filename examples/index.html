@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <script type="text/javascript" src='../dist/expression.js'></script>
+    <script type="text/javascript" src='../dist/example.js'></script>
+    <script type="text/javascript">
+
+      function example1() {
+        let { evaluate } = window.substanceExpression
+        let scope = window.EXAMPLE
+        const EXPR = 'sum(A1:B10)+(x+1)+2'
+        evaluate(EXPR, scope)
+          .then((val) => {
+            console.log('Value:', val)
+          })
+      }
+
+      function example2() {
+        // TODO: try to create an example using
+        // the ExpressionGraph manually,
+        // i.e. parse two expressions and store them in a table
+        // then register the expression with ExpressionGraph
+        // -> look how the topology is computed
+        // -> then move towards evaluation
+        let { parse, Sheet } = window.substanceExpression
+        let expr1 = parse('A1+B1')
+        let expr2 = parse('A2*4')
+        let data = [[4, 5], [expr1, expr2]]
+        let sheet = new Sheet()
+        debugger
+        sheet.setData(data)
+      }
+
+      window.onload = function() {
+        example1()
+      }
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

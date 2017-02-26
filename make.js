@@ -4,7 +4,6 @@ let path = require('path')
 
 const DIST = 'dist/'
 const TEST ='.test/'
-const TMP ='tmp/'
 
 function _generateParser() {
   // TODO: generate parser using
@@ -49,6 +48,15 @@ function _buildLib() {
   })
 }
 
+function _buildExample() {
+  b.js('examples/example-scope.js', {
+    target: {
+      dest: DIST+'example.js',
+      format: 'umd', moduleName: 'EXAMPLE'
+    }
+  })
+}
+
 // ATM you we need to checkout the whole project and build a vendor bundle
 b.task('antlr4', () => {
   b.browserify('../antlr4/runtime/JavaScript/src/antlr4/index', {
@@ -67,6 +75,8 @@ b.task('parser', _generateParser)
 
 b.task('lib', ['parser'], _buildLib)
 
+b.task('example', ['lib'], _buildExample)
+
 // EXPERIMENTAL: helper to create task for building test-suite
 tests.install(b, 'test', {
   src: './test/index.js',
@@ -74,7 +84,7 @@ tests.install(b, 'test', {
   title: 'Substance Expression'
 })
 
-b.task('default', ['clean', 'lib'])
+b.task('default', ['clean', 'example'])
 
 b.setServerPort(5551)
 b.serve({ static: true, route: '/test', folder: TEST })
