@@ -12,7 +12,7 @@
   "license": "ISC",
   "devDependencies": {
     "browserify": "^14.0.0",
-    "substance": "https://github.com/substance/substance.git#e0f1fd42b59d8f9f40fe853688d6bc39e97c4d29",
+    "substance": "1.0.0-beta.6.4",
     "substance-bundler": "^0.7.2",
     "substance-test": "^0.6.0"
   }
