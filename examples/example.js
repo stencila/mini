@@ -1,4 +1,4 @@
-import SheetComponent from './SheetComponent'
+import SheetComponent from './ExampleSheetComponent'
 import scope from './example-scope'
 
 export { SheetComponent, scope }

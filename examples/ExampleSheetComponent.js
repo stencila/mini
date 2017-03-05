@@ -1,5 +1,5 @@
 import { Component } from 'substance'
-import CellComponent from './CellComponent'
+import CellComponent from './ExampleCellComponent'
 
 import substanceGlobals from 'substance/util/substanceGlobals'
 substanceGlobals.DEBUG_RENDERING = false
