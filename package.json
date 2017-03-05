@@ -1,6 +1,6 @@
 {
-  "name": "expr",
-  "version": "1.0.0",
+  "name": "substance-expression",
+  "version": "0.1.0",
   "description": "",
   "main": "dist/expression.cjs.js",
   "scripts": {

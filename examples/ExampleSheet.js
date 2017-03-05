@@ -1,8 +1,5 @@
-import isString from 'substance/util/isString'
-import uuid from 'substance/util/uuid'
-import Expression from './Expression'
-import ExpressionGraph from './ExpressionGraph'
-import parse from './parse'
+import { isString, uuid } from 'substance'
+import { Expression, ExpressionGraph, parse } from 'substance-expression'
 
 /*
   Experimental: a model for a Sheet

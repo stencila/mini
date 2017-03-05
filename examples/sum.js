@@ -1,5 +1,4 @@
-import isArray from 'substance/util/isArray'
-import isNumber from 'substance/util/isNumber'
+import { isArray, isNumber } from 'substance'
 
 export default function sum(...args) {
   let val = 0

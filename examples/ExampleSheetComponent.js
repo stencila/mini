@@ -1,9 +1,6 @@
 import { Component } from 'substance'
 import CellComponent from './ExampleCellComponent'
 
-import substanceGlobals from 'substance/util/substanceGlobals'
-substanceGlobals.DEBUG_RENDERING = false
-
 export default class SheetComponent extends Component {
 
   didMount() {

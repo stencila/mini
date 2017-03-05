@@ -39,10 +39,10 @@ function _generateParser() {
 function _buildLib() {
   b.js('src/index.js', {
     targets: [{
-      dest: DIST+'expression.cjs.js',
+      dest: DIST+'substance-expression.cjs.js',
       format: 'cjs'
     }, {
-      dest: DIST+'expression.js',
+      dest: DIST+'substance-expression.js',
       format: 'umd', moduleName: 'substanceExpression'
     }],
   })
@@ -53,6 +53,11 @@ function _buildExample() {
     target: {
       dest: DIST+'example.js',
       format: 'umd', moduleName: 'EXAMPLE'
+    },
+    external: ['substance', 'substance-expression'],
+    globals: {
+      'substance': 'substance',
+      'substance-expression': 'substanceExpression'
     }
   })
 }

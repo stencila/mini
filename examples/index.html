@@ -1,13 +1,14 @@
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href="./_sheet.css">
-    <script type="text/javascript" src='../dist/expression.js'></script>
+    <script type="text/javascript" src='../dist/substance-expression.js'></script>
     <script type="text/javascript" src='../dist/example.js'></script>
     <script type="text/javascript">
 
       function example1() {
-        let { evaluate } = window.substanceExpression
-        let scope = window.EXAMPLE.scope
+        const { evaluate } = window.substanceExpression
+        const { scope } = window.EXAMPLE
+
         const EXPR = 'sum(A1:B10)+(x+1)+2'
         evaluate(EXPR, scope)
           .then((val) => {
@@ -22,9 +23,8 @@
         // then register the expression with ExpressionGraph
         // -> look how the topology is computed
         // -> then move towards evaluation
-        let { Sheet } = window.substanceExpression
-        let scope = window.EXAMPLE.scope
-        let SheetComponent = window.EXAMPLE.SheetComponent
+        const { Sheet, SheetComponent, scope } = window.EXAMPLE
+
         let data = [[4, 5], ['=A1+B1', '=A2*4']]
         let sheet = new Sheet(scope)
         SheetComponent.mount({ sheet }, window.document.body)

@@ -2,7 +2,6 @@ import { ExprLexer, ExprParser, InputStream, CommonTokenStream } from '../parser
 import Expression from './Expression'
 import ExpressionGraph from './ExpressionGraph'
 import parse from './parse'
-import Sheet from './Sheet'
 import StaticContext from './StaticContext'
 
 export function evaluate(exprStr, scope) {
@@ -11,4 +10,4 @@ export function evaluate(exprStr, scope) {
   return expr.evaluate(context)
 }
 
-export { parse, Sheet, Expression }
+export { parse, Expression, ExpressionGraph }
