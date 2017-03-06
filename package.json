@@ -5,6 +5,7 @@
   "main": "dist/expression.cjs.js",
   "jsntext:main": "src/index.js",
   "scripts": {
+    "prepublish": "node make",
     "start": "node make lib test -s -w",
     "dev": "node make lib test -s -w",
     "test": "node make test && (node .test/run-tests.js | node ./node_modules/substance-test/dist/tap-spec.js)"
