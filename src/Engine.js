@@ -30,7 +30,7 @@ class Engine extends AbstractContext {
     expr.id = expr.id || uuid()
     let state = new Expression.State(expr, this)
     state.on('value:updated', (val) => {
-      this.setValue(id, val)
+      this.setValue(expr.id, val)
     })
     let entry = {
       type: 'expression',
@@ -52,7 +52,7 @@ class Engine extends AbstractContext {
         return this.state.off(...args)
       }
     }
-    this._entries[id] = entry
+    this._entries[expr.id] = entry
     return entry
   }
 
