@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "",
   "main": "dist/expression.cjs.js",
+  "jsntext:main": "src/index.js",
   "scripts": {
     "start": "node make lib test -s -w",
     "dev": "node make lib test -s -w",
@@ -15,5 +16,11 @@
     "substance": "1.0.0-beta.6.4",
     "substance-bundler": "^0.9.2",
     "substance-test": "^0.6.0"
-  }
+  },
+  "files": [
+    "dist",
+    "src",
+    "parser",
+    "README.md"
+  ]
 }
