@@ -110,7 +110,7 @@ function createFromAST(state, ast) {
     case 'mult':
     case 'div':
     case 'power': {
-      node = new BinaryOp(id, ast.type,
+      node = new BinaryNumericOp(id, ast.type,
         createFromAST(state, ast.children[0]),
         createFromAST(state, ast.children[2])
       )
@@ -254,7 +254,7 @@ class FunctionCall {
   }
 }
 
-class BinaryOp {
+class BinaryNumericOp {
 
   constructor(id, type, left, right) {
     this.id = id
@@ -266,8 +266,8 @@ class BinaryOp {
   }
 
   evaluate(state) {
-    let left = state.getValue(this.left.id)
-    let right = state.getValue(this.right.id)
+    let left = Number(state.getValue(this.left.id))
+    let right = Number(state.getValue(this.right.id))
     let val
     switch(this.type) {
       case 'plus':
