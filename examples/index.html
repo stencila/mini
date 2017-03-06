@@ -23,12 +23,12 @@
         // then register the expression with ExpressionGraph
         // -> look how the topology is computed
         // -> then move towards evaluation
-        const { Sheet, SheetComponent, scope } = window.EXAMPLE
+        const { ExampleSheetEngine, ExampleSheetComponent, scope } = window.EXAMPLE
 
         let data = [[4, 5], ['=A1+B1', '=A2*4']]
-        let sheet = new Sheet(scope)
-        SheetComponent.mount({ sheet }, window.document.body)
-        sheet.setData(data)
+        let engine = new ExampleSheetEngine(scope)
+        ExampleSheetComponent.mount({ engine }, window.document.body)
+        engine.setData(data)
       }
 
       window.onload = function() {

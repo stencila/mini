@@ -1,6 +1,7 @@
 import { Component } from 'substance'
 
-export default class CellComponent extends Component {
+export default
+class ExampleCellComponent extends Component {
 
   didMount() {
     super.didMount()

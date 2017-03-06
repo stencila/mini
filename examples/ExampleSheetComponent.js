@@ -1,30 +1,31 @@
 import { Component } from 'substance'
 import CellComponent from './ExampleCellComponent'
 
-export default class SheetComponent extends Component {
+export default
+class ExampleSheetComponent extends Component {
 
   didMount() {
     super.didMount()
 
-    const sheet = this.props.sheet
-    sheet.on('sheet:updated', this._onSheetUpdated, this)
+    const engine = this.props.engine
+    engine.on('sheet:updated', this._onSheetUpdated, this)
   }
 
   dispose() {
     super.dispose()
 
-    const sheet = this.props.sheet
-    sheet.off(this)
+    const engine = this.props.engine
+    engine.off(this)
   }
 
   render($$) {
-    const sheet = this.props.sheet
+    const engine = this.props.engine
     let table = $$('table').addClass('sc-sheet')
-    const data = sheet.data
-    // const N = sheet.nrows
-    // const M = sheet.ncols
-    const N = Math.max(sheet.nrows, 10)
-    const M = Math.max(sheet.ncols, 10)
+    const data = engine.data
+    // const N = engine.nrows
+    // const M = engine.ncols
+    const N = Math.max(engine.nrows, 10)
+    const M = Math.max(engine.ncols, 10)
     for (let i = 0; i < N; i++) {
       const tr = $$('tr').addClass('se-row')
       for (let j = 0; j < M; j++) {
@@ -63,6 +64,6 @@ export default class SheetComponent extends Component {
     const input = event.target
     let row = parseInt(input.getAttribute('data-row'), 10)
     let col = parseInt(input.getAttribute('data-col'), 10)
-    this.props.sheet.setCell(row, col, input.value)
+    this.props.engine.setCell(row, col, input.value)
   }
 }

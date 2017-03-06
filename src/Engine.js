@@ -1,11 +1,13 @@
 import debounce from 'substance/util/debounce'
 import map from 'substance/util/map'
+import uuid from 'substance/util/uuid'
 import AbstractContext from './AbstractContext'
 import Expression from './Expression'
 
 const MIN_INTERVAL = 100
 
-class ExpressionGraph extends AbstractContext {
+export default
+class Engine extends AbstractContext {
 
   constructor() {
     super()
@@ -13,7 +15,7 @@ class ExpressionGraph extends AbstractContext {
     // set by _computeTopologicalOrder
     this._entries = {}
     this._order = []
-    this.values = {}
+    this._values = {}
     this._cursor = -1
   }
 
@@ -21,11 +23,11 @@ class ExpressionGraph extends AbstractContext {
   update() {
     this._computeTopologicalOrder()
     this._propagate()
-    this.emit('sheet:updated')
+    this.emit('updated')
   }
 
   _addExpression(expr) {
-    const id = expr.id
+    expr.id = expr.id || uuid()
     let state = new Expression.State(expr, this)
     state.on('value:updated', (val) => {
       this.setValue(id, val)
@@ -56,6 +58,7 @@ class ExpressionGraph extends AbstractContext {
 
   _removeExpression(id) {
     delete this._entries[id]
+    delete this._values[id]
   }
 
   _computeTopologicalOrder() {
@@ -100,11 +103,11 @@ class ExpressionGraph extends AbstractContext {
   }
 
   getValue(id) {
-    return this.values[id]
+    return this._values[id]
   }
 
   setValue(id, val) {
-    this.values[id] = val
+    this._values[id] = val
     const entry = this._entries[id]
     if (entry) {
       if (this._cursor > entry.position) {
@@ -193,5 +196,3 @@ class ExpressionGraph extends AbstractContext {
   }
 
 }
-
-export default ExpressionGraph

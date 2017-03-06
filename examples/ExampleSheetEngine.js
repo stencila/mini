@@ -1,11 +1,8 @@
 import { isString, uuid } from 'substance'
-import { Expression, ExpressionGraph, parse } from 'substance-expression'
+import { Expression, Engine, parse } from 'substance-expression'
 
-/*
-  Experimental: a model for a Sheet
-
-*/
-export default class Sheet extends ExpressionGraph {
+export default
+class ExampleSheetEngine extends Engine {
 
   constructor(scope) {
     super()

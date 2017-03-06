@@ -1,5 +1,5 @@
-import Sheet from './ExampleSheet'
-import SheetComponent from './ExampleSheetComponent'
+import ExampleSheetEngine from './ExampleSheetEngine'
+import ExampleSheetComponent from './ExampleSheetComponent'
 import scope from './example-scope'
 
-export { Sheet, SheetComponent, scope }
+export { ExampleSheetEngine, ExampleSheetComponent, scope }
