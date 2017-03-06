@@ -1,5 +1,4 @@
 let b = require('substance-bundler')
-let tests = require('substance-test/install')
 let path = require('path')
 
 const DIST = 'dist/'
@@ -83,11 +82,12 @@ b.task('lib', ['parser'], _buildLib)
 b.task('example', ['lib'], _buildExample)
 
 // EXPERIMENTAL: helper to create task for building test-suite
-tests.install(b, 'test', {
-  src: './test/index.js',
-  dest: TEST,
-  title: 'Substance Expression'
-})
+// let tests = require('substance-test/install')
+// tests.install(b, 'test', {
+//   src: './test/index.js',
+//   dest: TEST,
+//   title: 'Substance Expression'
+// })
 
 b.task('default', ['clean', 'example'])
 
