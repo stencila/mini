@@ -11,6 +11,15 @@ function ExprListener() {
 ExprListener.prototype = Object.create(antlr4.tree.ParseTreeListener.prototype);
 ExprListener.prototype.constructor = ExprListener;
 
+// Enter a parse tree produced by ExprParser#mini.
+ExprListener.prototype.enterMini = function(ctx) {
+};
+
+// Exit a parse tree produced by ExprParser#mini.
+ExprListener.prototype.exitMini = function(ctx) {
+};
+
+
 // Enter a parse tree produced by ExprParser#expr.
 ExprListener.prototype.enterExpr = function(ctx) {
 };

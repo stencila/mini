@@ -34,6 +34,12 @@ class Expression extends EventEmitter {
     })
   }
 
+  get name() {
+    if (this.root) {
+      return this.root.name
+    }
+  }
+
   _propagate(state, context) {
     try {
       const nodes = this.nodes
@@ -105,6 +111,12 @@ function createFromAST(state, ast) {
   let id = state.nodeId++
   let node
   switch (ast.type) {
+    case 'simple':
+      node = createFromAST(state, ast.children[0])
+      break
+    case 'definition':
+      node = new Definition(id, ast.children[0].getText(), createFromAST(state, ast.children[2]))
+      break
     case 'plus':
     case 'minus':
     case 'mult':
@@ -164,6 +176,18 @@ function createFromAST(state, ast) {
   }
   state.nodes[id] = node
   return node
+}
+
+class Definition {
+  constructor(id, name, expr) {
+    this.id = id
+    this.name = name
+    this.expr = expr
+  }
+
+  evaluate(state) {
+    state.setValue(this.id, state.getValue(this.expr.id))
+  }
 }
 
 class Constant {

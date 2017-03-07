@@ -35,6 +35,7 @@ class Engine extends AbstractContext {
     let entry = {
       type: 'expression',
       id: expr.id,
+      name: expr.name,
       expr: expr,
       state: state,
       level: -1,
@@ -53,12 +54,24 @@ class Engine extends AbstractContext {
       }
     }
     this._entries[expr.id] = entry
+    const name = entry.expr.name
+    if (name) {
+      this._entries[name] = entry
+    }
     return entry
   }
 
   _removeExpression(id) {
-    delete this._entries[id]
-    delete this._values[id]
+    let entry = this._entries[id]
+    if (entry) {
+      delete this._entries[id]
+      delete this._values[id]
+      const name = entry.expr.name
+      if (name) {
+        delete this._entries[name]
+        delete this._values[name]
+      }
+    }
   }
 
   _computeTopologicalOrder() {
@@ -107,9 +120,16 @@ class Engine extends AbstractContext {
   }
 
   setValue(id, val) {
-    this._values[id] = val
     const entry = this._entries[id]
+    this._values[id] = val
     if (entry) {
+      // Note: for named expressions (definitions)
+      // we store the value under the name
+      // Example: x = 42
+      const name = entry.expr.name
+      if (name) {
+        this._values[name] = val
+      }
       if (this._cursor > entry.position) {
         this._requestPropagation()
       }

@@ -1,4 +1,9 @@
 grammar Expr;
+
+mini:  expr                                { $ctx.type = 'simple' }
+    |  ID   '=' expr                       { $ctx.type = 'definition'}
+    ;
+
 expr:  expr '^' number                     { $ctx.type = 'power' }
     |  expr '*' expr                       { $ctx.type = 'mult' }
     |  expr '/' expr                       { $ctx.type = 'div' }
