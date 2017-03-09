@@ -20,12 +20,13 @@ class Engine extends AbstractContext {
   // call this after changes to expressions
   update() {
     this._computeTopologicalOrder()
-    this._propagate()
+    this.propagate()
     this.emit('updated')
   }
 
   _addExpression(expr) {
     expr.id = expr.id || uuid()
+    expr.context = this
     let state = new Expression.State(expr, this)
     state.on('value:updated', (val) => {
       this.setValue(expr.id, val)
@@ -93,14 +94,14 @@ class Engine extends AbstractContext {
     when updating the value, but only if it is before the current
     cursor.
   */
-  _propagate() {
+  propagate() {
     try {
       const entries = this._entries
       const order = this._order
       for (let i = 0; i < order.length; i++) {
         const entry = entries[order[i]]
         this._cursor = entry.position
-        entry.expr._propagate(entry.state, this)
+        entry.expr.propagate(entry.state, this)
       }
     } finally {
       this._cursor = -1
@@ -109,7 +110,7 @@ class Engine extends AbstractContext {
 
   _requestPropagation() {
     debounce(() => {
-      this._propagate()
+      this.propagate()
     }, MIN_INTERVAL)
   }
 

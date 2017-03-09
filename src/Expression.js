@@ -2,6 +2,8 @@ import { EventEmitter } from 'substance'
 import ExpressionState from './ExpressionState'
 import createFromAST from './createFromAST'
 
+const MIN_INTERVAL = 100
+
 export default
 class Expression extends EventEmitter {
 
@@ -13,52 +15,89 @@ class Expression extends EventEmitter {
     this.nodes = nodes
     this.inputs = inputs
 
-    // ATTENTION: node ids here are just counters which represent the order of creation
-    let entries = {}
-    this._sortedIds = Object.keys(nodes)
-    this._sortedIds.sort((a, b)=>{return b-a})
-    this._sortedIds.forEach((id, pos) => {
-      entries[id] = { id: id, position: pos }
-    })
-    this._entries = entries
+    // initialize nodes
+    for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i]
+      node.expr = this
+      node.pos = i
+    }
+    root.setValue = (val) => {
+      root.value = val
+      this.emit('value:updated', val)
+    }
+    // execution state
+    this._cursor = -1
+    this._next = {
+      cursor: 0
+    }
+  }
+
+  getValue() {
+    return this.root.getValue()
   }
 
   evaluate(context) {
-    const expr = this
-    const state = new ExpressionState(this, context)
+    this.context = context
     return new Promise((resolve) => {
-      state.on('value:updated', (val) => {
+      this.on('value:updated', (val) => {
         resolve(val)
       })
-      expr._propagate(state, context)
+      this.propagate()
     })
   }
 
   get name() {
-    if (this.root) {
+    if (this.root && this.root.type === 'definition') {
       return this.root.name
     }
   }
 
-  _propagate(state, context) {
+  getContext() {
+    return this.context
+  }
+
+  _requestPropagation(node) {
+    if (this.cursor < 0) {
+      this._next = {
+        cursor: node.pos
+      }
+      this.propagate()
+    } else if (this.cursor > node.pos) {
+      let next = this._next
+      if (!next) this._next = next = {cursor: node.pos}
+      next.cursor = Math.min(next.cursor, node.pos)
+    }
+  }
+
+  propagate() {
+    const next = this._next
+    this._next = null
+    this._cursor = Math.max(next?next.cursor:0, 0)
     try {
       const nodes = this.nodes
-      const ids = this._sortedIds
-      const start = Math.max(state.cursor, 0)
-      for (let i = start; i < ids.length; i++) {
-        const node = nodes[ids[i]]
-        state.cursor = i
-        node.evaluate(state, context)
+      const L = nodes.length
+      const start = this._cursor
+      for (let i = start; i < L; i++) {
+        const node = nodes[i]
+        this._cursor = i
+        node.evaluate()
       }
     } finally {
-      state.cursor = -1
+      this._cursor = -1
+    }
+    // if there was an update from a previous propagation
+    // we retrigger propagation
+    if (this._next) {
+      setTimeout(() => {
+        this.propagate()
+      }, MIN_INTERVAL)
     }
   }
 
 }
 
 Expression.createFromAST = function(source, ast) {
-  let state = { nodeId: 0, nodes: {}, inputs: [] }
+  let state = { nodeId: 0, nodes: [], inputs: [] }
   let root = createFromAST(state, ast)
   return new Expression(source, root, state.nodes, state.inputs)
 }

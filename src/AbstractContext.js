@@ -50,7 +50,7 @@ class AbstractContext extends EventEmitter {
     }
   }
 
-  callFunction(name, args) {
+  callFunction(funcNode, args) {
     console.error('callFunction() is abstract.')
     return Promise.reject('function is not implemneted.')
   }

@@ -117,7 +117,7 @@ export default function createFromAST(state, ast) {
     default:
       throw new Error('Unsupported Expression type:'+ast.type)
   }
-  state.nodes[node.id] = node
+  state.nodes.push(node)
   return node
 }
 

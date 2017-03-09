@@ -1,0 +1,16 @@
+.sc-expression-state {
+  margin-top: 10px;
+}
+
+.sc-expression-state > .se-title {
+  font-weight: bold
+}
+
+.sc-test-cell > .se-title {
+  font-weight: bold
+}
+
+.sc-expression .se-node {
+  table-layout: fixed;
+  width: 100%;
+}

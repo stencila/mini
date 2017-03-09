@@ -1,98 +1,140 @@
-export class Definition {
+import { isEqual } from 'substance'
+
+class ExprNode {
+  constructor(id) {
+    this.id = id
+  }
+
+  setValue(val) {
+    let oldVal = this.value
+    if (!isEqual(oldVal, val)) {
+      this.value = val
+      this.getExpression().requestPropagation(this)
+    }
+  }
+
+  getValue() {
+    return this.value
+  }
+
+  getContext() {
+    return this.getExpression().getContext()
+  }
+
+  getExpression() {
+    return this.expr
+  }
+
+  evaluate() {}
+}
+
+export class Definition extends ExprNode {
 
   constructor(id, name, expr) {
-    this.id = id
+    super(id)
     this.name = name
     this.expr = expr
+    expr.parent = this
   }
 
   get type() { return 'definition' }
 
-  evaluate(state) {
-    state.setValue(this.id, state.getValue(this.expr.id))
+  evaluate() {
+    this.setValue(this.expr.getValue())
   }
 
 }
 
-export class ArrayNode {
+export class ArrayNode extends ExprNode {
   constructor(id, vals) {
-    this.id = id
+    super(id)
     this.vals = vals
+    vals.forEach((val) => {
+      val.parent = this
+    })
   }
 
   get type() { return 'array' }
 
-  evaluate(state) {
-    let vals = this.vals.map(val => state.getValue(val.id))
-    state.setValue(this.id, vals)
+  evaluate() {
+    let vals = this.vals.map(val => val.getValue())
+    this.setValue(vals)
   }
 }
 
-export class ObjectNode {
+export class ObjectNode extends ExprNode {
   constructor(id, entries) {
-    this.id = id
+    super(id)
     this.entries = entries
+    entries.forEach((entry) => {
+      entry.parent = this
+    })
   }
 
   get type() { return 'object' }
 
-  evaluate(state) {
+  evaluate() {
     let obj = {}
     this.entries.forEach((key, val) => {
-      obj[key] = state.getValue(val.id)
+      obj[key] = val.getValue()
     })
-    state.setValue(this.id, obj)
+    this.setValue(obj)
   }
 }
 
 /*
   A constant value.
 */
-export class NumberNode {
-  constructor(id, value) {
-    this.id = id
-    this.value = value
+export class NumberNode extends ExprNode {
+
+  constructor(id, number) {
+    super(id)
+    this.number = number
   }
 
   get type() { return 'number' }
 
-  evaluate(state) {
-    state.setValue(this.id, this.value)
+  evaluate() {
+    this.setValue(this.number)
   }
+
 }
 
-export class StringNode {
+export class StringNode extends ExprNode {
+
   constructor(id, str) {
-    this.id = id
+    super(id)
     this.str = str
   }
 
   get type() { return 'string' }
 
-  evaluate(state) {
-    state.setValue(this.id, this.str)
+  evaluate() {
+    this.setValue(this.str)
   }
+
 }
 
-export class Var {
+export class Var extends ExprNode {
 
   constructor(id, name) {
-    this.id = id
+    super(id)
     this.name = name
   }
 
   get type() { return 'var' }
 
-  evaluate(state, context) {
-    let val = context.lookup(this)
-    state.setValue(this.id, val)
+  evaluate() {
+    let val = this.getContext().lookup(this)
+    this.setValue(val)
   }
+
 }
 
-export class Cell {
+export class Cell extends ExprNode {
 
   constructor(id, row, col) {
-    this.id = id
+    super(id)
     this.tableName = '$data'
     this.row = row
     this.col = col
@@ -100,16 +142,17 @@ export class Cell {
 
   get type() { return 'cell' }
 
-  evaluate(state, context) {
-    let val = context.lookup(this)
-    state.setValue(this.id, val)
+  evaluate() {
+    let val = this.getContext().lookup(this)
+    this.setValue(val)
   }
+
 }
 
-export class Range {
+export class Range extends ExprNode {
 
   constructor(id, startRow, startCol, endRow, endCol) {
-    this.id = id
+    super(id)
     this.tableName = '$data'
     this.startRow = startRow
     this.startCol = startCol
@@ -119,16 +162,18 @@ export class Range {
 
   get type() { return 'range' }
 
-  evaluate(state, context) {
-    let matrix = context.lookup(this)
-    state.setValue(this.id, matrix)
+  evaluate() {
+    // TODO: rethink, it seems a bit heavy to implement
+    // range -> matrix conversion in lookup
+    let matrix = this.getContext().lookup(this)
+    this.setValue(matrix)
   }
 
 }
 
-export class ExternalFunction {
+export class ExternalFunction extends ExprNode {
   constructor(id, args = []) {
-    this.id = id
+    super(id)
     this.args = args
     args.forEach((c) => {
       c.parent = this
@@ -137,16 +182,17 @@ export class ExternalFunction {
 
   get type() { return 'function' }
 
-  evaluate(state) {
+  evaluate() {
     console.error('TODO: implement this')
-    state.setValue(new Error('Not implemented yet'))
+    this.setValue(undefined)
   }
+
 }
 
-export class FunctionCall {
+export class FunctionCall extends ExprNode {
 
   constructor(id, name, args = []) {
-    this.id = id
+    super(id)
     this.name = name
     this.args = args
     args.forEach((c) => {
@@ -156,37 +202,39 @@ export class FunctionCall {
 
   get type() { return 'call' }
 
-  evaluate(state, context) {
-    let argVals = this.args.map((a) => state.getValue(a.id))
-    context.callFunction(this.name, argVals)
+  evaluate() {
+    // TODO: we need a map here, not an array
+    let argVals = this.args.map((a) => a.getValue())
+    this.getContext().callFunction(this, argVals)
     .then((val) => {
-      state.setValue(this.id, val)
+      this.setValue(val)
     })
     .catch((err) => {
-      state.setError(this.id, err)
+      this.setError(err)
     })
   }
 }
 
-export class NamedArgument {
+export class NamedArgument extends ExprNode {
 
   constructor(id, name, val) {
-    this.id = id
+    super(id)
     this.name = name
     this.val = val
+    val.parent = this
   }
 
   get type() { return 'named-argument' }
 
-  evaluate(state) {
-    state.setValue(this.id, state.getValue(this.val.id))
+  evaluate() {
+    this.setValue(this.val.getValue())
   }
 }
 
-export class BinaryNumericOp {
+export class BinaryNumericOp extends ExprNode {
 
   constructor(id, type, left, right) {
-    this.id = id
+    super(id)
     this.type = type
     this.left = left
     this.right = right
@@ -194,9 +242,9 @@ export class BinaryNumericOp {
     this.right.parent = this
   }
 
-  evaluate(state) {
-    let left = Number(state.getValue(this.left.id))
-    let right = Number(state.getValue(this.right.id))
+  evaluate() {
+    let left = Number(this.left.getValue())
+    let right = Number(this.right.getValue())
     let val
     switch(this.type) {
       case 'plus':
@@ -217,7 +265,7 @@ export class BinaryNumericOp {
       default:
         val = undefined
     }
-    state.setValue(this.id, val)
+    this.setValue(val)
   }
 
 }
