@@ -1,22 +1,23 @@
 {
-  "name": "substance-expression",
-  "version": "0.2.0",
+  "name": "substance-mini",
+  "version": "0.3.0",
   "description": "",
-  "main": "dist/expression.cjs.js",
-  "jsntext:main": "src/index.js",
+  "main": "dist/substance-mini.cjs.js",
+  "jsntext:main": "index.js",
   "scripts": {
     "prepublish": "node make",
     "start": "node make lib test -s -w",
     "dev": "node make lib test -s -w",
-    "test": "node make test && (node .test/run-tests.js | node ./node_modules/substance-test/dist/tap-spec.js)"
+    "test": "node make test && (node .test/run-tests.js | node ./node_modules/substance-test/dist/tap-spec.js)",
+    "test-one": "node test/one $1"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "browserify": "^14.0.0",
-    "substance": "1.0.0-beta.6.4",
-    "substance-bundler": "^0.9.2",
-    "substance-test": "^0.6.0"
+    "substance": "1.0.0-beta.6.5",
+    "substance-bundler": "^0.11.0",
+    "substance-test": "^0.6.3"
   },
   "files": [
     "dist",

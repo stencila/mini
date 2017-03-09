@@ -2,7 +2,7 @@ let b = require('substance-bundler')
 let path = require('path')
 
 const DIST = 'dist/'
-const TEST ='.test/'
+const TMP ='tmp/'
 
 function _generateParser() {
   // TODO: generate parser using
@@ -36,14 +36,17 @@ function _generateParser() {
 }
 
 function _buildLib() {
-  b.js('src/index.js', {
+  b.js('index.js', {
     targets: [{
-      dest: DIST+'substance-expression.cjs.js',
+      dest: DIST+'substance-mini.cjs.js',
       format: 'cjs'
     }, {
-      dest: DIST+'substance-expression.js',
-      format: 'umd', moduleName: 'substanceExpression'
+      dest: DIST+'substance-mini.js',
+      format: 'umd', moduleName: 'substanceMini'
     }],
+    external: {
+      'substance': 'substance'
+    }
   })
 }
 
@@ -53,13 +56,27 @@ function _buildExample() {
       dest: DIST+'example.js',
       format: 'umd', moduleName: 'EXAMPLE'
     },
-    external: ['substance', 'substance-expression'],
-    globals: {
-      'substance': 'substance',
-      'substance-expression': 'substanceExpression'
+    external: {
+      'substance': 'window.substance',
+      'substance-mini': 'window.substanceMini'
     }
   })
 }
+
+function _buildTests() {
+  b.js('./test/index.js', {
+    target: {
+      dest: TMP+'tests.js',
+      format: 'umd', moduleName: 'tests'
+    },
+    external: {
+      'substance': 'window.substance',
+      'substance-mini': 'window.substanceMini',
+      'substance-test': 'window.substanceTest'
+    }
+  })
+}
+
 
 // ATM you we need to checkout the whole project and build a vendor bundle
 b.task('antlr4', () => {
@@ -71,8 +88,8 @@ b.task('antlr4', () => {
 })
 
 b.task('clean', () => {
-  b.rm('tmp')
-  b.rm('dist')
+  b.rm(TMP)
+  b.rm(DIST)
 })
 
 b.task('parser', _generateParser)
@@ -81,16 +98,9 @@ b.task('lib', ['parser'], _buildLib)
 
 b.task('example', ['lib'], _buildExample)
 
-// EXPERIMENTAL: helper to create task for building test-suite
-// let tests = require('substance-test/install')
-// tests.install(b, 'test', {
-//   src: './test/index.js',
-//   dest: TEST,
-//   title: 'Substance Expression'
-// })
+b.task('test', ['lib'], _buildTests)
 
 b.task('default', ['clean', 'example'])
 
 b.setServerPort(5551)
-b.serve({ static: true, route: '/test', folder: TEST })
 b.serve({ static: true, route: '/', folder: '.' })

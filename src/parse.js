@@ -7,6 +7,10 @@ export default function parse(expr) {
   parser.buildParseTrees = true
   // NOTE: 'mini' is the start rule as defined in the grammar file
   let ast = parser.mini()
-  let result = Expression.createFromAST(expr, ast)
-  return result
+  if (ast.exception) {
+    console.error(ast.exception.toString())
+  } else {
+    let result = Expression.createFromAST(expr, ast)
+    return result
+  }
 }

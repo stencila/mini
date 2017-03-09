@@ -1,6 +1,4 @@
-import debounce from 'substance/util/debounce'
-import map from 'substance/util/map'
-import uuid from 'substance/util/uuid'
+import { debounce, map, uuid } from 'substance'
 import AbstractContext from './AbstractContext'
 import Expression from './Expression'
 

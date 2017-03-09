@@ -1,9 +1,9 @@
-import EventEmitter from 'substance/util/EventEmitter'
-import isString from 'substance/util/isString'
+import { EventEmitter, isString } from 'substance'
 import Expression from './Expression'
 
 // exposes a child scope with a parent scope
-export default class AbstractContext extends EventEmitter {
+export default
+class AbstractContext extends EventEmitter {
 
   lookup(val) {
     if (isString(val)) {
@@ -48,6 +48,11 @@ export default class AbstractContext extends EventEmitter {
         console.warn('Unsupported node type', node)
         return undefined
     }
+  }
+
+  callFunction(name, args) {
+    console.error('callFunction() is abstract.')
+    return Promise.reject('function is not implemneted.')
   }
 
 }

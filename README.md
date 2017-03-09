@@ -1,13 +1,13 @@
-# Substance Expressions
+# Substance Mini Language
 
-A little expression parser generated using antlr4 that we use for our spreadsheets.
+A tiny expression language generated using antlr4 that we use for spreadsheets and stencils.
 
 # Development
 
 1. Clone the repo
 
 ```sh
-> git clone https://github.com/substance/expressions.git
+> git clone https://github.com/substance/mini.git
 ```
 
 
