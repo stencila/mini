@@ -10,7 +10,6 @@ A tiny expression language generated using antlr4 that we use for spreadsheets a
 > git clone https://github.com/substance/mini.git
 ```
 
-
 2. Install a `JDK`
 
 3. Download the `antlr4.jar` into `.bin/` folder:
