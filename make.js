@@ -1,12 +1,22 @@
 let b = require('substance-bundler')
 let path = require('path')
+let fs = require('fs')
 
 const DIST = 'dist/'
 const TMP ='tmp/'
 
+function _bundleANTLR4() {
+  b.browserify('../antlr4/runtime/JavaScript/src/antlr4/index', {
+    dest: './vendor/antlr4.js',
+    exports: ['default'],
+    debug: false
+  })
+}
+
 function _generateParser() {
-  // TODO: generate parser using
-  // java -jar ./.bin/antlr-4.6-complete.jar -Dlanguage=JavaScript -no-listener -no-visitor parser/Expr.g4
+  // we can not build the parser without ANTLR4
+  // still we don't fail so that travis is working (generated parser is checked in)
+  if (!fs.existsSync('./.bin/antlr-4.6-complete.jar')) return
   b.custom('Generating parser', {
     src: './parser/Expr.g4',
     dest: './parser/ExprParser.js',
@@ -130,13 +140,7 @@ function _runTestBrowser() {
 }
 
 // ATM you we need to checkout the whole project and build a vendor bundle
-b.task('antlr4', () => {
-  b.browserify('../antlr4/runtime/JavaScript/src/antlr4/index', {
-    dest: './vendor/antlr4.js',
-    exports: ['default'],
-    debug: false
-  })
-})
+b.task('antlr4', _bundleANTLR4)
 
 b.task('clean', () => {
   b.rm(TMP)
@@ -147,8 +151,6 @@ b.task('parser', _generateParser)
 
 b.task('lib', ['parser'], _buildLib)
 
-b.task('example', ['lib'], _buildExample)
-
 b.task('test', ['lib'], _buildTests)
 
 b.task('cov', () => {
@@ -156,7 +158,7 @@ b.task('cov', () => {
   _runTestBrowser()
 })
 
-b.task('default', ['clean', 'example'])
+b.task('default', ['clean', 'lib'])
 
 b.setServerPort(5551)
 b.serve({ static: true, route: '/', folder: '.' })
