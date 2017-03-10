@@ -1,4 +1,4 @@
-import { map, uuid } from 'substance'
+import { forEach, map, uuid } from 'substance'
 import debounce from 'substance/util/debounce'
 import AbstractContext from './AbstractContext'
 
@@ -16,6 +16,12 @@ class Engine extends AbstractContext {
     this._order = []
     this._values = {}
     this._cursor = -1
+  }
+
+  dispose() {
+    forEach(this._entries, (entry) => {
+      entry.expr.off(this)
+    })
   }
 
   // call this after changes to expressions
