@@ -1,6 +1,7 @@
-let b = require('substance-bundler')
-let path = require('path')
-let fs = require('fs')
+const b = require('substance-bundler')
+const path = require('path')
+const fs = require('fs')
+const run = require('substance-bundler/extensions/fork')
 
 const DIST = 'dist/'
 const TMP ='tmp/'
@@ -60,20 +61,7 @@ function _buildLib() {
   })
 }
 
-function _buildExample() {
-  b.js('examples/example.js', {
-    target: {
-      dest: DIST+'example.js',
-      format: 'umd', moduleName: 'EXAMPLE'
-    },
-    external: {
-      'substance': 'window.substance',
-      'substance-mini': 'window.substanceMini'
-    }
-  })
-}
-
-function _buildTests() {
+function _buildTestsBrowser() {
   b.js('./test/index.js', {
     target: {
       dest: TMP+'tests.js',
@@ -87,54 +75,18 @@ function _buildTests() {
   })
 }
 
-function _buildCov() {
-  b.copy('./node_modules/substance-test/dist/*', TMP, { root: './node_modules/substance-test/dist' })
+function _buildTestsCov() {
   b.js('./test/index.js', {
     target: {
-      dest: TMP+'tests.js',
-      format: 'umd', moduleName: 'tests'
+      dest: TMP+'tests.cov.js',
+      format: 'cjs'
     },
     alias: {
       'substance-mini': path.join(__dirname, 'index.js')
     },
-    external: {
-      'substance-test': 'substanceTest'
-    },
+    external: ['substance-test', 'substance'],
     istanbul: {
       include: ['src/*.js']
-    },
-    buble: true,
-    commonjs: true
-  })
-}
-
-function _runTestBrowser() {
-  b.custom('Running browser tests...', {
-    execute: function() {
-      let karma = require('karma')
-      const browser = process.env.TRAVIS ? 'ChromeTravis': 'Chrome'
-      return new Promise(function(resolve) {
-        let fails = 0
-        const server = new karma.Server({
-          configFile: __dirname + '/karma.conf.js',
-          browsers: [browser],
-          singleRun: true,
-          failOnEmptyTestSuite: false
-        }, function() {
-          // why is exitCode always == 1?
-          if (fails > 0) {
-            process.exit(1)
-          } else {
-            resolve()
-          }
-        })
-        server.on('run_complete', function(browsers, results) {
-          if (results && results.failed > 0) {
-            fails += results.failed
-          }
-        })
-        server.start()
-      })
     }
   })
 }
@@ -145,17 +97,22 @@ b.task('antlr4', _bundleANTLR4)
 b.task('clean', () => {
   b.rm(TMP)
   b.rm(DIST)
+  b.rm('coverage')
 })
 
 b.task('parser', _generateParser)
 
 b.task('lib', ['parser'], _buildLib)
 
-b.task('test', ['lib'], _buildTests)
+b.task('test:browser', ['lib'], () => {
+  _buildTestsBrowser()
+})
 
-b.task('cov', () => {
-  _buildCov()
-  _runTestBrowser()
+b.task('test', ['lib'], () => {
+  const coverage = require.resolve('substance-test/bin/coverage')
+  const tests = './tmp/tests.cov.js'
+  _buildTestsCov()
+  run(b, coverage, tests)
 })
 
 b.task('default', ['clean', 'lib'])
