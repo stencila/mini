@@ -8,13 +8,13 @@
     "prepublish": "node make",
     "start": "node make lib test -s -w",
     "dev": "node make lib test -s -w",
-    "test": "node make cov",
-    "cov": "node make cov"
+    "test": "node make cov && codecov"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "browserify": "^14.0.0",
+    "codecov": "^1.0.1",
     "istanbul": "^0.4.5",
     "karma": "^1.5.0",
     "karma-chrome-launcher": "^2.0.0",
