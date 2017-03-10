@@ -2,7 +2,5 @@
 dist
 node_modules
 .test
-parser/parser.js
-parser/parser.js.map
 tmp
 coverage
