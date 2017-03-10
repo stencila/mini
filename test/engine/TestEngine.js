@@ -14,6 +14,7 @@ class TestEngine extends Engine {
     super()
 
     this.cells = {}
+    this.functions = {}
   }
 
   addExpression(exprStr) {
@@ -29,34 +30,17 @@ class TestEngine extends Engine {
     return cell
   }
 
-  // callFunction(funcNode, args) {
-  //   const functionName = funcNode.name
+  registerFunction(name, fn) {
+    this.functions[name] = fn
+  }
 
-  //     const contexts = this._contexts
-  //     let names = Object.keys(contexts)
-  //     for (let i = 0; i < names.length; i++) {
-  //       const contextName = names[i]
-  //       const context = contexts[contextName]
-  //       if (context.hasFunction(functionName)) {
-  //         const options = { pack: contextName === 'js' ? false : true }
-  //         return _unwrapResult(
-  //           context.callFunction(functionName, args, options),
-  //           options
-  //         )
-  //       }
-  //     }
-  //     return Promise.reject(`Could not resolve function "${functionName}"`)
-  //   }
-  // }
-
-  // _updateCell(cell) {
-  //   let parsedExpression = cell.getParsedExpression()
-  //   if (!parsedExpression) return
-  //   let entry = this._addExpression(parsedExpression)
-  //   // adapter between expression node and stencila cell
-  //   entry.on('value:updated', () => {
-  //     const val = entry.getValue()
-  //     cell.setValue(val)
-  //   })
-  // }
+  callFunction(funcNode, args) {
+    const functionName = funcNode.name
+    const fn = this.functions[functionName]
+    if (!fn) {
+      return Promise.reject(`Unknown function ${functionName}`)
+    } else {
+      return fn(args)
+    }
+  }
 }

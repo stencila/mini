@@ -83,19 +83,17 @@ class TestExpressionComponent extends Component {
     const expr = this.props.expr
     let el = $$('div').addClass('sc-expression')
     el.append(
-      $$('div').addClass('se-title').append(
-        $$('span').text('Expression'),
-        $$('button').text('Refresh').on('click', this.rerender)
+      $$('div').append(
+        $$('span').addClass('se-title').text('Expression:'),
+        $$('span').addClass('se-source').text(expr.source)
+        // $$('button').text('Refresh').on('click', this.rerender)
       )
     )
     const nodes = expr.nodes
+    let nodesEl = $$('table').addClass('se-nodes')
     for (let i = 0; i < nodes.length; i++) {
       const node = nodes[i]
-      let nodeEl = $$('table').addClass('se-node').append(
-        $$('tr').append(
-          $$('td').text('source'),
-          $$('td').text(expr.source)
-        ),
+      nodesEl.append(
         $$('tr').append(
           $$('td').text(i+1),
           $$('td').text('type:'),
@@ -104,8 +102,8 @@ class TestExpressionComponent extends Component {
           $$('td').text(node.getValue())
         )
       )
-      el.append(nodeEl)
     }
+    el.append(nodesEl)
     return el
   }
 }

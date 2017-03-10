@@ -17,7 +17,7 @@
     "browserify": "^14.0.0",
     "substance": "1.0.0-beta.6.5",
     "substance-bundler": "^0.11.0",
-    "substance-test": "^0.6.3"
+    "substance-test": "^0.6.6"
   },
   "files": [
     "dist",

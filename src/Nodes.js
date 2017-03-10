@@ -9,7 +9,7 @@ class ExprNode {
     let oldVal = this.value
     if (!isEqual(oldVal, val)) {
       this.value = val
-      this.getExpression().requestPropagation(this)
+      this.getExpression()._requestPropagation(this)
     }
   }
 
@@ -30,17 +30,17 @@ class ExprNode {
 
 export class Definition extends ExprNode {
 
-  constructor(id, name, expr) {
+  constructor(id, name, rhs) {
     super(id)
     this.name = name
-    this.expr = expr
-    expr.parent = this
+    this.rhs = rhs
+    rhs.parent = this
   }
 
   get type() { return 'definition' }
 
   evaluate() {
-    this.setValue(this.expr.getValue())
+    this.setValue(this.rhs.getValue())
   }
 
 }
@@ -75,8 +75,8 @@ export class ObjectNode extends ExprNode {
 
   evaluate() {
     let obj = {}
-    this.entries.forEach((key, val) => {
-      obj[key] = val.getValue()
+    this.entries.forEach((entry) => {
+      obj[entry.key] = entry.val.getValue()
     })
     this.setValue(obj)
   }
@@ -205,13 +205,21 @@ export class FunctionCall extends ExprNode {
   evaluate() {
     // TODO: we need a map here, not an array
     let argVals = this.args.map((a) => a.getValue())
-    this.getContext().callFunction(this, argVals)
-    .then((val) => {
-      this.setValue(val)
-    })
-    .catch((err) => {
+    try {
+      let res = this.getContext().callFunction(this, argVals)
+      if (res instanceof Promise) {
+        res.then((val) => {
+          this.setValue(val)
+        })
+        .catch((err) => {
+          this.setError(err)
+        })
+      } else {
+        this.setValue(res)
+      }
+    } catch(err) {
       this.setError(err)
-    })
+    }
   }
 }
 

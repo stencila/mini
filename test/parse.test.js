@@ -128,8 +128,6 @@ test('sum(1,x,A1)', (t) => {
   t.end()
 })
 
-// test('{ foo: 1, ')
-
 function _equal(t, arr1, arr2, msg) {
   return t.equal(String(arr1), String(arr2), msg)
 }
