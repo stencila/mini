@@ -1,5 +1,4 @@
 import { EventEmitter } from 'substance'
-import ExpressionState from './ExpressionState'
 import createFromAST from './createFromAST'
 
 const MIN_INTERVAL = 100
@@ -101,7 +100,3 @@ Expression.createFromAST = function(source, ast) {
   let root = createFromAST(state, ast)
   return new Expression(source, root, state.nodes, state.inputs)
 }
-
-Expression.State = ExpressionState
-
-

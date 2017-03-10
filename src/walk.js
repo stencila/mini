@@ -10,7 +10,7 @@ export default function walk(expr, fn) {
     fn(next)
     switch(next.type) {
       case 'definition':
-        stack.push(next.expr)
+        stack.push(next.rhs)
         break
       case 'function':
       case 'call':

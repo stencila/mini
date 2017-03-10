@@ -1,6 +1,4 @@
 import { module } from 'substance-test'
-// import { map } from 'substance'
-// import { parse, walk } from 'substance-mini'
 import TestEngine from './engine/TestEngine'
 import TestEngineComponent from './engine/TestEngineComponent'
 

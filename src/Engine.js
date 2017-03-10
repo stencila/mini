@@ -1,4 +1,5 @@
-import { debounce, map, uuid } from 'substance'
+import { map, uuid } from 'substance'
+import debounce from 'substance/util/debounce'
 import AbstractContext from './AbstractContext'
 import Expression from './Expression'
 
@@ -27,8 +28,7 @@ class Engine extends AbstractContext {
   _addExpression(expr) {
     expr.id = expr.id || uuid()
     expr.context = this
-    let state = new Expression.State(expr, this)
-    state.on('value:updated', (val) => {
+    expr.on('value:updated', (val) => {
       this.setValue(expr.id, val)
     })
     let entry = {
@@ -36,21 +36,8 @@ class Engine extends AbstractContext {
       id: expr.id,
       name: expr.name,
       expr: expr,
-      state: state,
       level: -1,
-      position: -1,
-      getSource() {
-        return this.expr.source
-      },
-      getValue() {
-        return this.state.getValue()
-      },
-      on(...args) {
-        return this.state.on(...args)
-      },
-      off(...args) {
-        return this.state.off(...args)
-      }
+      position: -1
     }
     this._entries[expr.id] = entry
     const name = entry.expr.name

@@ -1,5 +1,4 @@
 import { module } from 'substance-test'
-// import { map } from 'substance'
 import { parse, walk } from 'substance-mini'
 
 const test = module('Parse')
