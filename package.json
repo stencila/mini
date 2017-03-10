@@ -8,8 +8,8 @@
     "prepublish": "node make",
     "start": "node make lib test -s -w",
     "dev": "node make lib test -s -w",
-    "test": "node make test && (node .test/run-tests.js | node ./node_modules/substance-test/dist/tap-spec.js)",
-    "test-one": "node test/one $1"
+    "test": "node make cov",
+    "cov": "node make cov"
   },
   "author": "",
   "license": "ISC",
