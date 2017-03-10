@@ -1,7 +1,6 @@
 import { map, uuid } from 'substance'
 import debounce from 'substance/util/debounce'
 import AbstractContext from './AbstractContext'
-import Expression from './Expression'
 
 const MIN_INTERVAL = 100
 
@@ -13,6 +12,7 @@ class Engine extends AbstractContext {
 
     // set by _computeTopologicalOrder
     this._entries = {}
+    this._aliases = {}
     this._order = []
     this._values = {}
     this._cursor = -1
@@ -42,7 +42,7 @@ class Engine extends AbstractContext {
     this._entries[expr.id] = entry
     const name = entry.expr.name
     if (name) {
-      this._entries[name] = entry
+      this._aliases[name] = entry
     }
     return entry
   }
@@ -51,10 +51,9 @@ class Engine extends AbstractContext {
     let entry = this._entries[id]
     if (entry) {
       delete this._entries[id]
-      delete this._values[id]
       const name = entry.expr.name
       if (name) {
-        delete this._entries[name]
+        delete this._aliases[name]
         delete this._values[name]
       }
     }
@@ -107,7 +106,6 @@ class Engine extends AbstractContext {
 
   setValue(id, val) {
     const entry = this._entries[id]
-    this._values[id] = val
     if (entry) {
       // Note: for named expressions (definitions)
       // we store the value under the name
@@ -119,6 +117,8 @@ class Engine extends AbstractContext {
       if (this._cursor > entry.position) {
         this._requestPropagation()
       }
+    } else {
+      this._values[id] = val
     }
   }
 
@@ -151,6 +151,8 @@ class Engine extends AbstractContext {
     const entry = this._entries[id]
     if (entry) {
       return entry.expr
+    } else if (this._aliases[id]) {
+      return this._aliases[id].expr
     }
   }
 

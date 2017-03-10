@@ -15,6 +15,7 @@ export default class TestCell extends EventEmitter {
   }
 
   updateExpression(exprStr) {
+    this.source = exprStr
     if (this.expr) {
       this.expr.off(this)
     }
@@ -27,12 +28,15 @@ export default class TestCell extends EventEmitter {
       this.expr = null
       this.error = err
     }
-    this.emit('expression:changed')
+    this.emit('expression:changed', this)
   }
 
   setValue(val) {
+    if (TestCell.DEBUG) console.log('Updating value.', this.id, val)
     this.value = val
     this.emit('value:updated')
   }
 
 }
+
+TestCell.DEBUG = false

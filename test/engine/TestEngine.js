@@ -22,12 +22,19 @@ class TestEngine extends Engine {
     this.cells[cell.id] = cell
     if (cell.expr) {
       this._addExpression(cell.expr)
+      cell.on('expression:changed', this._updateExpression, this)
       super.update()
     } else {
       console.error(cell.error)
     }
     this.emit('engine:updated')
     return cell
+  }
+
+  _updateExpression(cell) {
+    this._removeExpression(cell.expr.id)
+    this._addExpression(cell.expr)
+    super.update()
   }
 
   registerFunction(name, fn) {
