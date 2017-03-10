@@ -14,6 +14,9 @@ module.exports = function(config) {
       }
     },
     singleRun: true,
-    reporters: ['tape', 'coverage']
+    reporters: ['tape', 'coverage'],
+    coverageReporter: {
+      reporters: [{type: 'lcov'}]
+    }
   })
 }
