@@ -77,6 +77,57 @@ function _buildTests() {
   })
 }
 
+function _buildCov() {
+  b.copy('./node_modules/substance-test/dist/*', TMP, { root: './node_modules/substance-test/dist' })
+  b.js('./test/index.js', {
+    target: {
+      dest: TMP+'tests.js',
+      format: 'umd', moduleName: 'tests'
+    },
+    alias: {
+      'substance-mini': path.join(__dirname, 'index.js')
+    },
+    external: {
+      'substance-test': 'substanceTest'
+    },
+    istanbul: {
+      include: ['src/*.js']
+    },
+    buble: true,
+    commonjs: true
+  })
+}
+
+function _runTestBrowser() {
+  b.custom('Running browser tests...', {
+    execute: function() {
+      let karma = require('karma')
+      const browser = process.env.TRAVIS ? 'ChromeTravis': 'Chrome'
+      return new Promise(function(resolve) {
+        let fails = 0
+        const server = new karma.Server({
+          configFile: __dirname + '/karma.conf.js',
+          browsers: [browser],
+          singleRun: true,
+          failOnEmptyTestSuite: false
+        }, function() {
+          // why is exitCode always == 1?
+          if (fails > 0) {
+            process.exit(1)
+          } else {
+            resolve()
+          }
+        })
+        server.on('run_complete', function(browsers, results) {
+          if (results && results.failed > 0) {
+            fails += results.failed
+          }
+        })
+        server.start()
+      })
+    }
+  })
+}
 
 // ATM you we need to checkout the whole project and build a vendor bundle
 b.task('antlr4', () => {
@@ -99,6 +150,11 @@ b.task('lib', ['parser'], _buildLib)
 b.task('example', ['lib'], _buildExample)
 
 b.task('test', ['lib'], _buildTests)
+
+b.task('cov', () => {
+  _buildCov()
+  _runTestBrowser()
+})
 
 b.task('default', ['clean', 'example'])
 
