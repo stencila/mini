@@ -111,9 +111,6 @@ export default function createFromAST(state, ast) {
     case 'argument': {
       return createFromAST(state, ast.children[0])
     }
-    case 'named-argument': {
-      throw new Error('Not implemented yet')
-    }
     default:
       throw new Error('Unsupported Expression type:'+ast.type)
   }

@@ -101,12 +101,12 @@ ExprListener.prototype.exitId_seq = function(ctx) {
 };
 
 
-// Enter a parse tree produced by ExprParser#arguments.
-ExprListener.prototype.enterArguments = function(ctx) {
+// Enter a parse tree produced by ExprParser#call_arguments.
+ExprListener.prototype.enterCall_arguments = function(ctx) {
 };
 
-// Exit a parse tree produced by ExprParser#arguments.
-ExprListener.prototype.exitArguments = function(ctx) {
+// Exit a parse tree produced by ExprParser#call_arguments.
+ExprListener.prototype.exitCall_arguments = function(ctx) {
 };
 
 

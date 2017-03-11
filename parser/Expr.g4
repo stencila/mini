@@ -32,7 +32,7 @@ cell: CELL;
 
 sheet_ref: ID '!' ( cell | range );
 
-function_call: ID '(' args=arguments? ')';
+function_call: ID '(' args=call_arguments? ')';
 
 number:  INT                        { $ctx.type = 'int' }
     |  FLOAT                        { $ctx.type = 'float' }
@@ -42,11 +42,10 @@ seq: items+=expr (',' items+=expr)*;
 
 id_seq: items+= ID (',' items+=ID)*;
 
-arguments:  args+=argument (',' args+=argument)* { $ctx.type = 'arguments' }
+call_arguments:  args+=argument (',' args+=argument)* { $ctx.type = 'call-arguments' }
     ;
 
 argument: expr          { $ctx.type = 'argument' }
-    |   ID '=' expr     { $ctx.type = 'named-argument' }
     ;
 
 array: '[' ( seq )? ']'   { $ctx.type = 'array' }

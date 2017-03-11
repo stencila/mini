@@ -17,6 +17,10 @@ class ExprNode {
     return this.value
   }
 
+  addError(err) {
+    this.expr.addError(err)
+  }
+
   getContext() {
     return this.getExpression().getContext()
   }
@@ -203,39 +207,21 @@ export class FunctionCall extends ExprNode {
   get type() { return 'call' }
 
   evaluate() {
-    // TODO: we need a map here, not an array
-    let argVals = this.args.map((a) => a.getValue())
     try {
-      let res = this.getContext().callFunction(this, argVals)
+      let res = this.getContext().callFunction(this)
       if (res instanceof Promise) {
         res.then((val) => {
           this.setValue(val)
         })
         .catch((err) => {
-          this.setError(err)
+          this.addError(err)
         })
       } else {
         this.setValue(res)
       }
     } catch(err) {
-      this.setError(err)
+      this.addError(err)
     }
-  }
-}
-
-export class NamedArgument extends ExprNode {
-
-  constructor(id, name, val) {
-    super(id)
-    this.name = name
-    this.val = val
-    val.parent = this
-  }
-
-  get type() { return 'named-argument' }
-
-  evaluate() {
-    this.setValue(this.val.getValue())
   }
 }
 

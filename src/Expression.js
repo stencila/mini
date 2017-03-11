@@ -14,6 +14,9 @@ class Expression extends EventEmitter {
     this.nodes = nodes
     this.inputs = inputs
 
+    this.value = undefined
+    this.errors = []
+
     // initialize nodes
     for (let i = 0; i < nodes.length; i++) {
       const node = nodes[i]
@@ -22,27 +25,19 @@ class Expression extends EventEmitter {
     }
     root.setValue = (val) => {
       root.value = val
+      this.value = val
       this.emit('value:updated', val)
     }
     // execution state
     this._cursor = -1
-    this._next = {
-      cursor: 0
-    }
   }
 
   getValue() {
-    return this.root.getValue()
+    return this.value
   }
 
-  evaluate(context) {
-    this.context = context
-    return new Promise((resolve) => {
-      this.on('value:updated', (val) => {
-        resolve(val)
-      })
-      this.propagate()
-    })
+  addError(err) {
+    this.errors.push(err)
   }
 
   get name() {
@@ -57,21 +52,18 @@ class Expression extends EventEmitter {
 
   _requestPropagation(node) {
     if (this.cursor < 0) {
-      this._next = {
-        cursor: node.pos
-      }
       this.propagate()
     } else if (this.cursor > node.pos) {
-      let next = this._next
-      if (!next) this._next = next = {cursor: node.pos}
-      next.cursor = Math.min(next.cursor, node.pos)
+      this._retrigger = true
     }
   }
 
   propagate() {
-    const next = this._next
-    this._next = null
-    this._cursor = Math.max(next?next.cursor:0, 0)
+    // TODO: we could use a 'PENDING' value while evaluating
+    this.value = undefined
+    this.errors = []
+    this._cursor = 0
+    this._retrigger = false
     try {
       const nodes = this.nodes
       const L = nodes.length
@@ -86,7 +78,7 @@ class Expression extends EventEmitter {
     }
     // if there was an update from a previous propagation
     // we retrigger propagation
-    if (this._next) {
+    if (this._retrigger) {
       setTimeout(() => {
         this.propagate()
       }, MIN_INTERVAL)

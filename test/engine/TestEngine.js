@@ -41,8 +41,9 @@ class TestEngine extends Engine {
     this.functions[name] = fn
   }
 
-  callFunction(funcNode, args) {
+  callFunction(funcNode) {
     const functionName = funcNode.name
+    const args = funcNode.args.map(arg => arg.getValue())
     const fn = this.functions[functionName]
     if (!fn) {
       return Promise.reject(`Unknown function ${functionName}`)
