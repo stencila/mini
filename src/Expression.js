@@ -52,22 +52,20 @@ class Expression extends EventEmitter {
 
   _requestPropagation(node) {
     if (this._cursor < 0) {
-      this.propagate()
-    } else if (this._cursor > node.pos) {
-      this._retrigger = true
+      this.propagate(node.pos+1)
+    } else if (this._cursor>node.pos) {
+      console.error('FIXME: we thought this could not happen.')
     }
   }
 
-  propagate() {
+  propagate(start = 0) {
     // TODO: we could use a 'PENDING' value while evaluating
     this.value = undefined
     this.errors = []
-    this._cursor = 0
-    this._retrigger = false
+    this._cursor = start
     try {
       const nodes = this.nodes
       const L = nodes.length
-      const start = this._cursor
       for (let i = start; i < L; i++) {
         const node = nodes[i]
         this._cursor = i
@@ -75,13 +73,6 @@ class Expression extends EventEmitter {
       }
     } finally {
       this._cursor = -1
-    }
-    // if there was an update from a previous propagation
-    // we retrigger propagation
-    if (this._retrigger) {
-      setTimeout(() => {
-        this.propagate()
-      }, MIN_INTERVAL)
     }
   }
 
