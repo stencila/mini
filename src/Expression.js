@@ -51,9 +51,9 @@ class Expression extends EventEmitter {
   }
 
   _requestPropagation(node) {
-    if (this.cursor < 0) {
+    if (this._cursor < 0) {
       this.propagate()
-    } else if (this.cursor > node.pos) {
+    } else if (this._cursor > node.pos) {
       this._retrigger = true
     }
   }
