@@ -46,7 +46,7 @@ class Engine extends AbstractContext {
     // propagation, as well extract the topological
     // order so we do not retrigger evaluation unnecessarily
     this._computeDependencyGraph()
-    this.propagate()
+    this._propagateDebounced()
     this.emit('updated')
   }
 
