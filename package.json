@@ -1,6 +1,6 @@
 {
   "name": "substance-mini",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "",
   "main": "dist/substance-mini.cjs.js",
   "jsntext:main": "index.js",
@@ -22,9 +22,9 @@
     "karma-source-map-support": "^1.2.0",
     "karma-tap": "^3.1.1",
     "karma-tape-reporter": "^1.0.3",
-    "substance": "1.0.0-beta.6.5",
-    "substance-bundler": "^0.12.0",
-    "substance-test": "^0.8.0"
+    "substance-bundler": "^0.12.2",
+    "substance-test": "^0.8.0",
+    "substance": "substance/substance#kaikoura"
   },
   "files": [
     "dist",

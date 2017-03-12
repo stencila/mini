@@ -46,7 +46,14 @@ function _generateParser() {
   })
 }
 
+// NOTE: this is needed when working on versions from github
+function _buildDeps() {
+  b.make('substance', 'build:pure')
+}
+
 function _buildLib() {
+  _buildDeps()
+
   b.js('index.js', {
     targets: [{
       dest: DIST+'substance-mini.cjs.js',
@@ -91,22 +98,27 @@ function _buildTestsCov() {
   })
 }
 
-// ATM you we need to checkout the whole project and build a vendor bundle
-b.task('antlr4', _bundleANTLR4)
-
 b.task('clean', () => {
   b.rm(TMP)
   b.rm(DIST)
   b.rm('coverage')
 })
+.describe('Cleans up temporary and build folders.')
+
+// ATM you we need to checkout the whole project and build a vendor bundle
+b.task('antlr4', _bundleANTLR4)
+.describe('Prebundle antlr4.js')
 
 b.task('parser', _generateParser)
+.describe('Generates the parser.\nRequires a clone of https://github/antlr4/antlr4.git as sibling folder')
 
 b.task('lib', ['parser'], _buildLib)
+.describe('Builds the library into dist folder.')
 
 b.task('test:browser', ['lib'], () => {
   _buildTestsBrowser()
 })
+.describe('Builds the test-suite to be run from test/index.html.')
 
 b.task('test', ['lib'], () => {
   const coverage = require.resolve('substance-test/bin/coverage')
@@ -114,6 +126,7 @@ b.task('test', ['lib'], () => {
   _buildTestsCov()
   run(b, coverage, tests)
 })
+.describe('Runs the test-suite in node-js.')
 
 b.task('default', ['clean', 'lib'])
 

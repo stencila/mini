@@ -1,21 +1,36 @@
-import { forEach, map, uuid } from 'substance'
-import debounce from 'substance/util/debounce'
+import { forEach, uuid, debounce } from 'substance'
 import AbstractContext from './AbstractContext'
 
-const MIN_INTERVAL = 100
+const WAIT_FOR_IDLE = 500
 
 export default
 class Engine extends AbstractContext {
 
-  constructor() {
+  constructor(options = {}) {
     super()
 
-    // set by _computeTopologicalOrder
+    // all expressions by id, wrapped into entries together with some internal data
     this._entries = {}
+    // all entries by name for expressions that have a name
     this._aliases = {}
-    this._order = []
+    // store for values, either being values provided by an application,
+    // or the result of evaluated named expressions
+    // E.g. `x = sum(1,2,3)` would store a value with name 'x'
+    // after `sum(1,2,3)` has been executed
     this._values = {}
+    // a map to store all expressions that depend on a value with a given id
+    this._dependencyGraph = {}
+    // entries sorted by dependencies
+    this._sortedEntries = []
+    // a pointer to the currently executed expression
     this._cursor = -1
+    //
+    this._dirty = {}
+
+    let waitForIdle = options.waitForIdle || WAIT_FOR_IDLE
+    // debouncing propagation so that we do not propagate on every keystroke
+    // but rather when user being idle
+    this._propagateDebounced = debounce(this.propagate, waitForIdle)
   }
 
   dispose() {
@@ -26,9 +41,75 @@ class Engine extends AbstractContext {
 
   // call this after changes to expressions
   update() {
-    this._computeTopologicalOrder()
+    // analyze all expressions by looking into their inputs
+    // and create a forward graph which we use for
+    // propagation, as well extract the topological
+    // order so we do not retrigger evaluation unnecessarily
+    this._computeDependencyGraph()
     this.propagate()
     this.emit('updated')
+  }
+
+  getValue(id) {
+    return this._values[id]
+  }
+
+  setValue(id, val) {
+    const entry = this._entries[id]
+    if (entry) {
+      // Note: for named expressions (definitions)
+      // we store the value under the name
+      // Example: x = 42
+      const name = entry.expr.name
+      if (name) {
+        // ATTENTION: we had an isEqual() optimization here
+        // which we don't want for now, as it causes problems
+        // with the propagation to expressions added after this one
+        // With all the smartness of the scheduling approach we
+        // can afford this
+        this._values[name] = val
+        this._propagateDeps(entry.id)
+      }
+    } else {
+      this._values[id] = val
+      this._propagateDeps(id)
+    }
+  }
+
+  propagate(forcePropagation) {
+    // TODO: we could use a 'PENDING' value while evaluating
+    this._cursor = -1
+    try {
+      const ids = Object.keys(this._dirty)
+      // only propagate if there are pending updates
+      // or if the user asks for a forced propagation
+      if (ids.length === 0 && !forcePropagation) return
+      // the schedule is just an array of entries considered
+      // for this propagation
+      // any updates coming in
+      const _schedule = forcePropagation ? this._sortedEntries : this._computeSchedule(ids)
+      const L = _schedule.length
+      if (L === 0) return
+      // console.log('### Propagating', _schedule)
+      for (let i = 0; i < L; i++) {
+        const entry = _schedule[i]
+        this._cursor = entry.position
+        entry.expr.propagate()
+      }
+    } finally {
+      this._dirty = {}
+      this._cursor = -1
+    }
+  }
+
+  _propagateDeps(id) {
+    let deps = this._dependencyGraph[id]
+    if (deps) {
+      deps.forEach(dep=>{
+        this._dirty[dep] = true
+      })
+      this._propagateDebounced()
+    }
   }
 
   _addExpression(expr) {
@@ -41,6 +122,7 @@ class Engine extends AbstractContext {
       type: 'expression',
       id: expr.id,
       name: expr.name,
+      inputs: expr.inputs,
       expr: expr,
       level: -1,
       position: -1
@@ -50,6 +132,7 @@ class Engine extends AbstractContext {
     if (name) {
       this._aliases[name] = entry
     }
+    this._dirty[expr.id] = true
     return entry
   }
 
@@ -65,72 +148,35 @@ class Engine extends AbstractContext {
     }
   }
 
-  _computeTopologicalOrder() {
+  _computeDependencyGraph() {
     const entries = this._entries
-    let sortedIds = map(entries, (entry, id) => {
-      entry.level = this._computeLevel(entry.expr, {}, {})
-      return id
+    const deps = {}
+    const levels = {}
+    const _sortedEntries = []
+    forEach(entries, (entry) => {
+      _sortedEntries.push(entry)
+      this._computeDependencies(entry, deps, levels)
     })
-    sortedIds.sort((a,b) => {
-      return entries[a].level - entries[b].level
+    _sortedEntries.sort((a,b) => {
+      return levels[a.id] - levels[b.id]
     })
-    sortedIds.forEach((id, pos) => {
-      entries[id].position = pos
+    // store the position into the entries
+    _sortedEntries.forEach((entry, pos) => {
+      entry.position = pos
     })
-    this._order = sortedIds
-  }
-
-  /*
-    Eager Stop'n'Go: all nodes get triggered once per cycle.
-    An async expression triggers a new cylce
-    when updating the value, but only if it is before the current
-    cursor.
-  */
-  propagate() {
-    try {
-      const entries = this._entries
-      const order = this._order
-      for (let i = 0; i < order.length; i++) {
-        const entry = entries[order[i]]
-        this._cursor = entry.position
-        entry.expr.propagate(entry.state, this)
-      }
-    } finally {
-      this._cursor = -1
-    }
-  }
-
-  _requestPropagation() {
-    debounce(() => {
-      this.propagate()
-    }, MIN_INTERVAL)
-  }
-
-  getValue(id) {
-    return this._values[id]
-  }
-
-  setValue(id, val) {
-    const entry = this._entries[id]
-    if (entry) {
-      // Note: for named expressions (definitions)
-      // we store the value under the name
-      // Example: x = 42
-      const name = entry.expr.name
-      if (name) {
-        this._values[name] = val
-      }
-      if (this._cursor > entry.position) {
-        this._requestPropagation()
-      }
-    } else {
-      this._values[id] = val
-    }
+    this._dependencyGraph = deps
+    this._sortedEntries = _sortedEntries
   }
 
   // level = maximum distance to any leaf
-  _computeLevel(expr, levels) {
-    const id = expr.id
+  _computeDependencies(entry, deps, levels) {
+    const id = entry.id
+    // dependencies might have been computed already
+    // when this entry has been visited through the dependencies
+    // of another entry
+    // Initially, we set level=-1, so when we visit
+    // an entry with level===-1, we know that there
+    // must be a cyclic dependency.
     if (levels.hasOwnProperty(id)) {
       if (levels[id] === -1) {
         // TODO: instead of throwing an Error
@@ -138,38 +184,48 @@ class Engine extends AbstractContext {
         // to an error value
         throw new Error('Found a cyclic dependency.')
       }
-      return levels[id]
+      return
     }
-    // this is used as indicator for checking cyclic deps
+    // initialize with -1 as a measure for detecting cyclic dependencies
     levels[id] = -1
     // default level is 1
     let level = 1
-    let inputs = expr.inputs || []
-    inputs = this._lookupInputs(inputs)
-    inputs.forEach((dep) => {
-      level = Math.max(level, level+this._computeLevel(dep, levels))
+    let inputs = entry.inputs || []
+    // map variables to ids
+    inputs = this._mapInputs(inputs)
+    inputs.forEach((input) => {
+      // extend the dependency graph
+      if (!deps.hasOwnProperty(input.id)) {
+        deps[input.id] = []
+      }
+      deps[input.id].push(id)
+      // traverse the dependencies recursively (DFS)
+      this._computeDependencies(input, deps, levels)
+      // level = number of steps to a leaf expression,
+      // i.e. one with no dependencies
+      level = Math.max(level, level+levels[input.id])
     })
+    // finally overwrite the initial value with the true one
     levels[id] = level
-    return level
   }
 
-  _getExpr(id) {
-    const entry = this._entries[id]
-    if (entry) {
-      return entry.expr
-    } else if (this._aliases[id]) {
-      return this._aliases[id].expr
-    }
+  _getEntry(id) {
+    return this._entries[id] || this._aliases[id]
   }
 
-  // TODO: this is pretty redundant to AbstractContext.lookup
-  _lookupInputs(inputs) {
+  _mapInputs(inputs) {
     let deps = []
     inputs.forEach((node) => {
       switch(node.type) {
         case 'var': {
-          let expr = this._getExpr(node.name)
-          if (expr) deps.push(expr)
+          let entry = this._getEntry(node.name)
+          // TODO: throwing is not a good options, as this
+          // case can happen when a user is invalidating an expression
+          // other expressions depend on
+          // So we ignore this here, but maybe we want to
+          // to introduce a way to warn about this
+          if (entry) deps.push(entry)
+          // else throw new Error(`Undefined variable ${node.name}`)
           break
         }
         case 'cell': {
@@ -179,8 +235,8 @@ class Engine extends AbstractContext {
           if (!row) return
           const cell = row[node.col]
           if (cell && cell.type === 'expression') {
-            let expr = this._getExpr(cell.id)
-            if (expr) deps.push(expr)
+            let entry = this._getEntry(cell.id)
+            if (entry) deps.push(entry)
           }
           break
         }
@@ -194,8 +250,8 @@ class Engine extends AbstractContext {
             for (let j = 0; j < M; j++) {
               let cell = row[node.startCol+j]
               if (cell && cell.type === 'expression') {
-                let expr = this._getExpr(cell.id)
-                if (expr) deps.push(expr)
+                let entry = this._getEntry(cell.id)
+                if (entry) deps.push(entry)
               }
             }
           }
@@ -208,5 +264,52 @@ class Engine extends AbstractContext {
     })
     return deps
   }
+
+  // Note: because we want to throttle propagation
+  // we need to record all propagation requests between two
+  // propagations and compute a joint schedule
+  // TODO: in future we could 'optimize' this caching computed schedules
+  _computeSchedule(ids) {
+    const _schedule = []
+    ids.forEach(id=>this._computePartialSchedule(id, _schedule))
+    return _schedule.filter(Boolean)
+  }
+
+  _computePartialSchedule(id, _schedule) {
+    // compute the schedule first
+    const deps = this._dependencyGraph
+    let queue = [id]
+    while(queue.length > 0) {
+      let nextId = queue.shift()
+      let next = this._getEntry(nextId)
+      if (!next) {
+        // next is not an entry
+      } else {
+        if (_schedule[next.position]) continue
+        _schedule[next.position] = next
+      }
+      let out = deps[id]
+      if (out && out.length>0) {
+        queue = queue.concat(out)
+      }
+    }
+  }
+
+  // NOTE: this method is used as debounced
+  // thus it just means t
+  // _requestPropagation(id) {
+  //   this._dirty[id] = true
+  //   this._propagateDebounced()
+  // }
+
+  _getExpr(id) {
+    const entry = this._entries[id]
+    if (entry) {
+      return entry.expr
+    } else if (this._aliases[id]) {
+      return this._aliases[id].expr
+    }
+  }
+
 
 }

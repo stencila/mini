@@ -11,7 +11,9 @@ export default
 class TestEngine extends Engine {
 
   constructor() {
-    super()
+    // Note: waiting just a bit, not too long so that we
+    // don't need to wait too long in our tests
+    super({ waitForIdle: 10 })
 
     this.cells = {}
     this.functions = {}
