@@ -50,6 +50,7 @@ class Expression extends EventEmitter {
     return this.context
   }
 
+  // gets call by node.setValue() if the value has updated
   _requestPropagation(node) {
     if (this._cursor < 0) {
       this.propagate(node.pos+1)
