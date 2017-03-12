@@ -46,7 +46,16 @@ function _generateParser() {
   })
 }
 
+// NOTE: this is needed when working on versions from github
+function _buildDeps() {
+  if (!fs.existsSync(path.join(__dirname, 'node_modules/substance/dist/substance.js'))){
+    b.make('substance', 'browser:pure')
+  }
+}
+
 function _buildLib() {
+  _buildDeps()
+
   b.js('index.js', {
     targets: [{
       dest: DIST+'substance-mini.cjs.js',
