@@ -49,7 +49,7 @@ function _generateParser() {
 // NOTE: this is needed when working on versions from github
 function _buildDeps() {
   if (!fs.existsSync(path.join(__dirname, 'node_modules/substance/dist/substance.js'))){
-    b.make('substance', 'browser:pure')
+    b.make('substance', 'build:pure')
   }
 }
 
