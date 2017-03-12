@@ -46,7 +46,7 @@ class Engine extends AbstractContext {
     // propagation, as well extract the topological
     // order so we do not retrigger evaluation unnecessarily
     this._computeDependencyGraph()
-    this.propagate('force')
+    this.propagate()
     this.emit('updated')
   }
 
@@ -68,11 +68,11 @@ class Engine extends AbstractContext {
         // With all the smartness of the scheduling approach we
         // can afford this
         this._values[name] = val
-        this._requestPropagation(entry.id)
+        this._propagateDeps(entry.id)
       }
     } else {
       this._values[id] = val
-      this._requestPropagation(id)
+      this._propagateDeps(id)
     }
   }
 
@@ -89,6 +89,8 @@ class Engine extends AbstractContext {
       // any updates coming in
       const _schedule = forcePropagation ? this._sortedEntries : this._computeSchedule(ids)
       const L = _schedule.length
+      if (L === 0) return
+      // console.log('### Propagating', _schedule)
       for (let i = 0; i < L; i++) {
         const entry = _schedule[i]
         this._cursor = entry.position
@@ -97,6 +99,16 @@ class Engine extends AbstractContext {
     } finally {
       this._dirty = {}
       this._cursor = -1
+    }
+  }
+
+  _propagateDeps(id) {
+    let deps = this._dependencyGraph[id]
+    if (deps) {
+      deps.forEach(dep=>{
+        this._dirty[dep] = true
+      })
+      this._propagateDebounced()
     }
   }
 
@@ -120,6 +132,7 @@ class Engine extends AbstractContext {
     if (name) {
       this._aliases[name] = entry
     }
+    this._dirty[expr.id] = true
     return entry
   }
 
@@ -206,8 +219,13 @@ class Engine extends AbstractContext {
       switch(node.type) {
         case 'var': {
           let entry = this._getEntry(node.name)
+          // TODO: throwing is not a good options, as this
+          // case can happen when a user is invalidating an expression
+          // other expressions depend on
+          // So we ignore this here, but maybe we want to
+          // to introduce a way to warn about this
           if (entry) deps.push(entry)
-          else throw new Error(`Undefined variable ${node.name}`)
+          // else throw new Error(`Undefined variable ${node.name}`)
           break
         }
         case 'cell': {
@@ -279,10 +297,10 @@ class Engine extends AbstractContext {
 
   // NOTE: this method is used as debounced
   // thus it just means t
-  _requestPropagation(id) {
-    this._dirty[id] = true
-    this._propagateDebounced()
-  }
+  // _requestPropagation(id) {
+  //   this._dirty[id] = true
+  //   this._propagateDebounced()
+  // }
 
   _getExpr(id) {
     const entry = this._entries[id]
