@@ -1,8 +1,6 @@
 import { EventEmitter } from 'substance'
 import createFromAST from './createFromAST'
 
-const MIN_INTERVAL = 100
-
 export default
 class Expression extends EventEmitter {
 

@@ -1,5 +1,4 @@
 import { module } from 'substance-test'
-import { debounce } from 'substance'
 import TestEngine from './engine/TestEngine'
 import TestEngineComponent from './engine/TestEngineComponent'
 

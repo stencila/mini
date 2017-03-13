@@ -1,5 +1,4 @@
 import { EventEmitter, isString } from 'substance'
-import Expression from './Expression'
 
 // exposes a child scope with a parent scope
 export default
@@ -50,7 +49,7 @@ class AbstractContext extends EventEmitter {
     }
   }
 
-  callFunction(funcNode, args) {
+  callFunction(funcNode, args) { // eslint-disable-line no-unused-vars
     console.error('callFunction() is abstract.')
     return Promise.reject('function is not implemneted.')
   }

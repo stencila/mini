@@ -32,7 +32,7 @@ export default class TestCell extends EventEmitter {
   }
 
   setValue(val) {
-    if (TestCell.DEBUG) console.log('Updating value.', this.id, val)
+    if (TestCell.DEBUG) console.info('Updating value.', this.id, val)
     this.value = val
     this.emit('value:updated')
   }
