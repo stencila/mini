@@ -1,4 +1,4 @@
-import { forEach, uuid, debounce } from 'substance'
+import { forEach, isString, uuid, debounce } from 'substance'
 import AbstractContext from './AbstractContext'
 
 const WAIT_FOR_IDLE = 500
@@ -54,7 +54,7 @@ class Engine extends AbstractContext {
     return this._values[id]
   }
 
-  setValue(id, val) {
+  setValue(id, val, propagateImmediately) {
     const entry = this._entries[id]
     if (entry) {
       // Note: for named expressions (definitions)
@@ -68,11 +68,11 @@ class Engine extends AbstractContext {
         // With all the smartness of the scheduling approach we
         // can afford this
         this._values[name] = val
-        this._propagateDeps(entry.id)
+        this._propagateDeps(entry.id, propagateImmediately)
       }
     } else {
       this._values[id] = val
-      this._propagateDeps(id)
+      this._propagateDeps(id, propagateImmediately)
     }
   }
 
@@ -102,13 +102,17 @@ class Engine extends AbstractContext {
     }
   }
 
-  _propagateDeps(id) {
+  _propagateDeps(id, immediately) {
     let deps = this._dependencyGraph[id]
     if (deps) {
       deps.forEach(dep=>{
         this._dirty[dep] = true
       })
-      this._propagateDebounced()
+      if (immediately) {
+        this.propagate()
+      } else {
+        this._propagateDebounced()
+      }
     }
   }
 
@@ -118,15 +122,7 @@ class Engine extends AbstractContext {
     expr.on('value:updated', (val) => {
       this.setValue(expr.id, val)
     })
-    let entry = {
-      type: 'expression',
-      id: expr.id,
-      name: expr.name,
-      inputs: expr.inputs,
-      expr: expr,
-      level: -1,
-      position: -1
-    }
+    let entry = new ExpressionEntry(expr)
     this._entries[expr.id] = entry
     const name = entry.expr.name
     if (name) {
@@ -190,20 +186,27 @@ class Engine extends AbstractContext {
     levels[id] = -1
     // default level is 1
     let level = 1
-    let inputs = entry.inputs || []
     // map variables to ids
-    inputs = this._mapInputs(inputs)
-    inputs.forEach((input) => {
-      // extend the dependency graph
-      if (!deps.hasOwnProperty(input.id)) {
-        deps[input.id] = []
+    let _inputs = this._mapInputs(entry.inputs)
+    _inputs.forEach((input) => {
+      let inputId
+      if (isString(input)) {
+        inputId = input
+      } else {
+        inputId = input.id
       }
-      deps[input.id].push(id)
-      // traverse the dependencies recursively (DFS)
-      this._computeDependencies(input, deps, levels)
-      // level = number of steps to a leaf expression,
-      // i.e. one with no dependencies
-      level = Math.max(level, level+levels[input.id])
+      // extend the dependency graph
+      if (!deps.hasOwnProperty(inputId)) {
+        deps[inputId] = new Set()
+      }
+      deps[inputId].add(id)
+      if (input instanceof ExpressionEntry) {
+        // traverse the dependencies recursively (DFS)
+        this._computeDependencies(input, deps, levels)
+        // level = number of steps to a leaf expression,
+        // i.e. one with no dependencies
+        level = Math.max(level, level+levels[inputId])
+      }
     })
     // finally overwrite the initial value with the true one
     levels[id] = level
@@ -224,8 +227,11 @@ class Engine extends AbstractContext {
           // other expressions depend on
           // So we ignore this here, but maybe we want to
           // to introduce a way to warn about this
-          if (entry) deps.push(entry)
-          // else throw new Error(`Undefined variable ${node.name}`)
+          if (entry) {
+            deps.push(entry)
+          } else {
+            deps.push(node.name)
+          }
           break
         }
         case 'cell': {
@@ -289,8 +295,8 @@ class Engine extends AbstractContext {
         _schedule[next.position] = next
       }
       let out = deps[id]
-      if (out && out.length>0) {
-        queue = queue.concat(out)
+      if (out && out.size>0) {
+        queue = queue.concat(...out)
       }
     }
   }
@@ -310,6 +316,17 @@ class Engine extends AbstractContext {
       return this._aliases[id].expr
     }
   }
+}
 
+class ExpressionEntry {
+  constructor(expr) {
+    this.expr = expr
+    // position after topological sorting
+    this.position = -1
+  }
 
+  get type() { return 'expression' }
+  get id() { return this.expr.id }
+  get name() { return this.expr.name }
+  get inputs() { return this.expr.inputs }
 }
