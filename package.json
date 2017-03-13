@@ -6,9 +6,11 @@
   "jsntext:main": "index.js",
   "scripts": {
     "prepublish": "node make",
+    "lint": "eslint -c .eslintrc.js src test",
     "start": "node make lib test -s -w",
     "dev": "node make lib test -s -w",
-    "test": "node make test && codecov"
+    "test": "node make test",
+    "cover": "node make cover  && codecov"
   },
   "author": "",
   "license": "ISC",

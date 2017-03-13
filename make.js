@@ -86,6 +86,19 @@ function _buildTestsBrowser() {
   })
 }
 
+function _buildTestsNodejs() {
+  b.js('./test/index.js', {
+    target: {
+      dest: TMP+'tests.cjs.js',
+      format: 'cjs'
+    },
+    alias: {
+      'substance-mini': path.join(__dirname, 'index.js')
+    },
+    external: ['substance-test', 'substance']
+  })
+}
+
 function _buildTestsCov() {
   b.js('./test/index.js', {
     target: {
@@ -125,6 +138,14 @@ b.task('test:browser', ['lib'], () => {
 .describe('Builds the test-suite to be run from test/index.html.')
 
 b.task('test', ['lib'], () => {
+  const test = require.resolve('substance-test/bin/test')
+  const tests = './tmp/tests.cjs.js'
+  _buildTestsNodejs()
+  run(b, test, tests)
+})
+.describe('Runs the test-suite in node-js.')
+
+b.task('cover', ['lib'], () => {
   const coverage = require.resolve('substance-test/bin/coverage')
   const tests = './tmp/tests.cov.js'
   _buildTestsCov()
