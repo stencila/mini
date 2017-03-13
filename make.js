@@ -48,7 +48,11 @@ function _generateParser() {
 
 // NOTE: this is needed when working on versions from github
 function _buildDeps() {
-  b.make('substance', 'build:pure')
+  const subsDist = path.join(__dirname, 'node_modules/substance/dist')
+  if (!fs.existsSync(path.join(subsDist,'substance.js')) ||
+      !fs.existsSync(path.join(subsDist, 'substance.cjs.js'))) {
+    b.make('substance')
+  }
 }
 
 function _buildLib() {
