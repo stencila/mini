@@ -40,13 +40,17 @@ class Engine extends AbstractContext {
   }
 
   // call this after changes to expressions
-  update() {
+  update(propagateImmediately) {
     // analyze all expressions by looking into their inputs
     // and create a forward graph which we use for
     // propagation, as well extract the topological
     // order so we do not retrigger evaluation unnecessarily
     this._computeDependencyGraph()
-    this._propagateDebounced()
+    if (propagateImmediately) {
+      this.propagate()
+    } else {
+      this._propagateDebounced()
+    }
     this.emit('updated')
   }
 

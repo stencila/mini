@@ -25,7 +25,7 @@ class TestEngine extends Engine {
     if (cell.expr) {
       this._addExpression(cell.expr)
       cell.on('expression:changed', this._updateExpression, this)
-      super.update()
+      super.update('propagate-immediately')
     } else {
       console.error(cell.error)
     }
@@ -36,7 +36,7 @@ class TestEngine extends Engine {
   _updateExpression(cell) {
     this._removeExpression(cell.expr.id)
     this._addExpression(cell.expr)
-    super.update()
+    super.update('propagate-immediately')
   }
 
   registerFunction(name, fn) {
