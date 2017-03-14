@@ -1,7 +1,7 @@
 const b = require('substance-bundler')
 const path = require('path')
 const fs = require('fs')
-const run = require('substance-bundler/extensions/fork')
+const fork = require('substance-bundler/extensions/fork')
 
 const DIST = 'dist/'
 const TMP ='tmp/'
@@ -141,7 +141,7 @@ b.task('test', ['lib'], () => {
   const test = require.resolve('substance-test/bin/test')
   const tests = './tmp/tests.cjs.js'
   _buildTestsNodejs()
-  run(b, test, tests)
+  fork(b, test, tests, { verbose: true })
 })
 .describe('Runs the test-suite in node-js.')
 
@@ -149,7 +149,7 @@ b.task('cover', ['lib'], () => {
   const coverage = require.resolve('substance-test/bin/coverage')
   const tests = './tmp/tests.cov.js'
   _buildTestsCov()
-  run(b, coverage, tests)
+  fork(b, coverage, tests)
 })
 .describe('Runs the test-suite in node-js.')
 
