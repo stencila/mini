@@ -13,10 +13,11 @@
     "cover": "node make cover  && codecov"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "browserify": "^14.0.0",
     "codecov": "^1.0.1",
+    "eslint": "^3.17.1",
     "istanbul": "^0.4.5",
     "karma": "^1.5.0",
     "karma-chrome-launcher": "^2.0.0",
@@ -24,9 +25,9 @@
     "karma-source-map-support": "^1.2.0",
     "karma-tap": "^3.1.1",
     "karma-tape-reporter": "^1.0.3",
+    "substance": "substance/substance#kaikoura",
     "substance-bundler": "^0.15.0",
-    "substance-test": "^0.8.0",
-    "substance": "substance/substance#kaikoura"
+    "substance-test": "^0.8.0"
   },
   "files": [
     "dist",
