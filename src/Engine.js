@@ -27,7 +27,10 @@ class Engine extends AbstractContext {
     //
     this._dirty = {}
 
-    let waitForIdle = options.waitForIdle || WAIT_FOR_IDLE
+    let waitForIdle = WAIT_FOR_IDLE
+    if (options.hasOwnProperty('waitForIdle')) {
+      waitForIdle = options.waitForIdle
+    }
     // debouncing propagation so that we do not propagate on every keystroke
     // but rather when user being idle
     this._propagateDebounced = debounce(this.propagate, waitForIdle)
