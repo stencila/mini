@@ -14,12 +14,13 @@ expr:  expr '^' number              { $ctx.type = 'power' }
     |  expr '/' expr                { $ctx.type = 'div' }
     |  expr '+' expr                { $ctx.type = 'plus' }
     |  expr '-' expr                { $ctx.type = 'minus' }
+    |  expr '|' function_call       { $ctx.type = 'pipe' }
     |  number                       { $ctx.type = 'number' }
     |  range                        { $ctx.type = 'range' }
     |  cell                         { $ctx.type = 'cell' }
     |  ID                           { $ctx.type = 'var' }
     |  sheet_ref                    { $ctx.type = 'sheet-ref' }
-    |  function_call                { $ctx.type = 'call' }
+    |  function_call                { $ctx.type = '_call' }
     |  '(' expr ')'                 { $ctx.type = 'group' }
     |  array                        { $ctx.type = 'array' }
     |  object                       { $ctx.type = 'object' }
@@ -32,7 +33,8 @@ cell: CELL;
 
 sheet_ref: ID '!' ( cell | range );
 
-function_call: ID '(' args=call_arguments? ')';
+function_call: ID '(' args=call_arguments? ')'  { $ctx.type = 'call' }
+    ;
 
 number:  INT                        { $ctx.type = 'int' }
     |  FLOAT                        { $ctx.type = 'float' }

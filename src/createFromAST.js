@@ -3,7 +3,8 @@ import {
   NumberNode, StringNode, ArrayNode, ObjectNode,
   Var, Cell, Range,
   FunctionCall, ExternalFunction,
-  BinaryNumericOp
+  BinaryNumericOp,
+  PipeOp
 } from './Nodes'
 import getRowCol from './getRowCol'
 
@@ -32,6 +33,13 @@ export default function createFromAST(state, ast) {
         createFromAST(state, ast.children[2])
       )
       break
+    case 'pipe': {
+      node = new PipeOp(state.nodeId++,
+        createFromAST(state, ast.children[0]),
+        createFromAST(state, ast.children[2])
+      )
+      break
+    }
     case 'int':
     case 'float':
     case 'number': {
@@ -101,10 +109,12 @@ export default function createFromAST(state, ast) {
       node = target
       break
     }
+    case '_call':
+      // HACK: sometimes we need to unwrap
+      ast = ast.children[0] // eslint-disable-line no-fallthrough
     case 'call': {
-      let ctx = ast.children[0]
-      let name = ctx.children[0].toString()
-      let args = arg_sequence(state, ctx.args)
+      let name = ast.children[0].toString()
+      let args = arg_sequence(state, ast.args)
       node = new FunctionCall(state.nodeId++, name, args)
       break
     }

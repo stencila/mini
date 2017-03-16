@@ -127,6 +127,13 @@ test('sum(1,x,A1)', (t) => {
   t.end()
 })
 
+test('foo() | bar()', (t) => {
+  const expr = parse('foo() | bar()')
+  const expectedTypes = ['pipe', 'call', 'call']
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.end()
+})
+
 function _equal(t, arr1, arr2, msg) {
   return t.equal(String(arr1), String(arr2), msg)
 }

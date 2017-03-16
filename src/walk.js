@@ -26,6 +26,10 @@ export default function walk(expr, fn) {
         stack.push(next.right)
         stack.push(next.left)
         break
+      case 'pipe':
+        stack.push(next.right)
+        stack.push(next.left)
+        break
       case 'array':
         for (let i = next.vals.length - 1; i >= 0; i--) {
           stack.push(next.vals[i])

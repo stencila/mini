@@ -263,3 +263,46 @@ export class BinaryNumericOp extends ExprNode {
   }
 
 }
+
+export class PipeOp extends ExprNode {
+
+  constructor(id, left, right) {
+    super(id)
+    this.left = left
+    this.right = right
+    this.left.parent = this
+    this.right.parent = this
+  }
+
+  get type() { return "pipe" }
+
+  evaluate() {
+    // f(x) | g()
+    let pipeArg = this.left.getValue()
+    let right = {
+      name: this.right.name,
+      expr: this.right.expr,
+      args: [{
+        name: '_pipe',
+        getValue() {
+          return pipeArg
+        }
+      }].concat(this.right.args)
+    }
+    try {
+      let res = this.getContext().callFunction(right)
+      if (res instanceof Promise) {
+        res.then((val) => {
+          this.setValue(val)
+        })
+        .catch((err) => {
+          this.addError(err)
+        })
+      } else {
+        this.setValue(res)
+      }
+    } catch(err) {
+      this.addError(err)
+    }
+  }
+}

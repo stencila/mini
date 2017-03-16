@@ -157,6 +157,40 @@ test('async function call', (t) => {
   }, 0)
 })
 
+test('foo() | bar()', (t) => {
+  t.plan(1)
+  const { engine } = setup()
+  engine.registerFunction('foo', () => {
+    return 5
+  })
+  engine.registerFunction('bar', (val) => {
+    return 2*val
+  })
+  TestEngineComponent.mount({engine}, t.sandbox)
+  let cell = engine.addExpression('foo() | bar()')
+  // Note: deferring the next check to get the promise resolved first
+  setTimeout(() => {
+    t.equal(cell.value, 10, MESSAGE_CORRECT_VALUE)
+  }, 0)
+})
+
+test('foo() | bar() (async)', (t) => {
+  t.plan(1)
+  const { engine } = setup()
+  engine.registerFunction('foo', () => {
+    return Promise.resolve(5)
+  })
+  engine.registerFunction('bar', (val) => {
+    return 2*val
+  })
+  TestEngineComponent.mount({engine}, t.sandbox)
+  let cell = engine.addExpression('foo() | bar()')
+  // Note: deferring the next check to get the promise resolved first
+  setTimeout(() => {
+    t.equal(cell.value, 10, MESSAGE_CORRECT_VALUE)
+  }, 10)
+})
+
 function setup() {
   let engine = new TestEngine()
   return {engine}
