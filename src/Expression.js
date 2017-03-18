@@ -4,13 +4,14 @@ import createFromAST from './createFromAST'
 export default
 class Expression extends EventEmitter {
 
-  constructor(source, root, nodes, inputs) {
+  constructor(source, root, nodes, inputs, tokens) {
     super()
 
     this.source = source
     this.root = root
     this.nodes = nodes
     this.inputs = inputs
+    this.tokens = tokens
 
     this.value = undefined
     this.errors = []
@@ -78,7 +79,17 @@ class Expression extends EventEmitter {
 }
 
 Expression.createFromAST = function(source, ast) {
-  let state = { nodeId: 0, nodes: [], inputs: [] }
+  let state = {
+    // generating ids by counting created nodes
+    nodeId: 0,
+    nodes: [],
+    // extra list to all variables, cells, ranges
+    // to be able to compute dependencies
+    inputs: [],
+    // tokens for code highlighting
+    tokens: []
+  }
   let root = createFromAST(state, ast)
-  return new Expression(source, root, state.nodes, state.inputs)
+  return new Expression(source, root,
+    state.nodes, state.inputs, state.tokens)
 }

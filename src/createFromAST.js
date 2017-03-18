@@ -13,9 +13,12 @@ export default function createFromAST(state, ast) {
   switch (ast.type) {
     case 'evaluation':
       return createFromAST(state, ast.children[0])
-    case 'definition':
-      node = new Definition(state.nodeId++, ast.children[0].getText(), createFromAST(state, ast.children[2]))
+    case 'definition': {
+      let lhs = ast.children[0]
+      state.tokens.push(new Token('output-name', lhs.symbol))
+      node = new Definition(state.nodeId++, lhs.getText(), createFromAST(state, ast.children[2]))
       break
+    }
     case 'simple':
       return createFromAST(state, ast.children[0])
     case 'function': {
@@ -27,12 +30,13 @@ export default function createFromAST(state, ast) {
     case 'minus':
     case 'mult':
     case 'div':
-    case 'power':
+    case 'power': {
       node = new BinaryNumericOp(state.nodeId++, ast.type,
         createFromAST(state, ast.children[0]),
         createFromAST(state, ast.children[2])
       )
       break
+    }
     case 'pipe': {
       node = new PipeOp(state.nodeId++,
         createFromAST(state, ast.children[0]),
@@ -48,6 +52,7 @@ export default function createFromAST(state, ast) {
     }
     case 'string': {
       let str = ast.children[0].getText()
+      state.tokens.push(new Token('string-literal', ast.children[0].symbol))
       str = str.slice(1, -1)
       node = new StringNode(state.nodeId++, str)
       break
@@ -65,6 +70,7 @@ export default function createFromAST(state, ast) {
       const vals = ctx.vals
       const entries = []
       for (let i = 0; i < keys.length; i++) {
+        state.tokens.push(new Token('key', keys[i]))
         let key = keys[i].text
         let val = createFromAST(state, vals[i])
         entries.push({ key, val })
@@ -74,6 +80,10 @@ export default function createFromAST(state, ast) {
     }
     case 'var': {
       node = new Var(state.nodeId++, ast.getText())
+      state.tokens.push(new Token('input-variable-name', {
+        start: ast.start.start,
+        stop: ast.stop.stop
+      }))
       state.inputs.push(node)
       break
     }
@@ -83,6 +93,8 @@ export default function createFromAST(state, ast) {
     }
     case 'range': {
       let ctx = ast.children[0]
+      state.tokens.push(new Token('input-cell', ctx.children[0].symbol))
+      state.tokens.push(new Token('input-cell', ctx.children[2].symbol))
       let [startRow, startCol] = getRowCol(ctx.children[0].toString())
       let [endRow, endCol] = getRowCol(ctx.children[2].toString())
       if (startRow > endRow) {
@@ -97,6 +109,7 @@ export default function createFromAST(state, ast) {
     }
     case 'cell': {
       let ctx = ast.children[0]
+      state.tokens.push(new Token('input-cell', ctx.children[0].symbol))
       let [row, col] = getRowCol(ctx.children[0].toString())
       node = new Cell(state.nodeId++, row, col)
       state.inputs.push(node)
@@ -114,6 +127,9 @@ export default function createFromAST(state, ast) {
       ast = ast.children[0] // eslint-disable-line no-fallthrough
     case 'call': {
       let name = ast.children[0].toString()
+      state.tokens.push(
+        new Token('function-name', ast.children[0].symbol)
+      )
       let args = arg_sequence(state, ast.args)
       node = new FunctionCall(state.nodeId++, name, args)
       break
@@ -126,6 +142,15 @@ export default function createFromAST(state, ast) {
   }
   state.nodes.push(node)
   return node
+}
+
+class Token {
+  constructor(type, {start, stop}) {
+    this.type = type
+    this.start = start
+    // ATTENTION: seems that symbol.end is inclusive
+    this.end = stop+1
+  }
 }
 
 function expr_sequence(state, items) {
