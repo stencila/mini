@@ -1,7 +1,7 @@
 grammar Mini;
 
-mini:  mainExpr                { $ctx.type = 'evaluation' }
-    |  ID   '=' mainExpr       { $ctx.type = 'definition'}
+mini:  mainExpr EOF            { $ctx.type = 'evaluation' }
+    |  ID   '=' mainExpr EOF   { $ctx.type = 'definition'}
     ;
 
 mainExpr:

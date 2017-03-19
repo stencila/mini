@@ -146,6 +146,12 @@ test('foo(x,y', (t) => {
   t.end()
 })
 
+test('x 7', (t) => {
+  const expr = parse('x 7')
+  t.notNil(expr.syntaxError, 'There should be a syntaxError.')
+  t.end()
+})
+
 function _equal(t, arr1, arr2, msg) {
   return t.equal(String(arr1), String(arr2), msg)
 }
