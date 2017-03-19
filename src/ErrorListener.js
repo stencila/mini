@@ -16,7 +16,7 @@ class ErrorListener {
       column,
       start: offendingSymbol.start,
       token: offendingSymbol.text,
-      text: msg,
+      msg: msg,
       error,
       expectedTokens,
     })
