@@ -14,7 +14,8 @@ class Expression extends EventEmitter {
     this.tokens = tokens
 
     this.value = undefined
-    this.errors = []
+    this.syntaxError = null
+    this.runtimeErrors = []
 
     // initialize nodes
     for (let i = 0; i < nodes.length; i++) {
@@ -22,6 +23,8 @@ class Expression extends EventEmitter {
       node.expr = this
       node.pos = i
     }
+    // hook into the root's setValue to set value
+    // and trigger an update event
     root.setValue = (val) => {
       root.value = val
       this.value = val
@@ -35,8 +38,8 @@ class Expression extends EventEmitter {
     return this.value
   }
 
-  addError(err) {
-    this.errors.push(err)
+  addRuntimeError(err) {
+    this.runtimeErrors.push(err)
   }
 
   get name() {
@@ -61,7 +64,7 @@ class Expression extends EventEmitter {
   propagate(start = 0) {
     // TODO: we could use a 'PENDING' value while evaluating
     this.value = undefined
-    this.errors = []
+    this.runtimeErrors = []
     this._cursor = start
     try {
       const nodes = this.nodes

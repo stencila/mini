@@ -4,7 +4,8 @@ import {
   Var, Cell, Range,
   FunctionCall, ExternalFunction,
   BinaryNumericOp,
-  PipeOp
+  PipeOp,
+  ErrorNode
 } from './Nodes'
 import getRowCol from './getRowCol'
 
@@ -137,8 +138,14 @@ export default function createFromAST(state, ast) {
     case 'argument': {
       return createFromAST(state, ast.children[0])
     }
-    default:
-      throw new Error('Unsupported Expression type:'+ast.type)
+    default: {
+      if (ast.exception) {
+        node = new ErrorNode(state.nodeId++, ast.exception)
+      } else {
+        throw new Error('Unsupported Expression type:'+ast.type)
+      }
+    }
+
   }
   state.nodes.push(node)
   return node

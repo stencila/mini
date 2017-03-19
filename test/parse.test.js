@@ -134,6 +134,14 @@ test('foo() | bar()', (t) => {
   t.end()
 })
 
+test('1+', (t) => {
+  const expr = parse('1+')
+  t.notNil(expr.syntaxError, 'There should be a syntaxError.')
+  t.end()
+})
+
+
+
 function _equal(t, arr1, arr2, msg) {
   return t.equal(String(arr1), String(arr2), msg)
 }

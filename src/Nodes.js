@@ -17,8 +17,8 @@ class ExprNode {
     return this.value
   }
 
-  addError(err) {
-    this.expr.addError(err)
+  addRuntimeError(err) {
+    this.expr.addRuntimeError(err)
   }
 
   getContext() {
@@ -214,13 +214,13 @@ export class FunctionCall extends ExprNode {
           this.setValue(val)
         })
         .catch((err) => {
-          this.addError(err)
+          this.addRuntimeError(err)
         })
       } else {
         this.setValue(res)
       }
     } catch(err) {
-      this.addError(err)
+      this.addRuntimeError(err)
     }
   }
 }
@@ -296,13 +296,28 @@ export class PipeOp extends ExprNode {
           this.setValue(val)
         })
         .catch((err) => {
-          this.addError(err)
+          this.addRuntimeError(err)
         })
       } else {
         this.setValue(res)
       }
     } catch(err) {
-      this.addError(err)
+      this.addRuntimeError(err)
     }
+  }
+}
+
+export class ErrorNode extends ExprNode {
+
+  constructor(id, exception) {
+    super(id)
+
+    this.exception = exception
+  }
+
+  get type() { return "error" }
+
+  evaluate() {
+    return undefined
   }
 }
