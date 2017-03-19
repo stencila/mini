@@ -1,4 +1,4 @@
-// Generated from parser/Expr.g4 by ANTLR 4.6
+// Generated from parser/Mini.g4 by ANTLR 4.6
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 
@@ -108,63 +108,63 @@ var atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
 
 var decisionsToDFA = atn.decisionToState.map( function(ds, index) { return new antlr4.dfa.DFA(ds, index); });
 
-function ExprLexer(input) {
+function MiniLexer(input) {
 	antlr4.Lexer.call(this, input);
     this._interp = new antlr4.atn.LexerATNSimulator(this, atn, decisionsToDFA, new antlr4.PredictionContextCache());
     return this;
 }
 
-ExprLexer.prototype = Object.create(antlr4.Lexer.prototype);
-ExprLexer.prototype.constructor = ExprLexer;
+MiniLexer.prototype = Object.create(antlr4.Lexer.prototype);
+MiniLexer.prototype.constructor = MiniLexer;
 
-ExprLexer.EOF = antlr4.Token.EOF;
-ExprLexer.T__0 = 1;
-ExprLexer.T__1 = 2;
-ExprLexer.T__2 = 3;
-ExprLexer.T__3 = 4;
-ExprLexer.T__4 = 5;
-ExprLexer.T__5 = 6;
-ExprLexer.T__6 = 7;
-ExprLexer.T__7 = 8;
-ExprLexer.T__8 = 9;
-ExprLexer.T__9 = 10;
-ExprLexer.T__10 = 11;
-ExprLexer.T__11 = 12;
-ExprLexer.T__12 = 13;
-ExprLexer.T__13 = 14;
-ExprLexer.T__14 = 15;
-ExprLexer.T__15 = 16;
-ExprLexer.T__16 = 17;
-ExprLexer.CELL = 18;
-ExprLexer.ID = 19;
-ExprLexer.INT = 20;
-ExprLexer.FLOAT = 21;
-ExprLexer.STRING = 22;
-ExprLexer.WS = 23;
+MiniLexer.EOF = antlr4.Token.EOF;
+MiniLexer.T__0 = 1;
+MiniLexer.T__1 = 2;
+MiniLexer.T__2 = 3;
+MiniLexer.T__3 = 4;
+MiniLexer.T__4 = 5;
+MiniLexer.T__5 = 6;
+MiniLexer.T__6 = 7;
+MiniLexer.T__7 = 8;
+MiniLexer.T__8 = 9;
+MiniLexer.T__9 = 10;
+MiniLexer.T__10 = 11;
+MiniLexer.T__11 = 12;
+MiniLexer.T__12 = 13;
+MiniLexer.T__13 = 14;
+MiniLexer.T__14 = 15;
+MiniLexer.T__15 = 16;
+MiniLexer.T__16 = 17;
+MiniLexer.CELL = 18;
+MiniLexer.ID = 19;
+MiniLexer.INT = 20;
+MiniLexer.FLOAT = 21;
+MiniLexer.STRING = 22;
+MiniLexer.WS = 23;
 
 
-ExprLexer.prototype.modeNames = [ "DEFAULT_MODE" ];
+MiniLexer.prototype.modeNames = [ "DEFAULT_MODE" ];
 
-ExprLexer.prototype.literalNames = [ null, "'='", "'function'", "'('", "')'", 
+MiniLexer.prototype.literalNames = [ null, "'='", "'function'", "'('", "')'", 
                                      "'^'", "'*'", "'/'", "'+'", "'-'", 
                                      "'|'", "':'", "'!'", "','", "'['", 
                                      "']'", "'{'", "'}'" ];
 
-ExprLexer.prototype.symbolicNames = [ null, null, null, null, null, null, 
+MiniLexer.prototype.symbolicNames = [ null, null, null, null, null, null, 
                                       null, null, null, null, null, null, 
                                       null, null, null, null, null, null, 
                                       "CELL", "ID", "INT", "FLOAT", "STRING", 
                                       "WS" ];
 
-ExprLexer.prototype.ruleNames = [ "T__0", "T__1", "T__2", "T__3", "T__4", 
+MiniLexer.prototype.ruleNames = [ "T__0", "T__1", "T__2", "T__3", "T__4", 
                                   "T__5", "T__6", "T__7", "T__8", "T__9", 
                                   "T__10", "T__11", "T__12", "T__13", "T__14", 
                                   "T__15", "T__16", "CELL", "ID", "INT", 
                                   "FLOAT", "STRING", "WS" ];
 
-ExprLexer.prototype.grammarFileName = "Expr.g4";
+MiniLexer.prototype.grammarFileName = "Mini.g4";
 
 
 
-exports.ExprLexer = ExprLexer;
+exports.MiniLexer = MiniLexer;
 

@@ -1,4 +1,4 @@
-grammar Expr;
+grammar Mini;
 
 mini:  mainExpr                { $ctx.type = 'evaluation' }
     |  ID   '=' mainExpr       { $ctx.type = 'definition'}

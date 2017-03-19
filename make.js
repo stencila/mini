@@ -19,12 +19,12 @@ function _generateParser() {
   // still we don't fail so that travis is working (generated parser is checked in)
   if (!fs.existsSync('./.bin/antlr-4.6-complete.jar')) return
   b.custom('Generating parser', {
-    src: './parser/Expr.g4',
-    dest: './parser/ExprParser.js',
+    src: './parser/Mini.g4',
+    dest: './parser/MiniParser.js',
     execute: () => {
       let exec = require('child_process').exec
       return new Promise(function(resolve, reject) {
-        exec('java -jar ./.bin/antlr-4.6-complete.jar -o parser -Dlanguage=JavaScript -no-visitor parser/Expr.g4', (err) => {
+        exec('java -jar ./.bin/antlr-4.6-complete.jar -o parser -Dlanguage=JavaScript -no-visitor parser/Mini.g4', (err) => {
           if (err) {
             reject(new Error(err))
           } else {

@@ -12065,7 +12065,7 @@ var antlr4$1 = Object.freeze({
 
 var require$$0 = ( antlr4$1 && antlr4$1['default'] ) || antlr4$1;
 
-// Generated from parser/Expr.g4 by ANTLR 4.6
+// Generated from parser/Mini.g4 by ANTLR 4.6
 // jshint ignore: start
 var antlr4$2 = require$$0;
 
@@ -12175,220 +12175,220 @@ var atn = new antlr4$2.atn.ATNDeserializer().deserialize(serializedATN);
 
 var decisionsToDFA = atn.decisionToState.map( function(ds, index) { return new antlr4$2.dfa.DFA(ds, index); });
 
-function ExprLexer$1(input) {
+function MiniLexer$1(input) {
 	antlr4$2.Lexer.call(this, input);
     this._interp = new antlr4$2.atn.LexerATNSimulator(this, atn, decisionsToDFA, new antlr4$2.PredictionContextCache());
     return this;
 }
 
-ExprLexer$1.prototype = Object.create(antlr4$2.Lexer.prototype);
-ExprLexer$1.prototype.constructor = ExprLexer$1;
+MiniLexer$1.prototype = Object.create(antlr4$2.Lexer.prototype);
+MiniLexer$1.prototype.constructor = MiniLexer$1;
 
-ExprLexer$1.EOF = antlr4$2.Token.EOF;
-ExprLexer$1.T__0 = 1;
-ExprLexer$1.T__1 = 2;
-ExprLexer$1.T__2 = 3;
-ExprLexer$1.T__3 = 4;
-ExprLexer$1.T__4 = 5;
-ExprLexer$1.T__5 = 6;
-ExprLexer$1.T__6 = 7;
-ExprLexer$1.T__7 = 8;
-ExprLexer$1.T__8 = 9;
-ExprLexer$1.T__9 = 10;
-ExprLexer$1.T__10 = 11;
-ExprLexer$1.T__11 = 12;
-ExprLexer$1.T__12 = 13;
-ExprLexer$1.T__13 = 14;
-ExprLexer$1.T__14 = 15;
-ExprLexer$1.T__15 = 16;
-ExprLexer$1.T__16 = 17;
-ExprLexer$1.CELL = 18;
-ExprLexer$1.ID = 19;
-ExprLexer$1.INT = 20;
-ExprLexer$1.FLOAT = 21;
-ExprLexer$1.STRING = 22;
-ExprLexer$1.WS = 23;
+MiniLexer$1.EOF = antlr4$2.Token.EOF;
+MiniLexer$1.T__0 = 1;
+MiniLexer$1.T__1 = 2;
+MiniLexer$1.T__2 = 3;
+MiniLexer$1.T__3 = 4;
+MiniLexer$1.T__4 = 5;
+MiniLexer$1.T__5 = 6;
+MiniLexer$1.T__6 = 7;
+MiniLexer$1.T__7 = 8;
+MiniLexer$1.T__8 = 9;
+MiniLexer$1.T__9 = 10;
+MiniLexer$1.T__10 = 11;
+MiniLexer$1.T__11 = 12;
+MiniLexer$1.T__12 = 13;
+MiniLexer$1.T__13 = 14;
+MiniLexer$1.T__14 = 15;
+MiniLexer$1.T__15 = 16;
+MiniLexer$1.T__16 = 17;
+MiniLexer$1.CELL = 18;
+MiniLexer$1.ID = 19;
+MiniLexer$1.INT = 20;
+MiniLexer$1.FLOAT = 21;
+MiniLexer$1.STRING = 22;
+MiniLexer$1.WS = 23;
 
 
-ExprLexer$1.prototype.modeNames = [ "DEFAULT_MODE" ];
+MiniLexer$1.prototype.modeNames = [ "DEFAULT_MODE" ];
 
-ExprLexer$1.prototype.literalNames = [ null, "'='", "'function'", "'('", "')'", 
+MiniLexer$1.prototype.literalNames = [ null, "'='", "'function'", "'('", "')'", 
                                      "'^'", "'*'", "'/'", "'+'", "'-'", 
                                      "'|'", "':'", "'!'", "','", "'['", 
                                      "']'", "'{'", "'}'" ];
 
-ExprLexer$1.prototype.symbolicNames = [ null, null, null, null, null, null, 
+MiniLexer$1.prototype.symbolicNames = [ null, null, null, null, null, null, 
                                       null, null, null, null, null, null, 
                                       null, null, null, null, null, null, 
                                       "CELL", "ID", "INT", "FLOAT", "STRING", 
                                       "WS" ];
 
-ExprLexer$1.prototype.ruleNames = [ "T__0", "T__1", "T__2", "T__3", "T__4", 
+MiniLexer$1.prototype.ruleNames = [ "T__0", "T__1", "T__2", "T__3", "T__4", 
                                   "T__5", "T__6", "T__7", "T__8", "T__9", 
                                   "T__10", "T__11", "T__12", "T__13", "T__14", 
                                   "T__15", "T__16", "CELL", "ID", "INT", 
                                   "FLOAT", "STRING", "WS" ];
 
-ExprLexer$1.prototype.grammarFileName = "Expr.g4";
+MiniLexer$1.prototype.grammarFileName = "Mini.g4";
 
 
 
-var ExprLexer_2 = ExprLexer$1;
+var MiniLexer_2 = MiniLexer$1;
 
-var ExprLexer_1 = {
-	ExprLexer: ExprLexer_2
+var MiniLexer_1 = {
+	MiniLexer: MiniLexer_2
 };
 
-// Generated from parser/Expr.g4 by ANTLR 4.6
+// Generated from parser/Mini.g4 by ANTLR 4.6
 // jshint ignore: start
 var antlr4$4 = require$$0;
 
-// This class defines a complete listener for a parse tree produced by ExprParser.
-function ExprListener$2() {
+// This class defines a complete listener for a parse tree produced by MiniParser.
+function MiniListener$2() {
 	antlr4$4.tree.ParseTreeListener.call(this);
 	return this;
 }
 
-ExprListener$2.prototype = Object.create(antlr4$4.tree.ParseTreeListener.prototype);
-ExprListener$2.prototype.constructor = ExprListener$2;
+MiniListener$2.prototype = Object.create(antlr4$4.tree.ParseTreeListener.prototype);
+MiniListener$2.prototype.constructor = MiniListener$2;
 
-// Enter a parse tree produced by ExprParser#mini.
-ExprListener$2.prototype.enterMini = function(ctx) {
+// Enter a parse tree produced by MiniParser#mini.
+MiniListener$2.prototype.enterMini = function(ctx) {
 };
 
-// Exit a parse tree produced by ExprParser#mini.
-ExprListener$2.prototype.exitMini = function(ctx) {
-};
-
-
-// Enter a parse tree produced by ExprParser#mainExpr.
-ExprListener$2.prototype.enterMainExpr = function(ctx) {
-};
-
-// Exit a parse tree produced by ExprParser#mainExpr.
-ExprListener$2.prototype.exitMainExpr = function(ctx) {
+// Exit a parse tree produced by MiniParser#mini.
+MiniListener$2.prototype.exitMini = function(ctx) {
 };
 
 
-// Enter a parse tree produced by ExprParser#expr.
-ExprListener$2.prototype.enterExpr = function(ctx) {
+// Enter a parse tree produced by MiniParser#mainExpr.
+MiniListener$2.prototype.enterMainExpr = function(ctx) {
 };
 
-// Exit a parse tree produced by ExprParser#expr.
-ExprListener$2.prototype.exitExpr = function(ctx) {
-};
-
-
-// Enter a parse tree produced by ExprParser#range.
-ExprListener$2.prototype.enterRange = function(ctx) {
-};
-
-// Exit a parse tree produced by ExprParser#range.
-ExprListener$2.prototype.exitRange = function(ctx) {
+// Exit a parse tree produced by MiniParser#mainExpr.
+MiniListener$2.prototype.exitMainExpr = function(ctx) {
 };
 
 
-// Enter a parse tree produced by ExprParser#cell.
-ExprListener$2.prototype.enterCell = function(ctx) {
+// Enter a parse tree produced by MiniParser#expr.
+MiniListener$2.prototype.enterExpr = function(ctx) {
 };
 
-// Exit a parse tree produced by ExprParser#cell.
-ExprListener$2.prototype.exitCell = function(ctx) {
-};
-
-
-// Enter a parse tree produced by ExprParser#sheet_ref.
-ExprListener$2.prototype.enterSheet_ref = function(ctx) {
-};
-
-// Exit a parse tree produced by ExprParser#sheet_ref.
-ExprListener$2.prototype.exitSheet_ref = function(ctx) {
+// Exit a parse tree produced by MiniParser#expr.
+MiniListener$2.prototype.exitExpr = function(ctx) {
 };
 
 
-// Enter a parse tree produced by ExprParser#function_call.
-ExprListener$2.prototype.enterFunction_call = function(ctx) {
+// Enter a parse tree produced by MiniParser#range.
+MiniListener$2.prototype.enterRange = function(ctx) {
 };
 
-// Exit a parse tree produced by ExprParser#function_call.
-ExprListener$2.prototype.exitFunction_call = function(ctx) {
-};
-
-
-// Enter a parse tree produced by ExprParser#number.
-ExprListener$2.prototype.enterNumber = function(ctx) {
-};
-
-// Exit a parse tree produced by ExprParser#number.
-ExprListener$2.prototype.exitNumber = function(ctx) {
+// Exit a parse tree produced by MiniParser#range.
+MiniListener$2.prototype.exitRange = function(ctx) {
 };
 
 
-// Enter a parse tree produced by ExprParser#seq.
-ExprListener$2.prototype.enterSeq = function(ctx) {
+// Enter a parse tree produced by MiniParser#cell.
+MiniListener$2.prototype.enterCell = function(ctx) {
 };
 
-// Exit a parse tree produced by ExprParser#seq.
-ExprListener$2.prototype.exitSeq = function(ctx) {
-};
-
-
-// Enter a parse tree produced by ExprParser#id_seq.
-ExprListener$2.prototype.enterId_seq = function(ctx) {
-};
-
-// Exit a parse tree produced by ExprParser#id_seq.
-ExprListener$2.prototype.exitId_seq = function(ctx) {
+// Exit a parse tree produced by MiniParser#cell.
+MiniListener$2.prototype.exitCell = function(ctx) {
 };
 
 
-// Enter a parse tree produced by ExprParser#call_arguments.
-ExprListener$2.prototype.enterCall_arguments = function(ctx) {
+// Enter a parse tree produced by MiniParser#sheet_ref.
+MiniListener$2.prototype.enterSheet_ref = function(ctx) {
 };
 
-// Exit a parse tree produced by ExprParser#call_arguments.
-ExprListener$2.prototype.exitCall_arguments = function(ctx) {
-};
-
-
-// Enter a parse tree produced by ExprParser#argument.
-ExprListener$2.prototype.enterArgument = function(ctx) {
-};
-
-// Exit a parse tree produced by ExprParser#argument.
-ExprListener$2.prototype.exitArgument = function(ctx) {
+// Exit a parse tree produced by MiniParser#sheet_ref.
+MiniListener$2.prototype.exitSheet_ref = function(ctx) {
 };
 
 
-// Enter a parse tree produced by ExprParser#array.
-ExprListener$2.prototype.enterArray = function(ctx) {
+// Enter a parse tree produced by MiniParser#function_call.
+MiniListener$2.prototype.enterFunction_call = function(ctx) {
 };
 
-// Exit a parse tree produced by ExprParser#array.
-ExprListener$2.prototype.exitArray = function(ctx) {
-};
-
-
-// Enter a parse tree produced by ExprParser#object.
-ExprListener$2.prototype.enterObject = function(ctx) {
-};
-
-// Exit a parse tree produced by ExprParser#object.
-ExprListener$2.prototype.exitObject = function(ctx) {
+// Exit a parse tree produced by MiniParser#function_call.
+MiniListener$2.prototype.exitFunction_call = function(ctx) {
 };
 
 
-
-var ExprListener_2 = ExprListener$2;
-
-var ExprListener_1 = {
-	ExprListener: ExprListener_2
+// Enter a parse tree produced by MiniParser#number.
+MiniListener$2.prototype.enterNumber = function(ctx) {
 };
 
-// Generated from parser/Expr.g4 by ANTLR 4.6
+// Exit a parse tree produced by MiniParser#number.
+MiniListener$2.prototype.exitNumber = function(ctx) {
+};
+
+
+// Enter a parse tree produced by MiniParser#seq.
+MiniListener$2.prototype.enterSeq = function(ctx) {
+};
+
+// Exit a parse tree produced by MiniParser#seq.
+MiniListener$2.prototype.exitSeq = function(ctx) {
+};
+
+
+// Enter a parse tree produced by MiniParser#id_seq.
+MiniListener$2.prototype.enterId_seq = function(ctx) {
+};
+
+// Exit a parse tree produced by MiniParser#id_seq.
+MiniListener$2.prototype.exitId_seq = function(ctx) {
+};
+
+
+// Enter a parse tree produced by MiniParser#call_arguments.
+MiniListener$2.prototype.enterCall_arguments = function(ctx) {
+};
+
+// Exit a parse tree produced by MiniParser#call_arguments.
+MiniListener$2.prototype.exitCall_arguments = function(ctx) {
+};
+
+
+// Enter a parse tree produced by MiniParser#argument.
+MiniListener$2.prototype.enterArgument = function(ctx) {
+};
+
+// Exit a parse tree produced by MiniParser#argument.
+MiniListener$2.prototype.exitArgument = function(ctx) {
+};
+
+
+// Enter a parse tree produced by MiniParser#array.
+MiniListener$2.prototype.enterArray = function(ctx) {
+};
+
+// Exit a parse tree produced by MiniParser#array.
+MiniListener$2.prototype.exitArray = function(ctx) {
+};
+
+
+// Enter a parse tree produced by MiniParser#object.
+MiniListener$2.prototype.enterObject = function(ctx) {
+};
+
+// Exit a parse tree produced by MiniParser#object.
+MiniListener$2.prototype.exitObject = function(ctx) {
+};
+
+
+
+var MiniListener_2 = MiniListener$2;
+
+var MiniListener_1 = {
+	MiniListener: MiniListener_2
+};
+
+// Generated from parser/Mini.g4 by ANTLR 4.6
 // jshint ignore: start
 var antlr4$3 = require$$0;
-var ExprListener$1 = ExprListener_1.ExprListener;
+var MiniListener$1 = MiniListener_1.MiniListener;
 var serializedATN$1 = ["\u0003\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd",
     "\u0003\u0019\u00c8\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004",
     "\t\u0004\u0004\u0005\t\u0005\u0004\u0006\t\u0006\u0004\u0007\t\u0007",
@@ -12531,7 +12531,7 @@ var ruleNames =  [ "mini", "mainExpr", "expr", "range", "cell", "sheet_ref",
                    "function_call", "number", "seq", "id_seq", "call_arguments", 
                    "argument", "array", "object" ];
 
-function ExprParser$1 (input) {
+function MiniParser$1 (input) {
 	antlr4$3.Parser.call(this, input);
     this._interp = new antlr4$3.atn.ParserATNSimulator(this, atn$1, decisionsToDFA$1, sharedContextCache);
     this.ruleNames = ruleNames;
@@ -12540,54 +12540,54 @@ function ExprParser$1 (input) {
     return this;
 }
 
-ExprParser$1.prototype = Object.create(antlr4$3.Parser.prototype);
-ExprParser$1.prototype.constructor = ExprParser$1;
+MiniParser$1.prototype = Object.create(antlr4$3.Parser.prototype);
+MiniParser$1.prototype.constructor = MiniParser$1;
 
-Object.defineProperty(ExprParser$1.prototype, "atn", {
+Object.defineProperty(MiniParser$1.prototype, "atn", {
 	get : function() {
 		return atn$1;
 	}
 });
 
-ExprParser$1.EOF = antlr4$3.Token.EOF;
-ExprParser$1.T__0 = 1;
-ExprParser$1.T__1 = 2;
-ExprParser$1.T__2 = 3;
-ExprParser$1.T__3 = 4;
-ExprParser$1.T__4 = 5;
-ExprParser$1.T__5 = 6;
-ExprParser$1.T__6 = 7;
-ExprParser$1.T__7 = 8;
-ExprParser$1.T__8 = 9;
-ExprParser$1.T__9 = 10;
-ExprParser$1.T__10 = 11;
-ExprParser$1.T__11 = 12;
-ExprParser$1.T__12 = 13;
-ExprParser$1.T__13 = 14;
-ExprParser$1.T__14 = 15;
-ExprParser$1.T__15 = 16;
-ExprParser$1.T__16 = 17;
-ExprParser$1.CELL = 18;
-ExprParser$1.ID = 19;
-ExprParser$1.INT = 20;
-ExprParser$1.FLOAT = 21;
-ExprParser$1.STRING = 22;
-ExprParser$1.WS = 23;
+MiniParser$1.EOF = antlr4$3.Token.EOF;
+MiniParser$1.T__0 = 1;
+MiniParser$1.T__1 = 2;
+MiniParser$1.T__2 = 3;
+MiniParser$1.T__3 = 4;
+MiniParser$1.T__4 = 5;
+MiniParser$1.T__5 = 6;
+MiniParser$1.T__6 = 7;
+MiniParser$1.T__7 = 8;
+MiniParser$1.T__8 = 9;
+MiniParser$1.T__9 = 10;
+MiniParser$1.T__10 = 11;
+MiniParser$1.T__11 = 12;
+MiniParser$1.T__12 = 13;
+MiniParser$1.T__13 = 14;
+MiniParser$1.T__14 = 15;
+MiniParser$1.T__15 = 16;
+MiniParser$1.T__16 = 17;
+MiniParser$1.CELL = 18;
+MiniParser$1.ID = 19;
+MiniParser$1.INT = 20;
+MiniParser$1.FLOAT = 21;
+MiniParser$1.STRING = 22;
+MiniParser$1.WS = 23;
 
-ExprParser$1.RULE_mini = 0;
-ExprParser$1.RULE_mainExpr = 1;
-ExprParser$1.RULE_expr = 2;
-ExprParser$1.RULE_range = 3;
-ExprParser$1.RULE_cell = 4;
-ExprParser$1.RULE_sheet_ref = 5;
-ExprParser$1.RULE_function_call = 6;
-ExprParser$1.RULE_number = 7;
-ExprParser$1.RULE_seq = 8;
-ExprParser$1.RULE_id_seq = 9;
-ExprParser$1.RULE_call_arguments = 10;
-ExprParser$1.RULE_argument = 11;
-ExprParser$1.RULE_array = 12;
-ExprParser$1.RULE_object = 13;
+MiniParser$1.RULE_mini = 0;
+MiniParser$1.RULE_mainExpr = 1;
+MiniParser$1.RULE_expr = 2;
+MiniParser$1.RULE_range = 3;
+MiniParser$1.RULE_cell = 4;
+MiniParser$1.RULE_sheet_ref = 5;
+MiniParser$1.RULE_function_call = 6;
+MiniParser$1.RULE_number = 7;
+MiniParser$1.RULE_seq = 8;
+MiniParser$1.RULE_id_seq = 9;
+MiniParser$1.RULE_call_arguments = 10;
+MiniParser$1.RULE_argument = 11;
+MiniParser$1.RULE_array = 12;
+MiniParser$1.RULE_object = 13;
 
 function MiniContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -12598,7 +12598,7 @@ function MiniContext(parser, parent, invokingState) {
 	}
 	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
-    this.ruleIndex = ExprParser$1.RULE_mini;
+    this.ruleIndex = MiniParser$1.RULE_mini;
     return this;
 }
 
@@ -12610,17 +12610,17 @@ MiniContext.prototype.mainExpr = function() {
 };
 
 MiniContext.prototype.ID = function() {
-    return this.getToken(ExprParser$1.ID, 0);
+    return this.getToken(MiniParser$1.ID, 0);
 };
 
 MiniContext.prototype.enterRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.enterMini(this);
 	}
 };
 
 MiniContext.prototype.exitRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.exitMini(this);
 	}
 };
@@ -12628,12 +12628,12 @@ MiniContext.prototype.exitRule = function(listener) {
 
 
 
-ExprParser$1.MiniContext = MiniContext;
+MiniParser$1.MiniContext = MiniContext;
 
-ExprParser$1.prototype.mini = function() {
+MiniParser$1.prototype.mini = function() {
 
     var localctx = new MiniContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 0, ExprParser$1.RULE_mini);
+    this.enterRule(localctx, 0, MiniParser$1.RULE_mini);
     try {
         this.state = 36;
         this._errHandler.sync(this);
@@ -12649,9 +12649,9 @@ ExprParser$1.prototype.mini = function() {
         case 2:
             this.enterOuterAlt(localctx, 2);
             this.state = 31;
-            this.match(ExprParser$1.ID);
+            this.match(MiniParser$1.ID);
             this.state = 32;
-            this.match(ExprParser$1.T__0);
+            this.match(MiniParser$1.T__0);
             this.state = 33;
             this.mainExpr();
              localctx.type = 'definition';
@@ -12681,7 +12681,7 @@ function MainExprContext(parser, parent, invokingState) {
 	}
 	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
-    this.ruleIndex = ExprParser$1.RULE_mainExpr;
+    this.ruleIndex = MiniParser$1.RULE_mainExpr;
     return this;
 }
 
@@ -12697,13 +12697,13 @@ MainExprContext.prototype.expr = function() {
 };
 
 MainExprContext.prototype.enterRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.enterMainExpr(this);
 	}
 };
 
 MainExprContext.prototype.exitRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.exitMainExpr(this);
 	}
 };
@@ -12711,36 +12711,36 @@ MainExprContext.prototype.exitRule = function(listener) {
 
 
 
-ExprParser$1.MainExprContext = MainExprContext;
+MiniParser$1.MainExprContext = MainExprContext;
 
-ExprParser$1.prototype.mainExpr = function() {
+MiniParser$1.prototype.mainExpr = function() {
 
     var localctx = new MainExprContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 2, ExprParser$1.RULE_mainExpr);
+    this.enterRule(localctx, 2, MiniParser$1.RULE_mainExpr);
     try {
         this.state = 47;
         this._errHandler.sync(this);
         switch(this._input.LA(1)) {
-        case ExprParser$1.T__1:
+        case MiniParser$1.T__1:
             this.enterOuterAlt(localctx, 1);
             this.state = 38;
-            this.match(ExprParser$1.T__1);
+            this.match(MiniParser$1.T__1);
             this.state = 39;
-            this.match(ExprParser$1.T__2);
+            this.match(MiniParser$1.T__2);
             this.state = 40;
             this.id_seq();
             this.state = 41;
-            this.match(ExprParser$1.T__3);
+            this.match(MiniParser$1.T__3);
              localctx.type = 'function';
             break;
-        case ExprParser$1.T__2:
-        case ExprParser$1.T__13:
-        case ExprParser$1.T__15:
-        case ExprParser$1.CELL:
-        case ExprParser$1.ID:
-        case ExprParser$1.INT:
-        case ExprParser$1.FLOAT:
-        case ExprParser$1.STRING:
+        case MiniParser$1.T__2:
+        case MiniParser$1.T__13:
+        case MiniParser$1.T__15:
+        case MiniParser$1.CELL:
+        case MiniParser$1.ID:
+        case MiniParser$1.INT:
+        case MiniParser$1.FLOAT:
+        case MiniParser$1.STRING:
             this.enterOuterAlt(localctx, 2);
             this.state = 44;
             this.expr(0);
@@ -12772,7 +12772,7 @@ function ExprContext(parser, parent, invokingState) {
 	}
 	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
-    this.ruleIndex = ExprParser$1.RULE_expr;
+    this.ruleIndex = MiniParser$1.RULE_expr;
     return this;
 }
 
@@ -12792,7 +12792,7 @@ ExprContext.prototype.cell = function() {
 };
 
 ExprContext.prototype.ID = function() {
-    return this.getToken(ExprParser$1.ID, 0);
+    return this.getToken(MiniParser$1.ID, 0);
 };
 
 ExprContext.prototype.sheet_ref = function() {
@@ -12823,24 +12823,24 @@ ExprContext.prototype.object = function() {
 };
 
 ExprContext.prototype.STRING = function() {
-    return this.getToken(ExprParser$1.STRING, 0);
+    return this.getToken(MiniParser$1.STRING, 0);
 };
 
 ExprContext.prototype.enterRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.enterExpr(this);
 	}
 };
 
 ExprContext.prototype.exitRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.exitExpr(this);
 	}
 };
 
 
 
-ExprParser$1.prototype.expr = function(_p) {
+MiniParser$1.prototype.expr = function(_p) {
 	if(_p===undefined) {
 	    _p = 0;
 	}
@@ -12849,7 +12849,7 @@ ExprParser$1.prototype.expr = function(_p) {
     var localctx = new ExprContext(this, this._ctx, _parentState);
     var _prevctx = localctx;
     var _startState = 4;
-    this.enterRecursionRule(localctx, 4, ExprParser$1.RULE_expr, _p);
+    this.enterRecursionRule(localctx, 4, MiniParser$1.RULE_expr, _p);
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 80;
@@ -12876,7 +12876,7 @@ ExprParser$1.prototype.expr = function(_p) {
 
         case 4:
             this.state = 59;
-            this.match(ExprParser$1.ID);
+            this.match(MiniParser$1.ID);
              localctx.type = 'var'; 
             break;
 
@@ -12894,11 +12894,11 @@ ExprParser$1.prototype.expr = function(_p) {
 
         case 7:
             this.state = 67;
-            this.match(ExprParser$1.T__2);
+            this.match(MiniParser$1.T__2);
             this.state = 68;
             this.expr(0);
             this.state = 69;
-            this.match(ExprParser$1.T__3);
+            this.match(MiniParser$1.T__3);
              localctx.type = 'group'; 
             break;
 
@@ -12916,7 +12916,7 @@ ExprParser$1.prototype.expr = function(_p) {
 
         case 10:
             this.state = 78;
-            this.match(ExprParser$1.STRING);
+            this.match(MiniParser$1.STRING);
              localctx.type = 'string'; 
             break;
 
@@ -12937,13 +12937,13 @@ ExprParser$1.prototype.expr = function(_p) {
                 switch(la_) {
                 case 1:
                     localctx = new ExprContext(this, _parentctx, _parentState);
-                    this.pushNewRecursionContext(localctx, _startState, ExprParser$1.RULE_expr);
+                    this.pushNewRecursionContext(localctx, _startState, MiniParser$1.RULE_expr);
                     this.state = 82;
                     if (!( this.precpred(this._ctx, 15))) {
                         throw new antlr4$3.error.FailedPredicateException(this, "this.precpred(this._ctx, 15)");
                     }
                     this.state = 83;
-                    this.match(ExprParser$1.T__5);
+                    this.match(MiniParser$1.T__5);
                     this.state = 84;
                     this.expr(16);
                      localctx.type = 'mult'; 
@@ -12951,13 +12951,13 @@ ExprParser$1.prototype.expr = function(_p) {
 
                 case 2:
                     localctx = new ExprContext(this, _parentctx, _parentState);
-                    this.pushNewRecursionContext(localctx, _startState, ExprParser$1.RULE_expr);
+                    this.pushNewRecursionContext(localctx, _startState, MiniParser$1.RULE_expr);
                     this.state = 87;
                     if (!( this.precpred(this._ctx, 14))) {
                         throw new antlr4$3.error.FailedPredicateException(this, "this.precpred(this._ctx, 14)");
                     }
                     this.state = 88;
-                    this.match(ExprParser$1.T__6);
+                    this.match(MiniParser$1.T__6);
                     this.state = 89;
                     this.expr(15);
                      localctx.type = 'div'; 
@@ -12965,13 +12965,13 @@ ExprParser$1.prototype.expr = function(_p) {
 
                 case 3:
                     localctx = new ExprContext(this, _parentctx, _parentState);
-                    this.pushNewRecursionContext(localctx, _startState, ExprParser$1.RULE_expr);
+                    this.pushNewRecursionContext(localctx, _startState, MiniParser$1.RULE_expr);
                     this.state = 92;
                     if (!( this.precpred(this._ctx, 13))) {
                         throw new antlr4$3.error.FailedPredicateException(this, "this.precpred(this._ctx, 13)");
                     }
                     this.state = 93;
-                    this.match(ExprParser$1.T__7);
+                    this.match(MiniParser$1.T__7);
                     this.state = 94;
                     this.expr(14);
                      localctx.type = 'plus'; 
@@ -12979,13 +12979,13 @@ ExprParser$1.prototype.expr = function(_p) {
 
                 case 4:
                     localctx = new ExprContext(this, _parentctx, _parentState);
-                    this.pushNewRecursionContext(localctx, _startState, ExprParser$1.RULE_expr);
+                    this.pushNewRecursionContext(localctx, _startState, MiniParser$1.RULE_expr);
                     this.state = 97;
                     if (!( this.precpred(this._ctx, 12))) {
                         throw new antlr4$3.error.FailedPredicateException(this, "this.precpred(this._ctx, 12)");
                     }
                     this.state = 98;
-                    this.match(ExprParser$1.T__8);
+                    this.match(MiniParser$1.T__8);
                     this.state = 99;
                     this.expr(13);
                      localctx.type = 'minus'; 
@@ -12993,13 +12993,13 @@ ExprParser$1.prototype.expr = function(_p) {
 
                 case 5:
                     localctx = new ExprContext(this, _parentctx, _parentState);
-                    this.pushNewRecursionContext(localctx, _startState, ExprParser$1.RULE_expr);
+                    this.pushNewRecursionContext(localctx, _startState, MiniParser$1.RULE_expr);
                     this.state = 102;
                     if (!( this.precpred(this._ctx, 16))) {
                         throw new antlr4$3.error.FailedPredicateException(this, "this.precpred(this._ctx, 16)");
                     }
                     this.state = 103;
-                    this.match(ExprParser$1.T__4);
+                    this.match(MiniParser$1.T__4);
                     this.state = 104;
                     this.number();
                      localctx.type = 'power'; 
@@ -13007,13 +13007,13 @@ ExprParser$1.prototype.expr = function(_p) {
 
                 case 6:
                     localctx = new ExprContext(this, _parentctx, _parentState);
-                    this.pushNewRecursionContext(localctx, _startState, ExprParser$1.RULE_expr);
+                    this.pushNewRecursionContext(localctx, _startState, MiniParser$1.RULE_expr);
                     this.state = 107;
                     if (!( this.precpred(this._ctx, 11))) {
                         throw new antlr4$3.error.FailedPredicateException(this, "this.precpred(this._ctx, 11)");
                     }
                     this.state = 108;
-                    this.match(ExprParser$1.T__9);
+                    this.match(MiniParser$1.T__9);
                     this.state = 109;
                     this.function_call();
                      localctx.type = 'pipe'; 
@@ -13049,7 +13049,7 @@ function RangeContext(parser, parent, invokingState) {
 	}
 	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
-    this.ruleIndex = ExprParser$1.RULE_range;
+    this.ruleIndex = MiniParser$1.RULE_range;
     return this;
 }
 
@@ -13061,21 +13061,21 @@ RangeContext.prototype.CELL = function(i) {
 		i = null;
 	}
     if(i===null) {
-        return this.getTokens(ExprParser$1.CELL);
+        return this.getTokens(MiniParser$1.CELL);
     } else {
-        return this.getToken(ExprParser$1.CELL, i);
+        return this.getToken(MiniParser$1.CELL, i);
     }
 };
 
 
 RangeContext.prototype.enterRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.enterRange(this);
 	}
 };
 
 RangeContext.prototype.exitRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.exitRange(this);
 	}
 };
@@ -13083,20 +13083,20 @@ RangeContext.prototype.exitRule = function(listener) {
 
 
 
-ExprParser$1.RangeContext = RangeContext;
+MiniParser$1.RangeContext = RangeContext;
 
-ExprParser$1.prototype.range = function() {
+MiniParser$1.prototype.range = function() {
 
     var localctx = new RangeContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 6, ExprParser$1.RULE_range);
+    this.enterRule(localctx, 6, MiniParser$1.RULE_range);
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 117;
-        this.match(ExprParser$1.CELL);
+        this.match(MiniParser$1.CELL);
         this.state = 118;
-        this.match(ExprParser$1.T__10);
+        this.match(MiniParser$1.T__10);
         this.state = 119;
-        this.match(ExprParser$1.CELL);
+        this.match(MiniParser$1.CELL);
     } catch (re) {
     	if(re instanceof antlr4$3.error.RecognitionException) {
 	        localctx.exception = re;
@@ -13120,7 +13120,7 @@ function CellContext(parser, parent, invokingState) {
 	}
 	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
-    this.ruleIndex = ExprParser$1.RULE_cell;
+    this.ruleIndex = MiniParser$1.RULE_cell;
     return this;
 }
 
@@ -13128,17 +13128,17 @@ CellContext.prototype = Object.create(antlr4$3.ParserRuleContext.prototype);
 CellContext.prototype.constructor = CellContext;
 
 CellContext.prototype.CELL = function() {
-    return this.getToken(ExprParser$1.CELL, 0);
+    return this.getToken(MiniParser$1.CELL, 0);
 };
 
 CellContext.prototype.enterRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.enterCell(this);
 	}
 };
 
 CellContext.prototype.exitRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.exitCell(this);
 	}
 };
@@ -13146,16 +13146,16 @@ CellContext.prototype.exitRule = function(listener) {
 
 
 
-ExprParser$1.CellContext = CellContext;
+MiniParser$1.CellContext = CellContext;
 
-ExprParser$1.prototype.cell = function() {
+MiniParser$1.prototype.cell = function() {
 
     var localctx = new CellContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 8, ExprParser$1.RULE_cell);
+    this.enterRule(localctx, 8, MiniParser$1.RULE_cell);
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 121;
-        this.match(ExprParser$1.CELL);
+        this.match(MiniParser$1.CELL);
     } catch (re) {
     	if(re instanceof antlr4$3.error.RecognitionException) {
 	        localctx.exception = re;
@@ -13179,7 +13179,7 @@ function Sheet_refContext(parser, parent, invokingState) {
 	}
 	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
-    this.ruleIndex = ExprParser$1.RULE_sheet_ref;
+    this.ruleIndex = MiniParser$1.RULE_sheet_ref;
     return this;
 }
 
@@ -13187,7 +13187,7 @@ Sheet_refContext.prototype = Object.create(antlr4$3.ParserRuleContext.prototype)
 Sheet_refContext.prototype.constructor = Sheet_refContext;
 
 Sheet_refContext.prototype.ID = function() {
-    return this.getToken(ExprParser$1.ID, 0);
+    return this.getToken(MiniParser$1.ID, 0);
 };
 
 Sheet_refContext.prototype.cell = function() {
@@ -13199,13 +13199,13 @@ Sheet_refContext.prototype.range = function() {
 };
 
 Sheet_refContext.prototype.enterRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.enterSheet_ref(this);
 	}
 };
 
 Sheet_refContext.prototype.exitRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.exitSheet_ref(this);
 	}
 };
@@ -13213,18 +13213,18 @@ Sheet_refContext.prototype.exitRule = function(listener) {
 
 
 
-ExprParser$1.Sheet_refContext = Sheet_refContext;
+MiniParser$1.Sheet_refContext = Sheet_refContext;
 
-ExprParser$1.prototype.sheet_ref = function() {
+MiniParser$1.prototype.sheet_ref = function() {
 
     var localctx = new Sheet_refContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 10, ExprParser$1.RULE_sheet_ref);
+    this.enterRule(localctx, 10, MiniParser$1.RULE_sheet_ref);
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 123;
-        this.match(ExprParser$1.ID);
+        this.match(MiniParser$1.ID);
         this.state = 124;
-        this.match(ExprParser$1.T__11);
+        this.match(MiniParser$1.T__11);
         this.state = 127;
         this._errHandler.sync(this);
         var la_ = this._interp.adaptivePredict(this._input,5,this._ctx);
@@ -13263,7 +13263,7 @@ function Function_callContext(parser, parent, invokingState) {
 	}
 	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
-    this.ruleIndex = ExprParser$1.RULE_function_call;
+    this.ruleIndex = MiniParser$1.RULE_function_call;
     this.args = null; // Call_argumentsContext
     return this;
 }
@@ -13272,7 +13272,7 @@ Function_callContext.prototype = Object.create(antlr4$3.ParserRuleContext.protot
 Function_callContext.prototype.constructor = Function_callContext;
 
 Function_callContext.prototype.ID = function() {
-    return this.getToken(ExprParser$1.ID, 0);
+    return this.getToken(MiniParser$1.ID, 0);
 };
 
 Function_callContext.prototype.call_arguments = function() {
@@ -13280,13 +13280,13 @@ Function_callContext.prototype.call_arguments = function() {
 };
 
 Function_callContext.prototype.enterRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.enterFunction_call(this);
 	}
 };
 
 Function_callContext.prototype.exitRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.exitFunction_call(this);
 	}
 };
@@ -13294,29 +13294,29 @@ Function_callContext.prototype.exitRule = function(listener) {
 
 
 
-ExprParser$1.Function_callContext = Function_callContext;
+MiniParser$1.Function_callContext = Function_callContext;
 
-ExprParser$1.prototype.function_call = function() {
+MiniParser$1.prototype.function_call = function() {
 
     var localctx = new Function_callContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 12, ExprParser$1.RULE_function_call);
+    this.enterRule(localctx, 12, MiniParser$1.RULE_function_call);
     var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 129;
-        this.match(ExprParser$1.ID);
+        this.match(MiniParser$1.ID);
         this.state = 130;
-        this.match(ExprParser$1.T__2);
+        this.match(MiniParser$1.T__2);
         this.state = 132;
         this._errHandler.sync(this);
         _la = this._input.LA(1);
-        if((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << ExprParser$1.T__2) | (1 << ExprParser$1.T__13) | (1 << ExprParser$1.T__15) | (1 << ExprParser$1.CELL) | (1 << ExprParser$1.ID) | (1 << ExprParser$1.INT) | (1 << ExprParser$1.FLOAT) | (1 << ExprParser$1.STRING))) !== 0)) {
+        if((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << MiniParser$1.T__2) | (1 << MiniParser$1.T__13) | (1 << MiniParser$1.T__15) | (1 << MiniParser$1.CELL) | (1 << MiniParser$1.ID) | (1 << MiniParser$1.INT) | (1 << MiniParser$1.FLOAT) | (1 << MiniParser$1.STRING))) !== 0)) {
             this.state = 131;
             localctx.args = this.call_arguments();
         }
 
         this.state = 134;
-        this.match(ExprParser$1.T__3);
+        this.match(MiniParser$1.T__3);
          localctx.type = 'call'; 
     } catch (re) {
     	if(re instanceof antlr4$3.error.RecognitionException) {
@@ -13341,7 +13341,7 @@ function NumberContext(parser, parent, invokingState) {
 	}
 	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
-    this.ruleIndex = ExprParser$1.RULE_number;
+    this.ruleIndex = MiniParser$1.RULE_number;
     return this;
 }
 
@@ -13349,21 +13349,21 @@ NumberContext.prototype = Object.create(antlr4$3.ParserRuleContext.prototype);
 NumberContext.prototype.constructor = NumberContext;
 
 NumberContext.prototype.INT = function() {
-    return this.getToken(ExprParser$1.INT, 0);
+    return this.getToken(MiniParser$1.INT, 0);
 };
 
 NumberContext.prototype.FLOAT = function() {
-    return this.getToken(ExprParser$1.FLOAT, 0);
+    return this.getToken(MiniParser$1.FLOAT, 0);
 };
 
 NumberContext.prototype.enterRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.enterNumber(this);
 	}
 };
 
 NumberContext.prototype.exitRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.exitNumber(this);
 	}
 };
@@ -13371,26 +13371,26 @@ NumberContext.prototype.exitRule = function(listener) {
 
 
 
-ExprParser$1.NumberContext = NumberContext;
+MiniParser$1.NumberContext = NumberContext;
 
-ExprParser$1.prototype.number = function() {
+MiniParser$1.prototype.number = function() {
 
     var localctx = new NumberContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 14, ExprParser$1.RULE_number);
+    this.enterRule(localctx, 14, MiniParser$1.RULE_number);
     try {
         this.state = 141;
         this._errHandler.sync(this);
         switch(this._input.LA(1)) {
-        case ExprParser$1.INT:
+        case MiniParser$1.INT:
             this.enterOuterAlt(localctx, 1);
             this.state = 137;
-            this.match(ExprParser$1.INT);
+            this.match(MiniParser$1.INT);
              localctx.type = 'int'; 
             break;
-        case ExprParser$1.FLOAT:
+        case MiniParser$1.FLOAT:
             this.enterOuterAlt(localctx, 2);
             this.state = 139;
-            this.match(ExprParser$1.FLOAT);
+            this.match(MiniParser$1.FLOAT);
              localctx.type = 'float'; 
             break;
         default:
@@ -13419,7 +13419,7 @@ function SeqContext(parser, parent, invokingState) {
 	}
 	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
-    this.ruleIndex = ExprParser$1.RULE_seq;
+    this.ruleIndex = MiniParser$1.RULE_seq;
     this._expr = null; // ExprContext
     this.items = []; // of ExprContexts
     return this;
@@ -13440,13 +13440,13 @@ SeqContext.prototype.expr = function(i) {
 };
 
 SeqContext.prototype.enterRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.enterSeq(this);
 	}
 };
 
 SeqContext.prototype.exitRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.exitSeq(this);
 	}
 };
@@ -13454,12 +13454,12 @@ SeqContext.prototype.exitRule = function(listener) {
 
 
 
-ExprParser$1.SeqContext = SeqContext;
+MiniParser$1.SeqContext = SeqContext;
 
-ExprParser$1.prototype.seq = function() {
+MiniParser$1.prototype.seq = function() {
 
     var localctx = new SeqContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 16, ExprParser$1.RULE_seq);
+    this.enterRule(localctx, 16, MiniParser$1.RULE_seq);
     var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
@@ -13469,9 +13469,9 @@ ExprParser$1.prototype.seq = function() {
         this.state = 148;
         this._errHandler.sync(this);
         _la = this._input.LA(1);
-        while(_la===ExprParser$1.T__12) {
+        while(_la===MiniParser$1.T__12) {
             this.state = 144;
-            this.match(ExprParser$1.T__12);
+            this.match(MiniParser$1.T__12);
             this.state = 145;
             localctx._expr = this.expr(0);
             localctx.items.push(localctx._expr);
@@ -13502,7 +13502,7 @@ function Id_seqContext(parser, parent, invokingState) {
 	}
 	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
-    this.ruleIndex = ExprParser$1.RULE_id_seq;
+    this.ruleIndex = MiniParser$1.RULE_id_seq;
     this._ID = null; // Token
     this.items = []; // of Tokens
     return this;
@@ -13516,21 +13516,21 @@ Id_seqContext.prototype.ID = function(i) {
 		i = null;
 	}
     if(i===null) {
-        return this.getTokens(ExprParser$1.ID);
+        return this.getTokens(MiniParser$1.ID);
     } else {
-        return this.getToken(ExprParser$1.ID, i);
+        return this.getToken(MiniParser$1.ID, i);
     }
 };
 
 
 Id_seqContext.prototype.enterRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.enterId_seq(this);
 	}
 };
 
 Id_seqContext.prototype.exitRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.exitId_seq(this);
 	}
 };
@@ -13538,26 +13538,26 @@ Id_seqContext.prototype.exitRule = function(listener) {
 
 
 
-ExprParser$1.Id_seqContext = Id_seqContext;
+MiniParser$1.Id_seqContext = Id_seqContext;
 
-ExprParser$1.prototype.id_seq = function() {
+MiniParser$1.prototype.id_seq = function() {
 
     var localctx = new Id_seqContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 18, ExprParser$1.RULE_id_seq);
+    this.enterRule(localctx, 18, MiniParser$1.RULE_id_seq);
     var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 151;
-        localctx._ID = this.match(ExprParser$1.ID);
+        localctx._ID = this.match(MiniParser$1.ID);
         localctx.items.push(localctx._ID);
         this.state = 156;
         this._errHandler.sync(this);
         _la = this._input.LA(1);
-        while(_la===ExprParser$1.T__12) {
+        while(_la===MiniParser$1.T__12) {
             this.state = 152;
-            this.match(ExprParser$1.T__12);
+            this.match(MiniParser$1.T__12);
             this.state = 153;
-            localctx._ID = this.match(ExprParser$1.ID);
+            localctx._ID = this.match(MiniParser$1.ID);
             localctx.items.push(localctx._ID);
             this.state = 158;
             this._errHandler.sync(this);
@@ -13586,7 +13586,7 @@ function Call_argumentsContext(parser, parent, invokingState) {
 	}
 	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
-    this.ruleIndex = ExprParser$1.RULE_call_arguments;
+    this.ruleIndex = MiniParser$1.RULE_call_arguments;
     this._argument = null; // ArgumentContext
     this.args = []; // of ArgumentContexts
     return this;
@@ -13607,13 +13607,13 @@ Call_argumentsContext.prototype.argument = function(i) {
 };
 
 Call_argumentsContext.prototype.enterRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.enterCall_arguments(this);
 	}
 };
 
 Call_argumentsContext.prototype.exitRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.exitCall_arguments(this);
 	}
 };
@@ -13621,12 +13621,12 @@ Call_argumentsContext.prototype.exitRule = function(listener) {
 
 
 
-ExprParser$1.Call_argumentsContext = Call_argumentsContext;
+MiniParser$1.Call_argumentsContext = Call_argumentsContext;
 
-ExprParser$1.prototype.call_arguments = function() {
+MiniParser$1.prototype.call_arguments = function() {
 
     var localctx = new Call_argumentsContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 20, ExprParser$1.RULE_call_arguments);
+    this.enterRule(localctx, 20, MiniParser$1.RULE_call_arguments);
     var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
@@ -13636,9 +13636,9 @@ ExprParser$1.prototype.call_arguments = function() {
         this.state = 164;
         this._errHandler.sync(this);
         _la = this._input.LA(1);
-        while(_la===ExprParser$1.T__12) {
+        while(_la===MiniParser$1.T__12) {
             this.state = 160;
-            this.match(ExprParser$1.T__12);
+            this.match(MiniParser$1.T__12);
             this.state = 161;
             localctx._argument = this.argument();
             localctx.args.push(localctx._argument);
@@ -13670,7 +13670,7 @@ function ArgumentContext(parser, parent, invokingState) {
 	}
 	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
-    this.ruleIndex = ExprParser$1.RULE_argument;
+    this.ruleIndex = MiniParser$1.RULE_argument;
     return this;
 }
 
@@ -13682,13 +13682,13 @@ ArgumentContext.prototype.expr = function() {
 };
 
 ArgumentContext.prototype.enterRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.enterArgument(this);
 	}
 };
 
 ArgumentContext.prototype.exitRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.exitArgument(this);
 	}
 };
@@ -13696,12 +13696,12 @@ ArgumentContext.prototype.exitRule = function(listener) {
 
 
 
-ExprParser$1.ArgumentContext = ArgumentContext;
+MiniParser$1.ArgumentContext = ArgumentContext;
 
-ExprParser$1.prototype.argument = function() {
+MiniParser$1.prototype.argument = function() {
 
     var localctx = new ArgumentContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 22, ExprParser$1.RULE_argument);
+    this.enterRule(localctx, 22, MiniParser$1.RULE_argument);
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 169;
@@ -13730,7 +13730,7 @@ function ArrayContext(parser, parent, invokingState) {
 	}
 	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
-    this.ruleIndex = ExprParser$1.RULE_array;
+    this.ruleIndex = MiniParser$1.RULE_array;
     return this;
 }
 
@@ -13742,13 +13742,13 @@ ArrayContext.prototype.seq = function() {
 };
 
 ArrayContext.prototype.enterRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.enterArray(this);
 	}
 };
 
 ArrayContext.prototype.exitRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.exitArray(this);
 	}
 };
@@ -13756,27 +13756,27 @@ ArrayContext.prototype.exitRule = function(listener) {
 
 
 
-ExprParser$1.ArrayContext = ArrayContext;
+MiniParser$1.ArrayContext = ArrayContext;
 
-ExprParser$1.prototype.array = function() {
+MiniParser$1.prototype.array = function() {
 
     var localctx = new ArrayContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 24, ExprParser$1.RULE_array);
+    this.enterRule(localctx, 24, MiniParser$1.RULE_array);
     var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 172;
-        this.match(ExprParser$1.T__13);
+        this.match(MiniParser$1.T__13);
         this.state = 174;
         this._errHandler.sync(this);
         _la = this._input.LA(1);
-        if((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << ExprParser$1.T__2) | (1 << ExprParser$1.T__13) | (1 << ExprParser$1.T__15) | (1 << ExprParser$1.CELL) | (1 << ExprParser$1.ID) | (1 << ExprParser$1.INT) | (1 << ExprParser$1.FLOAT) | (1 << ExprParser$1.STRING))) !== 0)) {
+        if((((_la) & ~0x1f) == 0 && ((1 << _la) & ((1 << MiniParser$1.T__2) | (1 << MiniParser$1.T__13) | (1 << MiniParser$1.T__15) | (1 << MiniParser$1.CELL) | (1 << MiniParser$1.ID) | (1 << MiniParser$1.INT) | (1 << MiniParser$1.FLOAT) | (1 << MiniParser$1.STRING))) !== 0)) {
             this.state = 173;
             this.seq();
         }
 
         this.state = 176;
-        this.match(ExprParser$1.T__14);
+        this.match(MiniParser$1.T__14);
          localctx.type = 'array'; 
     } catch (re) {
     	if(re instanceof antlr4$3.error.RecognitionException) {
@@ -13801,7 +13801,7 @@ function ObjectContext(parser, parent, invokingState) {
 	}
 	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
-    this.ruleIndex = ExprParser$1.RULE_object;
+    this.ruleIndex = MiniParser$1.RULE_object;
     this._ID = null; // Token
     this.keys = []; // of Tokens
     this._expr = null; // ExprContext
@@ -13817,9 +13817,9 @@ ObjectContext.prototype.ID = function(i) {
 		i = null;
 	}
     if(i===null) {
-        return this.getTokens(ExprParser$1.ID);
+        return this.getTokens(MiniParser$1.ID);
     } else {
-        return this.getToken(ExprParser$1.ID, i);
+        return this.getToken(MiniParser$1.ID, i);
     }
 };
 
@@ -13836,13 +13836,13 @@ ObjectContext.prototype.expr = function(i) {
 };
 
 ObjectContext.prototype.enterRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.enterObject(this);
 	}
 };
 
 ObjectContext.prototype.exitRule = function(listener) {
-    if(listener instanceof ExprListener$1 ) {
+    if(listener instanceof MiniListener$1 ) {
         listener.exitObject(this);
 	}
 };
@@ -13850,40 +13850,40 @@ ObjectContext.prototype.exitRule = function(listener) {
 
 
 
-ExprParser$1.ObjectContext = ObjectContext;
+MiniParser$1.ObjectContext = ObjectContext;
 
-ExprParser$1.prototype.object = function() {
+MiniParser$1.prototype.object = function() {
 
     var localctx = new ObjectContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 26, ExprParser$1.RULE_object);
+    this.enterRule(localctx, 26, MiniParser$1.RULE_object);
     var _la = 0; // Token type
     try {
         this.enterOuterAlt(localctx, 1);
         this.state = 179;
-        this.match(ExprParser$1.T__15);
+        this.match(MiniParser$1.T__15);
         this.state = 192;
         this._errHandler.sync(this);
         _la = this._input.LA(1);
-        if(_la===ExprParser$1.ID) {
+        if(_la===MiniParser$1.ID) {
             this.state = 180;
-            localctx._ID = this.match(ExprParser$1.ID);
+            localctx._ID = this.match(MiniParser$1.ID);
             localctx.keys.push(localctx._ID);
             this.state = 181;
-            this.match(ExprParser$1.T__10);
+            this.match(MiniParser$1.T__10);
             this.state = 182;
             localctx._expr = this.expr(0);
             localctx.vals.push(localctx._expr);
             this.state = 189;
             this._errHandler.sync(this);
             _la = this._input.LA(1);
-            while(_la===ExprParser$1.T__12) {
+            while(_la===MiniParser$1.T__12) {
                 this.state = 183;
-                this.match(ExprParser$1.T__12);
+                this.match(MiniParser$1.T__12);
                 this.state = 184;
-                localctx._ID = this.match(ExprParser$1.ID);
+                localctx._ID = this.match(MiniParser$1.ID);
                 localctx.keys.push(localctx._ID);
                 this.state = 185;
-                this.match(ExprParser$1.T__10);
+                this.match(MiniParser$1.T__10);
                 this.state = 186;
                 localctx._expr = this.expr(0);
                 localctx.vals.push(localctx._expr);
@@ -13894,7 +13894,7 @@ ExprParser$1.prototype.object = function() {
         }
 
         this.state = 194;
-        this.match(ExprParser$1.T__16);
+        this.match(MiniParser$1.T__16);
          localctx.type = 'object'; 
     } catch (re) {
     	if(re instanceof antlr4$3.error.RecognitionException) {
@@ -13911,7 +13911,7 @@ ExprParser$1.prototype.object = function() {
 };
 
 
-ExprParser$1.prototype.sempred = function(localctx, ruleIndex, predIndex) {
+MiniParser$1.prototype.sempred = function(localctx, ruleIndex, predIndex) {
 	switch(ruleIndex) {
 	case 2:
 			return this.expr_sempred(localctx, predIndex);
@@ -13920,7 +13920,7 @@ ExprParser$1.prototype.sempred = function(localctx, ruleIndex, predIndex) {
    }
 };
 
-ExprParser$1.prototype.expr_sempred = function(localctx, predIndex) {
+MiniParser$1.prototype.expr_sempred = function(localctx, predIndex) {
 	switch(predIndex) {
 		case 0:
 			return this.precpred(this._ctx, 15);
@@ -13940,30 +13940,30 @@ ExprParser$1.prototype.expr_sempred = function(localctx, predIndex) {
 };
 
 
-var ExprParser_2 = ExprParser$1;
+var MiniParser_2 = MiniParser$1;
 
-var ExprParser_1 = {
-	ExprParser: ExprParser_2
+var MiniParser_1 = {
+	MiniParser: MiniParser_2
 };
 
 var antlr4 = require$$0;
 
 var InputStream = antlr4.InputStream;
 var CommonTokenStream = antlr4.CommonTokenStream;
-var ExprLexer = ExprLexer_1.ExprLexer;
-var ExprParser = ExprParser_1.ExprParser;
-var ExprListener = ExprListener_1.ExprListener;
+var MiniLexer = MiniLexer_1.MiniLexer;
+var MiniParser = MiniParser_1.MiniParser;
+var MiniListener = MiniListener_1.MiniListener;
 var treeWalker = antlr4.tree.ParseTreeWalker.DEFAULT;
 
 var _parser = {
 	InputStream: InputStream,
 	CommonTokenStream: CommonTokenStream,
-	ExprLexer: ExprLexer,
-	ExprParser: ExprParser,
-	ExprListener: ExprListener,
+	MiniLexer: MiniLexer,
+	MiniParser: MiniParser,
+	MiniListener: MiniListener,
 	treeWalker: treeWalker
 };
 
-export { InputStream, CommonTokenStream, ExprLexer, ExprParser, ExprListener, treeWalker };export default _parser;
+export { InputStream, CommonTokenStream, MiniLexer, MiniParser, MiniListener, treeWalker };export default _parser;
 
 //# sourceMappingURL=./parser.js.map
