@@ -20,6 +20,6 @@ export default function parse(expr) {
   return result
 }
 
-function _enhanceSyntaxError(parser, syntaxError) {
+function _enhanceSyntaxError(parser, syntaxError) { // eslint-disable-line
   // TODO: we want to create a human readable message
 }
