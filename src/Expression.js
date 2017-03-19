@@ -43,9 +43,13 @@ class Expression extends EventEmitter {
   }
 
   get name() {
-    if (this.root && this.root.type === 'definition') {
+    if (this.isDefinition()) {
       return this.root.name
     }
+  }
+
+  isDefinition() {
+    return (this.root && this.root.type === 'definition')
   }
 
   getContext() {
