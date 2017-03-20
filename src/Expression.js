@@ -15,7 +15,6 @@ class Expression extends EventEmitter {
 
     this.value = undefined
     this.syntaxError = null
-    this.runtimeErrors = []
 
     // initialize nodes
     for (let i = 0; i < nodes.length; i++) {
@@ -28,7 +27,7 @@ class Expression extends EventEmitter {
     root.setValue = (val) => {
       root.value = val
       this.value = val
-      this.emit('value:updated', val)
+      this.emit('evaluation:finished', val)
     }
     // execution state
     this._cursor = -1
@@ -36,10 +35,6 @@ class Expression extends EventEmitter {
 
   getValue() {
     return this.value
-  }
-
-  addRuntimeError(err) {
-    this.runtimeErrors.push(err)
   }
 
   get name() {
@@ -68,9 +63,9 @@ class Expression extends EventEmitter {
   propagate(start = 0) {
     // TODO: we could use a 'PENDING' value while evaluating
     this.value = undefined
-    this.runtimeErrors = []
     this._cursor = start
     try {
+      this.emit('evaluation:started')
       const nodes = this.nodes
       const L = nodes.length
       for (let i = start; i < L; i++) {

@@ -17,10 +17,6 @@ class ExprNode {
     return this.value
   }
 
-  addRuntimeError(err) {
-    this.expr.addRuntimeError(err)
-  }
-
   getContext() {
     return this.getExpression().getContext()
   }
@@ -207,20 +203,13 @@ export class FunctionCall extends ExprNode {
   get type() { return 'call' }
 
   evaluate() {
-    try {
-      let res = this.getContext().callFunction(this)
-      if (res instanceof Promise) {
-        res.then((val) => {
-          this.setValue(val)
-        })
-        .catch((err) => {
-          this.addRuntimeError(err)
-        })
-      } else {
-        this.setValue(res)
-      }
-    } catch(err) {
-      this.addRuntimeError(err)
+    let res = this.getContext().callFunction(this)
+    if (res instanceof Promise) {
+      res.then((val) => {
+        this.setValue(val)
+      })
+    } else {
+      this.setValue(res)
     }
   }
 }
@@ -289,20 +278,14 @@ export class PipeOp extends ExprNode {
         }
       }].concat(this.right.args)
     }
-    try {
-      let res = this.getContext().callFunction(right)
-      if (res instanceof Promise) {
-        res.then((val) => {
-          this.setValue(val)
-        })
-        .catch((err) => {
-          this.addRuntimeError(err)
-        })
-      } else {
-        this.setValue(res)
-      }
-    } catch(err) {
-      this.addRuntimeError(err)
+
+    let res = this.getContext().callFunction(right)
+    if (res instanceof Promise) {
+      res.then((val) => {
+        this.setValue(val)
+      })
+    } else {
+      this.setValue(res)
     }
   }
 }
