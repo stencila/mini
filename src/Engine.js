@@ -126,7 +126,7 @@ class Engine extends AbstractContext {
   _addExpression(expr) {
     expr.id = expr.id || uuid()
     expr.context = this
-    expr.on('value:updated', (val) => {
+    expr.on('evaluation:finished', (val) => {
       this.setValue(expr.id, val)
     })
     let entry = new ExpressionEntry(expr)
