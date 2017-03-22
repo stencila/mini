@@ -120,14 +120,49 @@ test('x = function(x,y)', (t) => {
   t.end()
 })
 
-test('sum(1,x,A1)', (t) => {
+test('Function call without arguments', (t) => {
+  const expr = parse('foo()')
+  const expectedTypes = ['call']
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+test('Function call with one argument', (t) => {
+  const expr = parse('foo(x)')
+  const expectedTypes = ['call', 'var']
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+test('Function call with mixed arguments', (t) => {
   const expr = parse('sum(1,x,A1)')
   const expectedTypes = ['call', 'number', 'var', 'cell']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.end()
 })
 
-test('foo() | bar()', (t) => {
+test('Function call with one named argument', (t) => {
+  const expr = parse('foo(x=2)')
+  const expectedTypes = ['call', 'named-argument', 'number']
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+test('Function call with one positional and one named argument', (t) => {
+  const expr = parse('foo(1, x=2)')
+  const expectedTypes = ['call', 'number', 'named-argument', 'number']
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+test('Function call with multiple positional and multiple named arguments', (t) => {
+  const expr = parse('foo(1, x, A1, x=2, y=x, z=A1)')
+  const expectedTypes = ['call', 'number', 'var', 'cell', 'named-argument', 'number', 'named-argument', 'var', 'named-argument', 'cell']
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+test('Piping a function call into another', (t) => {
   const expr = parse('foo() | bar()')
   const expectedTypes = ['pipe', 'call', 'call']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
@@ -148,6 +183,12 @@ test('foo(x,y', (t) => {
 
 test('x 7', (t) => {
   const expr = parse('x 7')
+  t.notNil(expr.syntaxError, 'There should be a syntaxError.')
+  t.end()
+})
+
+test('Named arguments before positional arguments', (t) => {
+  const expr = parse('foo(x=7, 7)')
   t.notNil(expr.syntaxError, 'There should be a syntaxError.')
   t.end()
 })
