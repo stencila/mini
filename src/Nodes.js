@@ -1,4 +1,4 @@
-import { isEqual, forEach } from 'substance'
+import { isEqual } from 'substance'
 
 class ExprNode {
   constructor(id) {
