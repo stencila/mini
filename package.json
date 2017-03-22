@@ -26,8 +26,8 @@
     "karma-tap": "^3.1.1",
     "karma-tape-reporter": "^1.0.3",
     "substance": "substance/substance#kaikoura",
-    "substance-bundler": "^0.15.1",
-    "substance-test": "^0.8.0"
+    "substance-bundler": "^0.15.3",
+    "substance-test": "^0.9.1"
   },
   "files": [
     "dist",
