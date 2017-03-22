@@ -1,4 +1,4 @@
-import { isEqual } from 'substance'
+import { isEqual, forEach } from 'substance'
 
 class ExprNode {
   constructor(id) {
@@ -191,12 +191,16 @@ export class ExternalFunction extends ExprNode {
 
 export class FunctionCall extends ExprNode {
 
-  constructor(id, name, args = []) {
+  constructor(id, name, args = [], namedArgs=[]) {
     super(id)
     this.name = name
     this.args = args
-    args.forEach((c) => {
-      c.parent = this
+    this.namedArgs = namedArgs
+    args.forEach((arg) => {
+      arg.parent = this
+    })
+    namedArgs.forEach((arg) => {
+      arg.parent = this
     })
   }
 
@@ -212,6 +216,23 @@ export class FunctionCall extends ExprNode {
       this.setValue(res)
     }
   }
+}
+
+export class NamedArgument extends ExprNode {
+
+  constructor(id, name, rhs) {
+    super(id)
+    this.name = name
+    this.rhs = rhs
+    rhs.parent = this
+  }
+
+  get type() { return 'named-argument' }
+
+  evaluate() {
+    this.setValue(this.rhs.getValue())
+  }
+
 }
 
 export class BinaryNumericOp extends ExprNode {
