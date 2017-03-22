@@ -23,7 +23,7 @@ export default class TestCell extends EventEmitter {
       this.expr = parse(exprStr)
       this.expr.id = this.id
       this.expr.cell = this
-      this.expr.on('value:updated', this.setValue, this)
+      this.expr.on('evaluation:finished', this.onEvaluationFinished, this)
     } catch (err) {
       this.expr = null
       this.error = err
@@ -35,6 +35,10 @@ export default class TestCell extends EventEmitter {
     if (TestCell.DEBUG) console.info('Updating value.', this.id, val)
     this.value = val
     this.emit('value:updated')
+  }
+
+  onEvaluationFinished() {
+    this.setValue(this.expr.getValue())
   }
 
 }
