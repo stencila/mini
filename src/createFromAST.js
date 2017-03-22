@@ -137,13 +137,10 @@ export default function createFromAST(state, ast) {
       node = new FunctionCall(state.nodeId++, name, args, namedArgs)
       break
     }
-    case 'argument': {
-      return createFromAST(state, ast.children[0])
-    }
     case 'named-argument': {
       let name = ast.children[0]
       state.tokens.push(new Token('key', name.symbol))
-      node = new NamedArgument(state.nodeId++, name,
+      node = new NamedArgument(state.nodeId++, name.toString(),
         createFromAST(state, ast.children[2])
       )
       break
