@@ -157,6 +157,18 @@ test('async function call', (t) => {
   }, 0)
 })
 
+test('function call with positional and named arguments', (t) => {
+  const { engine } = setup()
+  // TODO: I am not sure yet how to define these functions
+  engine.registerFunction('foo', (x=1,y=2,z=3) => {
+    return x+y+z
+  })
+  TestEngineComponent.mount({engine}, t.sandbox)
+  let cell = engine.addExpression('foo(4,z=5)')
+  t.equal(cell.value, 11, MESSAGE_CORRECT_VALUE)
+  t.end()
+})
+
 test('foo() | bar()', (t) => {
   t.plan(1)
   const { engine } = setup()
