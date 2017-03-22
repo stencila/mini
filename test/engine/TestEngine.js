@@ -51,13 +51,18 @@ class TestEngine extends Engine {
       return Promise.reject(`Unknown function ${functionName}`)
     } else {
       const sig = getSignature(fn)
-      const args = funcNode.args.map(arg => arg.getValue())
-      funcNode.namedArgs.forEach((arg) => {
-        let idx = sig.indexOf(arg.name)
-        if (idx >-1) {
-          args[idx] = arg.getValue()
-        }
-      })
+      let args = []
+      if (funcNode.args) {
+        args = funcNode.args.map(arg => arg.getValue())
+      }
+      if (funcNode.namedArgs) {
+        funcNode.namedArgs.forEach((arg) => {
+          let idx = sig.indexOf(arg.name)
+          if (idx >-1) {
+            args[idx] = arg.getValue()
+          }
+        })
+      }
       return fn(...args)
     }
   }
