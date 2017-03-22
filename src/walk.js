@@ -13,10 +13,20 @@ export default function walk(expr, fn) {
         stack.push(next.rhs)
         break
       case 'function':
-      case 'call':
         for (let i = next.args.length - 1; i >= 0; i--) {
           stack.push(next.args[i])
         }
+        break
+      case 'call':
+        for (let i = next.namedArgs.length - 1; i >= 0; i--) {
+          stack.push(next.namedArgs[i])
+        }
+        for (let i = next.args.length - 1; i >= 0; i--) {
+          stack.push(next.args[i])
+        }
+        break
+      case 'named-argument':
+        stack.push(next.rhs)
         break
       case 'plus':
       case 'minus':

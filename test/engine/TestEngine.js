@@ -40,17 +40,51 @@ class TestEngine extends Engine {
   }
 
   registerFunction(name, fn) {
+    getSignature(fn)
     this.functions[name] = fn
   }
 
   callFunction(funcNode) {
     const functionName = funcNode.name
-    const args = funcNode.args.map(arg => arg.getValue())
     const fn = this.functions[functionName]
     if (!fn) {
       return Promise.reject(`Unknown function ${functionName}`)
     } else {
-      return fn(args)
+      const sig = getSignature(fn)
+      let args = []
+      if (funcNode.args) {
+        args = funcNode.args.map(arg => arg.getValue())
+      }
+      if (funcNode.namedArgs) {
+        funcNode.namedArgs.forEach((arg) => {
+          let idx = sig.indexOf(arg.name)
+          if (idx >-1) {
+            args[idx] = arg.getValue()
+          }
+        })
+      }
+      return fn(...args)
     }
   }
+}
+
+
+function getSignature(fn) {
+  if (fn.__signature__) return fn.__signature__
+  const reg = /\(([\s\S]*?)\)/
+  const params = reg.exec(fn)
+  let signature = []
+  if (params) {
+    signature = params[1].split(',')
+    signature = signature.map((s) => {
+      const idx = s.indexOf('=')
+      if (idx > -1) {
+        return s.slice(0, idx)
+      } else {
+        return s
+      }
+    })
+  }
+  fn.__signature__ = signature
+  return signature
 }

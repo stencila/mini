@@ -2,7 +2,7 @@ import {
   Definition,
   NumberNode, StringNode, ArrayNode, ObjectNode,
   Var, Cell, Range,
-  FunctionCall, ExternalFunction,
+  FunctionCall, ExternalFunction, NamedArgument,
   BinaryNumericOp,
   PipeOp,
   ErrorNode
@@ -131,12 +131,19 @@ export default function createFromAST(state, ast) {
       state.tokens.push(
         new Token('function-name', ast.children[0].symbol)
       )
-      let args = arg_sequence(state, ast.args)
-      node = new FunctionCall(state.nodeId++, name, args)
+      let argsCtx = ast.args
+      let args = arg_sequence(state, argsCtx.args)
+      let namedArgs = arg_sequence(state, argsCtx.namedArgs)
+      node = new FunctionCall(state.nodeId++, name, args, namedArgs)
       break
     }
-    case 'argument': {
-      return createFromAST(state, ast.children[0])
+    case 'named-argument': {
+      let name = ast.children[0]
+      state.tokens.push(new Token('key', name.symbol))
+      node = new NamedArgument(state.nodeId++, name.toString(),
+        createFromAST(state, ast.children[2])
+      )
+      break
     }
     default: {
       if (ast.exception) {

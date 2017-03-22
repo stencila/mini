@@ -130,10 +130,7 @@ test('1+x+A1', (t) => {
 
 test('sync function call', (t) => {
   const { engine } = setup()
-  // TODO: I am not sure yet how to define these functions
-  engine.registerFunction('sum', (vals) => {
-    return vals.reduce((sum, x)=>{return sum+x}, 0)
-  })
+  engine.registerFunction('sum', sum)
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('sum(1,2,3)')
   t.equal(cell.value, 6, MESSAGE_CORRECT_VALUE)
@@ -143,11 +140,7 @@ test('sync function call', (t) => {
 test('async function call', (t) => {
   t.plan(2)
   const { engine } = setup()
-  engine.registerFunction('sum', (vals) => {
-    return new Promise((resolve) => {
-      resolve(vals.reduce((sum, x)=>{return sum+x}, 0))
-    })
-  })
+  engine.registerFunction('sum', sumAsync)
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('sum(1,2,3)')
   t.nil(cell.value, 'Value should be undefined first')
@@ -155,6 +148,18 @@ test('async function call', (t) => {
   setTimeout(() => {
     t.equal(cell.value, 6, MESSAGE_CORRECT_VALUE)
   }, 0)
+})
+
+test('function call with positional and named arguments', (t) => {
+  const { engine } = setup()
+  // TODO: I am not sure yet how to define these functions
+  engine.registerFunction('foo', (x=1,y=2,z=3) => {
+    return x+y+z
+  })
+  TestEngineComponent.mount({engine}, t.sandbox)
+  let cell = engine.addExpression('foo(4,z=5)')
+  t.equal(cell.value, 11, MESSAGE_CORRECT_VALUE)
+  t.end()
 })
 
 test('foo() | bar()', (t) => {
@@ -194,4 +199,14 @@ test('foo() | bar() (async)', (t) => {
 function setup() {
   let engine = new TestEngine()
   return {engine}
+}
+
+function sum(...vals) {
+  return vals.reduce((sum, x)=>{return sum+x}, 0)
+}
+
+function sumAsync(...vals){
+  return new Promise((resolve) => {
+    resolve(sum(...vals))
+  })
 }

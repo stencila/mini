@@ -110,12 +110,30 @@ MiniListener.prototype.exitCall_arguments = function(ctx) {
 };
 
 
-// Enter a parse tree produced by MiniParser#argument.
-MiniListener.prototype.enterArgument = function(ctx) {
+// Enter a parse tree produced by MiniParser#positional_arguments.
+MiniListener.prototype.enterPositional_arguments = function(ctx) {
 };
 
-// Exit a parse tree produced by MiniParser#argument.
-MiniListener.prototype.exitArgument = function(ctx) {
+// Exit a parse tree produced by MiniParser#positional_arguments.
+MiniListener.prototype.exitPositional_arguments = function(ctx) {
+};
+
+
+// Enter a parse tree produced by MiniParser#named_arguments.
+MiniListener.prototype.enterNamed_arguments = function(ctx) {
+};
+
+// Exit a parse tree produced by MiniParser#named_arguments.
+MiniListener.prototype.exitNamed_arguments = function(ctx) {
+};
+
+
+// Enter a parse tree produced by MiniParser#named_argument.
+MiniListener.prototype.enterNamed_argument = function(ctx) {
+};
+
+// Exit a parse tree produced by MiniParser#named_argument.
+MiniListener.prototype.exitNamed_argument = function(ctx) {
 };
 
 
