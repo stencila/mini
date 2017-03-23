@@ -151,10 +151,11 @@ export default function createFromAST(state, ast) {
       break
     }
     default: {
-      // console.log('Creating ErrorNode', ast)
       if (ast.exception) {
+        // console.log('Creating ErrorNode with exception', ast)
         node = new ErrorNode(state.nodeId++, ast.exception)
       } else {
+        // console.log('Creating ErrorNode', ast)
         node = new ErrorNode(state.nodeId++, 'Parser error.')
       }
     }
