@@ -140,8 +140,13 @@ export class Var extends ExprNode {
   get type() { return 'var' }
 
   evaluate() {
-    let val = this.getContext().lookup(this)
-    this.setValue(val)
+    const context = this.getContext()
+    if (context) {
+      let val = context.lookup(this)
+      this.setValue(val)
+    } else {
+      this.setValue(undefined)
+    }
   }
 
 }
@@ -158,8 +163,13 @@ export class Cell extends ExprNode {
   get type() { return 'cell' }
 
   evaluate() {
-    let val = this.getContext().lookup(this)
-    this.setValue(val)
+    const context = this.getContext()
+    if (context) {
+      let val = context.lookup(this)
+      this.setValue(val)
+    } else {
+      this.setValue(undefined)
+    }
   }
 
 }
@@ -180,8 +190,13 @@ export class Range extends ExprNode {
   evaluate() {
     // TODO: rethink, it seems a bit heavy to implement
     // range -> matrix conversion in lookup
-    let matrix = this.getContext().lookup(this)
-    this.setValue(matrix)
+    const context = this.getContext()
+    if (context) {
+      let matrix = context.lookup(this)
+      this.setValue(matrix)
+    } else {
+      this.setValue(undefined)
+    }
   }
 
 }
@@ -222,13 +237,18 @@ export class FunctionCall extends ExprNode {
   get type() { return 'call' }
 
   evaluate() {
-    let res = this.getContext().callFunction(this)
-    if (res instanceof Promise) {
-      res.then((val) => {
-        this.setValue(val)
-      })
+    const context = this.getContext()
+    if (context) {
+      let res = context.callFunction(this)
+      if (res instanceof Promise) {
+        res.then((val) => {
+          this.setValue(val)
+        })
+      } else {
+        this.setValue(res)
+      }
     } else {
-      this.setValue(res)
+      this.setValue(undefined)
     }
   }
 }
@@ -316,13 +336,18 @@ export class PipeOp extends ExprNode {
       namedArgs: this.right.namedArgs
     }
 
-    let res = this.getContext().callFunction(right)
-    if (res instanceof Promise) {
-      res.then((val) => {
-        this.setValue(val)
-      })
+    const context = this.getContext()
+    if (context) {
+      let res = context.callFunction(right)
+      if (res instanceof Promise) {
+        res.then((val) => {
+          this.setValue(val)
+        })
+      } else {
+        this.setValue(res)
+      }
     } else {
-      this.setValue(res)
+      this.setValue(undefined)
     }
   }
 }
