@@ -61,7 +61,10 @@ export default function createFromAST(state, ast) {
     case 'array': {
       const ctx = ast.children[0]
       const seq = ctx.children[1]
-      const vals = expr_sequence(state, seq.items)
+      let vals = []
+      if (seq && seq.items) {
+        vals = expr_sequence(state, seq.items)
+      }
       node = new ArrayNode(state.nodeId++, vals)
       break
     }
@@ -72,9 +75,11 @@ export default function createFromAST(state, ast) {
       const entries = []
       for (let i = 0; i < keys.length; i++) {
         state.tokens.push(new Token('key', keys[i]))
-        let key = keys[i].text
-        let val = createFromAST(state, vals[i])
-        entries.push({ key, val })
+        if (keys[i] && vals[i]) {
+          let key = keys[i].text
+          let val = createFromAST(state, vals[i])
+          entries.push({ key, val })
+        }
       }
       node = new ObjectNode(state.nodeId++, entries)
       break
@@ -147,9 +152,11 @@ export default function createFromAST(state, ast) {
     }
     default: {
       if (ast.exception) {
+        // console.log('Creating ErrorNode with exception', ast)
         node = new ErrorNode(state.nodeId++, ast.exception)
       } else {
-        throw new Error('Unsupported Expression type:'+ast.type)
+        // console.log('Creating ErrorNode', ast)
+        node = new ErrorNode(state.nodeId++, 'Parser error.')
       }
     }
 

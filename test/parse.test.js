@@ -193,6 +193,18 @@ test('Named arguments before positional arguments', (t) => {
   t.end()
 })
 
+test('a: 1, b:2}', (t) => {
+  const expr = parse('a: 1, b:2}')
+  t.notNil(expr.syntaxError, 'There should be a syntaxError.')
+  t.end()
+})
+
+test(", '2'}", (t) => {
+  const expr = parse(", '2'}")
+  t.notNil(expr.syntaxError, 'There should be a syntaxError.')
+  t.end()
+})
+
 function _equal(t, arr1, arr2, msg) {
   return t.equal(String(arr1), String(arr2), msg)
 }
