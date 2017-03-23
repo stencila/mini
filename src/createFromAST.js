@@ -154,7 +154,7 @@ export default function createFromAST(state, ast) {
       if (ast.exception) {
         node = new ErrorNode(state.nodeId++, ast.exception)
       } else {
-        throw new Error('Unsupported Expression type:'+ast.type)
+        node = new ErrorNode(state.nodeId++, 'Parser error.')
       }
     }
 
