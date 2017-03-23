@@ -297,7 +297,8 @@ export class PipeOp extends ExprNode {
         getValue() {
           return pipeArg
         }
-      }].concat(this.right.args)
+      }].concat(this.right.args),
+      namedArgs: this.right.namedArgs
     }
 
     let res = this.getContext().callFunction(right)
