@@ -15,6 +15,7 @@ expr:  expr '^'<assoc=right> expr { $ctx.type = 'power' }
     |  expr '+' expr            { $ctx.type = 'plus' }
     |  expr '-' expr            { $ctx.type = 'minus' }
     |  expr '|' function_call   { $ctx.type = 'pipe' }
+    |  BOOLEAN                  { $ctx.type = 'boolean' }
     |  number                   { $ctx.type = 'number' }
     |  range                    { $ctx.type = 'range' }
     |  cell                     { $ctx.type = 'cell' }
@@ -61,6 +62,7 @@ array: '[' ( seq )? ']'   { $ctx.type = 'array' }
 object: '{' ( keys+=ID ':' vals+=expr (',' keys+=ID ':' vals+=expr)* )? '}' { $ctx.type = 'object' }
     ;
 
+BOOLEAN: 'true'|'false';
 CELL: [A-Z]+[1-9][0-9]*;
 ID  : [a-zA-Z_@][a-zA-Z_@0-9]*;
 INT : [0-9]+ ;

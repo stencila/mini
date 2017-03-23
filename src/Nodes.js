@@ -100,6 +100,21 @@ export class NumberNode extends ExprNode {
 
 }
 
+export class BooleanNode extends ExprNode {
+
+  constructor(id, bool) {
+    super(id)
+    this.bool = bool
+  }
+
+  get type() { return 'boolean' }
+
+  evaluate() {
+    this.setValue(this.bool)
+  }
+}
+
+
 export class StringNode extends ExprNode {
 
   constructor(id, str) {

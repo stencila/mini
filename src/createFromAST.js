@@ -1,6 +1,6 @@
 import {
   Definition,
-  NumberNode, StringNode, ArrayNode, ObjectNode,
+  NumberNode, StringNode, ArrayNode, ObjectNode, BooleanNode,
   Var, Cell, Range,
   FunctionCall, ExternalFunction, NamedArgument,
   BinaryNumericOp,
@@ -48,13 +48,21 @@ export default function createFromAST(state, ast) {
     case 'int':
     case 'float':
     case 'number': {
-      node = new NumberNode(state.nodeId++, Number(ast.getText()))
+      let ctx = ast.children[0]
+      state.tokens.push(new Token('number-literal', ctx))
+      node = new NumberNode(state.nodeId++, Number(ctx.getText()))
+      break
+    }
+    case 'boolean': {
+      state.tokens.push(new Token('boolean-literal', ast))
+      let bool = (ast.getText() === 'true') ? true : false
+      node = new BooleanNode(state.nodeId++, bool)
       break
     }
     case 'string': {
-      let str = ast.children[0].getText()
-      state.tokens.push(new Token('string-literal', ast.children[0].symbol))
-      str = str.slice(1, -1)
+      let ctx = ast.children[0]
+      state.tokens.push(new Token('string-literal', ctx.symbol))
+      let str = ctx.getText().slice(1, -1)
       node = new StringNode(state.nodeId++, str)
       break
     }

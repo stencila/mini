@@ -22,9 +22,15 @@ function _generateParser() {
     src: './parser/Mini.g4',
     dest: './parser/MiniParser.js',
     execute: () => {
+      const isWin = /^win/.test(process.platform)
+      let cmd = 'java -jar ./.bin/antlr-4.6-complete.jar -Dlanguage=JavaScript -no-visitor'
+      // WORKAROUND: antrl4 behaves differently under windows, i.e. it does not generate into folder 'parser'
+      // thus we need to tell explicitely to do so
+      if (isWin) cmd += " -o parser"
+      cmd += ' parser/Mini.g4'
       let exec = require('child_process').exec
       return new Promise(function(resolve, reject) {
-        exec('java -jar ./.bin/antlr-4.6-complete.jar -o parser -Dlanguage=JavaScript -no-visitor parser/Mini.g4', (err) => {
+        exec(cmd, (err) => {
           if (err) {
             reject(new Error(err))
           } else {

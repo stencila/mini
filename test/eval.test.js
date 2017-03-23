@@ -6,7 +6,7 @@ const test = module('Eval')
 
 const MESSAGE_CORRECT_VALUE = 'Value should be correct'
 
-test('1', (t) => {
+test('Number', (t) => {
   const { engine } = setup()
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('1')
@@ -14,16 +14,17 @@ test('1', (t) => {
   t.end()
 })
 
-test('x = 42', (t) => {
+test('Boolean', (t) => {
   const { engine } = setup()
   TestEngineComponent.mount({engine}, t.sandbox)
-  let cell = engine.addExpression('x = 42')
-  t.deepEqual(cell.value, 42, MESSAGE_CORRECT_VALUE)
-  t.equal(cell.expr.name, 'x', 'Expression should have correct name')
+  let cell = engine.addExpression('true')
+  t.equal(cell.value, true, MESSAGE_CORRECT_VALUE)
+  cell = engine.addExpression('false')
+  t.equal(cell.value, false, MESSAGE_CORRECT_VALUE)
   t.end()
 })
 
-test('x', (t) => {
+test('Var', (t) => {
   const { engine } = setup()
   engine.addExpression('x = 4')
   TestEngineComponent.mount({engine}, t.sandbox)
@@ -32,7 +33,7 @@ test('x', (t) => {
   t.end()
 })
 
-test('"foo"', (t) => {
+test('String', (t) => {
   const { engine } = setup()
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('"foo"')
@@ -40,7 +41,7 @@ test('"foo"', (t) => {
   t.end()
 })
 
-test('[1,x,A1]', (t) => {
+test('Array', (t) => {
   const { engine } = setup()
   engine.addExpression('x = 4')
   engine.setValue('$data', [[10]])
@@ -50,7 +51,7 @@ test('[1,x,A1]', (t) => {
   t.end()
 })
 
-test('{foo: 1, bar: x, baz: A1}', (t) => {
+test('Object', (t) => {
   const { engine } = setup()
   engine.addExpression('x = 4')
   engine.setValue('$data', [[10]])
@@ -60,7 +61,7 @@ test('{foo: 1, bar: x, baz: A1}', (t) => {
   t.end()
 })
 
-test('B3', (t) => {
+test('Cell', (t) => {
   const { engine } = setup()
   engine.setValue('$data', [[0,0],[0,0],[0,10]])
   TestEngineComponent.mount({engine}, t.sandbox)
@@ -69,7 +70,7 @@ test('B3', (t) => {
   t.end()
 })
 
-test('A1:C4', (t) => {
+test('Range', (t) => {
   const { engine } = setup()
   engine.setValue('$data', [[1,2,3],[4,5,6],[7,8,9],[10,11,12]])
   TestEngineComponent.mount({engine}, t.sandbox)
@@ -78,7 +79,16 @@ test('A1:C4', (t) => {
   t.end()
 })
 
-test('1+2', (t) => {
+test('Definition', (t) => {
+  const { engine } = setup()
+  TestEngineComponent.mount({engine}, t.sandbox)
+  let cell = engine.addExpression('x = 42')
+  t.deepEqual(cell.value, 42, MESSAGE_CORRECT_VALUE)
+  t.equal(cell.expr.name, 'x', 'Expression should have correct name')
+  t.end()
+})
+
+test('Plus', (t) => {
   const { engine } = setup()
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('1+2')
@@ -86,7 +96,7 @@ test('1+2', (t) => {
   t.end()
 })
 
-test('2*3', (t) => {
+test('Times', (t) => {
   const { engine } = setup()
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('2*3')
@@ -94,7 +104,7 @@ test('2*3', (t) => {
   t.end()
 })
 
-test('5-3', (t) => {
+test('Minus', (t) => {
   const { engine } = setup()
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('5-3')
@@ -102,7 +112,7 @@ test('5-3', (t) => {
   t.end()
 })
 
-test('6/3', (t) => {
+test('Division', (t) => {
   const { engine } = setup()
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('6/3')
@@ -110,7 +120,7 @@ test('6/3', (t) => {
   t.end()
 })
 
-test('2^3', (t) => {
+test('Power', (t) => {
   const { engine } = setup()
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('2^3')
@@ -128,7 +138,7 @@ test('1+x+A1', (t) => {
   t.end()
 })
 
-test('sync function call', (t) => {
+test('Function call (sync)', (t) => {
   const { engine } = setup()
   engine.registerFunction('sum', sum)
   TestEngineComponent.mount({engine}, t.sandbox)
@@ -137,7 +147,7 @@ test('sync function call', (t) => {
   t.end()
 })
 
-test('async function call', (t) => {
+test('Function call (async)', (t) => {
   t.plan(2)
   const { engine } = setup()
   engine.registerFunction('sum', sumAsync)
@@ -150,7 +160,7 @@ test('async function call', (t) => {
   }, 0)
 })
 
-test('function call with positional and named arguments', (t) => {
+test('Function call with positional and named arguments', (t) => {
   const { engine } = setup()
   // TODO: I am not sure yet how to define these functions
   engine.registerFunction('foo', (x=1,y=2,z=3) => {
@@ -162,7 +172,7 @@ test('function call with positional and named arguments', (t) => {
   t.end()
 })
 
-test('foo() | bar()', (t) => {
+test('Pipe operator', (t) => {
   t.plan(1)
   const { engine } = setup()
   engine.registerFunction('foo', () => {
@@ -179,7 +189,7 @@ test('foo() | bar()', (t) => {
   }, 0)
 })
 
-test('foo() | bar() (async)', (t) => {
+test('Pipe operator (with async calls)', (t) => {
   t.plan(1)
   const { engine } = setup()
   engine.registerFunction('foo', () => {
@@ -208,6 +218,14 @@ test('Piping into a function using named arguments', (t) => {
   setTimeout(() => {
     t.equal(cell.value, 49, MESSAGE_CORRECT_VALUE)
   }, 0)
+})
+
+test('Groups', (t) => {
+  const { engine } = setup()
+  TestEngineComponent.mount({engine}, t.sandbox)
+  let cell = engine.addExpression('(1+2)*(3+4)')
+  t.deepEqual(cell.value, 21, MESSAGE_CORRECT_VALUE)
+  t.end()
 })
 
 function setup() {
