@@ -1,3 +1,4 @@
+import {isString, isNumber} from 'substance'
 import {
   Definition,
   NumberNode, StringNode, ArrayNode, ObjectNode, BooleanNode,
@@ -48,14 +49,15 @@ export default function createFromAST(state, ast) {
     case 'int':
     case 'float':
     case 'number': {
-      let ctx = ast.children[0]
-      state.tokens.push(new Token('number-literal', ctx))
-      node = new NumberNode(state.nodeId++, Number(ctx.getText()))
+      let token = ast.children[0].children[0]
+      state.tokens.push(new Token('number-literal', token.symbol))
+      node = new NumberNode(state.nodeId++, Number(token.getText()))
       break
     }
     case 'boolean': {
-      state.tokens.push(new Token('boolean-literal', ast))
-      let bool = (ast.getText() === 'true') ? true : false
+      let token = ast.children[0]
+      state.tokens.push(new Token('boolean-literal', token.symbol))
+      let bool = (token.getText() === 'true') ? true : false
       node = new BooleanNode(state.nodeId++, bool)
       break
     }
@@ -175,6 +177,18 @@ export default function createFromAST(state, ast) {
 
 class Token {
   constructor(type, {start, stop}) {
+    /* istanbul ignore next */
+    if (!isString(type)) {
+      throw new Error('Illegal argument: "type" must be a string')
+    }
+    /* istanbul ignore next */
+    if (!isNumber(start)) {
+      throw new Error('Illegal argument: "start" must be a number')
+    }
+    /* istanbul ignore next */
+    if (!isNumber(stop)) {
+      throw new Error('Illegal argument: "stop" must be a number')
+    }
     this.type = type
     this.start = start
     // ATTENTION: seems that symbol.end is inclusive
