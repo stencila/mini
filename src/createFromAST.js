@@ -75,9 +75,11 @@ export default function createFromAST(state, ast) {
       const entries = []
       for (let i = 0; i < keys.length; i++) {
         state.tokens.push(new Token('key', keys[i]))
-        let key = keys[i].text
-        let val = createFromAST(state, vals[i])
-        entries.push({ key, val })
+        if (keys[i] && vals[i]) {
+          let key = keys[i].text
+          let val = createFromAST(state, vals[i])
+          entries.push({ key, val })
+        }
       }
       node = new ObjectNode(state.nodeId++, entries)
       break
