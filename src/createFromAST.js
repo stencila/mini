@@ -61,7 +61,10 @@ export default function createFromAST(state, ast) {
     case 'array': {
       const ctx = ast.children[0]
       const seq = ctx.children[1]
-      const vals = expr_sequence(state, seq.items)
+      let vals = []
+      if (seq && seq.items) {
+        vals = expr_sequence(state, seq.items)
+      }
       node = new ArrayNode(state.nodeId++, vals)
       break
     }
