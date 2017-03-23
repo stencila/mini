@@ -5,35 +5,44 @@ const test = module('Parse')
 
 const MESSAGE_CORRECT_AST = 'AST should have correct structure'
 
-test('1', (t) => {
+test('Number', (t) => {
   const expr = parse('1')
   const expectedTypes = ['number']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.end()
 })
 
-test('x', (t) => {
+test('Variable', (t) => {
   const expr = parse('x')
   const expectedTypes = ['var']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.end()
 })
 
-test('"foo"', (t) => {
+test('Boolean', (t) => {
+  let expr = parse('true')
+  let expectedTypes = ['boolean']
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  expr = parse('false')
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+test('String', (t) => {
   const expr = parse('"foo"')
   const expectedTypes = ['string']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.end()
 })
 
-test('[1,x,A1]', (t) => {
+test('Array', (t) => {
   const expr = parse('[1,x,A1]')
   const expectedTypes = ['array', 'number', 'var', 'cell']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.end()
 })
 
-test('{foo: 1, bar: x, baz: A1}', (t) => {
+test('Object', (t) => {
   const expr = parse('{foo: 1, bar: x, baz: A1}')
   const expectedTypes = ['object', 'number', 'var', 'cell']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
@@ -41,7 +50,7 @@ test('{foo: 1, bar: x, baz: A1}', (t) => {
 })
 
 
-test('B3', (t) => {
+test('Cell', (t) => {
   const expr = parse('B3')
   const expectedTypes = ['cell']
   const root = expr.root
@@ -51,7 +60,7 @@ test('B3', (t) => {
   t.end()
 })
 
-test('A1:C4', (t) => {
+test('Range', (t) => {
   const expr = parse('A1:C4')
   const expectedTypes = ['range']
   const root = expr.root
@@ -63,35 +72,35 @@ test('A1:C4', (t) => {
   t.end()
 })
 
-test('1+2', (t) => {
+test('Plus', (t) => {
   const expr = parse('1+2')
   const expectedTypes = ['plus', 'number', 'number']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.end()
 })
 
-test('2*3', (t) => {
+test('Times', (t) => {
   const expr = parse('2*3')
   const expectedTypes = ['mult', 'number', 'number']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.end()
 })
 
-test('5-3', (t) => {
+test('Minus', (t) => {
   const expr = parse('5-3')
   const expectedTypes = ['minus', 'number', 'number']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.end()
 })
 
-test('6/3', (t) => {
+test('Division', (t) => {
   const expr = parse('6/3')
   const expectedTypes = ['div', 'number', 'number']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.end()
 })
 
-test('2^3', (t) => {
+test('Power', (t) => {
   const expr = parse('2^3')
   const expectedTypes = ['power', 'number', 'number']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
@@ -106,14 +115,14 @@ test('1+x+A1', (t) => {
 })
 
 
-test('x = 42', (t) => {
+test('Definition', (t) => {
   const expr = parse('x = 42')
   const expectedTypes = ['definition', 'number']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.end()
 })
 
-test('x = function(x,y)', (t) => {
+test('Function definition', (t) => {
   const expr = parse('x = function(x,y)')
   const expectedTypes = ['definition', 'function', 'var', 'var']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
