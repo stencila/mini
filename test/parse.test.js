@@ -49,6 +49,12 @@ test('Object', (t) => {
   t.end()
 })
 
+test('Group', (t) => {
+  const expr = parse('(1+2)*3')
+  const expectedTypes = ['mult', 'plus', 'number', 'number', 'number']
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.end()
+})
 
 test('Cell', (t) => {
   const expr = parse('B3')

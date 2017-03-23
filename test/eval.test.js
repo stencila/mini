@@ -220,6 +220,14 @@ test('Piping into a function using named arguments', (t) => {
   }, 0)
 })
 
+test('Groups', (t) => {
+  const { engine } = setup()
+  TestEngineComponent.mount({engine}, t.sandbox)
+  let cell = engine.addExpression('(1+2)*(3+4)')
+  t.deepEqual(cell.value, 21, MESSAGE_CORRECT_VALUE)
+  t.end()
+})
+
 function setup() {
   let engine = new TestEngine()
   return {engine}
