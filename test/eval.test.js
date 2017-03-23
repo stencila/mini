@@ -196,6 +196,20 @@ test('foo() | bar() (async)', (t) => {
   }, 10)
 })
 
+test('Piping into a function using named arguments', (t) => {
+  t.plan(1)
+  const { engine } = setup()
+  engine.registerFunction('baz', (x=1,y=2,z=3) => {
+    return x+y+z
+  })
+  TestEngineComponent.mount({engine}, t.sandbox)
+  let cell = engine.addExpression('5 | baz(z=42)')
+  // Note: deferring the next check to get the promise resolved first
+  setTimeout(() => {
+    t.equal(cell.value, 49, MESSAGE_CORRECT_VALUE)
+  }, 0)
+})
+
 function setup() {
   let engine = new TestEngine()
   return {engine}
