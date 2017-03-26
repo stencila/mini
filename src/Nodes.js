@@ -25,6 +25,10 @@ class ExprNode {
     return this.expr
   }
 
+  isPending() {
+    return false
+  }
+
   evaluate() {}
 }
 
@@ -232,25 +236,37 @@ export class FunctionCall extends ExprNode {
     namedArgs.forEach((arg) => {
       arg.parent = this
     })
+
+    this._pending = true
   }
 
   get type() { return 'call' }
 
+  isPending() {
+    return this._pending
+  }
+
   evaluate() {
+    const self = this
     const context = this.getContext()
     if (context) {
+      this._pending = true
       let res = context.callFunction(this)
       if (res instanceof Promise) {
-        res.then((val) => {
-          this.setValue(val)
-        })
+        res.then(_done)
       } else {
-        this.setValue(res)
+        _done(res)
       }
     } else {
-      this.setValue(undefined)
+      _done(undefined)
+    }
+
+    function _done(val) {
+      self._pending = false
+      self.setValue(val)
     }
   }
+
 }
 
 export class NamedArgument extends ExprNode {

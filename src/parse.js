@@ -2,12 +2,14 @@ import { MiniLexer, MiniParser, InputStream, CommonTokenStream } from '../parser
 import ErrorListener from './ErrorListener'
 import Expression from './Expression'
 
-export default function parse(expr) {
+export default function parse(expr, options={}) {
   const errorListener = new ErrorListener()
   const lexer = new MiniLexer(new InputStream(expr))
   const parser = new MiniParser(new CommonTokenStream(lexer))
   parser.buildParseTrees = true
-  // parser.removeErrorListeners()
+  if (!options.debug) {
+    parser.removeErrorListeners()
+  }
   parser.addErrorListener(errorListener)
   // NOTE: 'mini' is the start rule as defined in the grammar file
   let ast = parser.mini()

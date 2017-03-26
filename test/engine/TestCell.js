@@ -41,6 +41,18 @@ export default class TestCell extends EventEmitter {
     this.setValue(this.expr.getValue())
   }
 
+  isPending() {
+    if (this.expr) {
+      return this.expr.isPending()
+    }
+  }
+
+  isReady() {
+    if (this.expr) {
+      return this.expr.isReady()
+    }
+  }
+
 }
 
 TestCell.DEBUG = false

@@ -18,8 +18,15 @@ class Engine extends AbstractContext {
     // E.g. `x = sum(1,2,3)` would store a value with name 'x'
     // after `sum(1,2,3)` has been executed
     this._values = {}
-    // a map to store all expressions that depend on a value with a given id
-    this._dependencyGraph = {}
+
+    // a backward dependency graph, describing which other expressions
+    // an expression depends on
+    // E.g.: {'expr2': ['expr1'], 'expr3': ['expr1']}
+    this._inputDependencies = {}
+    // a forward dependency graph, describing which other expressions
+    // are affected by an expression
+    // E.g.: { 'expr1': ['expr2', 'expr3']}
+    this._outputDependencies = {}
     // entries sorted by dependencies
     this._sortedEntries = []
     // a pointer to the currently executed expression
@@ -84,7 +91,6 @@ class Engine extends AbstractContext {
   }
 
   propagate(forcePropagation) {
-    // TODO: we could use a 'PENDING' value while evaluating
     this._cursor = -1
     try {
       const ids = Object.keys(this._dirty)
@@ -94,14 +100,28 @@ class Engine extends AbstractContext {
       // the schedule is just an array of entries considered
       // for this propagation
       // any updates coming in
-      const _schedule = forcePropagation ? this._sortedEntries : this._computeSchedule(ids)
-      const L = _schedule.length
+      const schedule = forcePropagation ? this._sortedEntries : this._computeSchedule(ids)
+      const skip = {}
+      const L = schedule.length
       if (L === 0) return
-      // console.log('### Propagating', _schedule)
+      // console.log('### Propagating', schedule)
       for (let i = 0; i < L; i++) {
-        const entry = _schedule[i]
+        const entry = schedule[i]
+        const expr = entry.expr
+        if (skip[entry.id]) {
+          // console.log('## Skipping expression ', entry.id)
+          expr.emit('evaluation:deferred')
+          continue
+        }
         this._cursor = entry.position
-        entry.expr.propagate()
+        expr.propagate()
+        if (expr.isPending()) {
+          // console.log('## expression is pending', expr.id)
+          this._traverseDependencies(expr.id, (next)=>{
+            // console.log('## .. should skip', next)
+            skip[next.id] = true
+          })
+        }
       }
     } finally {
       this._dirty = {}
@@ -110,7 +130,7 @@ class Engine extends AbstractContext {
   }
 
   _propagateDeps(id, immediately) {
-    let deps = this._dependencyGraph[id]
+    let deps = this._outputDependencies[id]
     if (deps) {
       deps.forEach(dep=>{
         this._dirty[dep] = true
@@ -153,12 +173,13 @@ class Engine extends AbstractContext {
 
   _computeDependencyGraph() {
     const entries = this._entries
-    const deps = {}
+    const inputDeps = {}
+    const outputDeps = {}
     const levels = {}
     const _sortedEntries = []
     forEach(entries, (entry) => {
       _sortedEntries.push(entry)
-      this._computeDependencies(entry, deps, levels)
+      this._computeDependencies(entry, inputDeps, outputDeps, levels)
     })
     _sortedEntries.sort((a,b) => {
       return levels[a.id] - levels[b.id]
@@ -167,12 +188,13 @@ class Engine extends AbstractContext {
     _sortedEntries.forEach((entry, pos) => {
       entry.position = pos
     })
-    this._dependencyGraph = deps
+    this._inputDependencies = inputDeps
+    this._outputDependencies = outputDeps
     this._sortedEntries = _sortedEntries
   }
 
   // level = maximum distance to any leaf
-  _computeDependencies(entry, deps, levels) {
+  _computeDependencies(entry, inputDeps, outputDeps, levels) {
     const id = entry.id
     // dependencies might have been computed already
     // when this entry has been visited through the dependencies
@@ -196,25 +218,21 @@ class Engine extends AbstractContext {
     // map variables to ids
     let _inputs = this._mapInputs(entry.inputs)
     _inputs.forEach((input) => {
-      let inputId
-      if (isString(input)) {
-        inputId = input
-      } else {
-        inputId = input.id
-      }
+      let inputId = isString(input) ? input : input.id
       // extend the dependency graph
-      if (!deps.hasOwnProperty(inputId)) {
-        deps[inputId] = new Set()
+      if (!outputDeps.hasOwnProperty(inputId)) {
+        outputDeps[inputId] = new Set()
       }
-      deps[inputId].add(id)
+      outputDeps[inputId].add(id)
       if (input instanceof ExpressionEntry) {
         // traverse the dependencies recursively (DFS)
-        this._computeDependencies(input, deps, levels)
+        this._computeDependencies(input, inputDeps, outputDeps, levels)
         // level = number of steps to a leaf expression,
         // i.e. one with no dependencies
         level = Math.max(level, level+levels[inputId])
       }
     })
+    inputDeps[id] = _inputs.map(e => e instanceof ExpressionEntry)
     // finally overwrite the initial value with the true one
     levels[id] = level
   }
@@ -283,37 +301,41 @@ class Engine extends AbstractContext {
   // propagations and compute a joint schedule
   // TODO: in future we could 'optimize' this caching computed schedules
   _computeSchedule(ids) {
-    const _schedule = []
-    ids.forEach(id=>this._computePartialSchedule(id, _schedule))
-    return _schedule.filter(Boolean)
+    const schedule = []
+    const visited = {}
+    ids.forEach((id)=>{
+      this._traverseDependencies(id, (next) => {
+        schedule[next.position] = next
+      }, visited)
+    })
+    // pack the schedule
+    return schedule.filter(Boolean)
   }
 
-  _computePartialSchedule(id, _schedule) {
+  _traverseDependencies(id, fn, visited = {}) {
     // compute the schedule first
-    const deps = this._dependencyGraph
+    const deps = this._outputDependencies
     let queue = [id]
     while(queue.length > 0) {
       let nextId = queue.shift()
+      if (visited[nextId] === -1) {
+        throw new Error('Cyclic dependency')
+      }
+      if (visited[nextId]) continue
+      visited[nextId] = -1
       let next = this._getEntry(nextId)
       if (!next) {
         // next is not an entry
       } else {
-        if (_schedule[next.position]) continue
-        _schedule[next.position] = next
+        fn(next)
       }
+      visited[nextId] = true
       let out = deps[id]
       if (out && out.size>0) {
         queue = queue.concat(...out)
       }
     }
   }
-
-  // NOTE: this method is used as debounced
-  // thus it just means t
-  // _requestPropagation(id) {
-  //   this._dirty[id] = true
-  //   this._propagateDebounced()
-  // }
 
   _getExpr(id) {
     const entry = this._entries[id]
@@ -331,7 +353,6 @@ class ExpressionEntry {
     // position after topological sorting
     this.position = -1
   }
-
   get type() { return 'expression' }
   get id() { return this.expr.id }
   get name() { return this.expr.name }
