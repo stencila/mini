@@ -1,6 +1,10 @@
 import { EventEmitter } from 'substance'
 import createFromAST from './createFromAST'
 
+const INITIAL = Symbol('INITIAL')
+const PENDING = Symbol('PENDING')
+const READY = Symbol('READY')
+
 export default
 class Expression extends EventEmitter {
 
@@ -16,6 +20,8 @@ class Expression extends EventEmitter {
     this.value = undefined
     this.syntaxError = null
 
+    this.state = INITIAL
+
     // initialize nodes
     for (let i = 0; i < nodes.length; i++) {
       const node = nodes[i]
@@ -27,6 +33,7 @@ class Expression extends EventEmitter {
     root.setValue = (val) => {
       root.value = val
       this.value = val
+      this.state = READY
       this.emit('evaluation:finished', val)
     }
     // execution state
@@ -47,6 +54,14 @@ class Expression extends EventEmitter {
     return (this.root && this.root.type === 'definition')
   }
 
+  isPending() {
+    return this.state === PENDING
+  }
+
+  isReady() {
+    return this.state === READY
+  }
+
   getContext() {
     return this.context
   }
@@ -62,6 +77,7 @@ class Expression extends EventEmitter {
 
   propagate(start = 0) {
     // TODO: we could use a 'PENDING' value while evaluating
+    this.state = PENDING
     this.value = undefined
     this._cursor = start
     try {
@@ -72,7 +88,12 @@ class Expression extends EventEmitter {
         const node = nodes[i]
         this._cursor = i
         node.evaluate()
+        if (node.isPending()) {
+          // console.log('Node is still pending. Stopping propagation.')
+          return
+        }
       }
+      this.state = READY
     } finally {
       this._cursor = -1
     }
