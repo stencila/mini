@@ -12059,15 +12059,15 @@ exports.ParseTreeWalker = Tree.ParseTreeWalker;
 },{}]},{},[41])(41);
 
 
-var antlr4$1 = Object.freeze({
+var antlr4 = Object.freeze({
 	default: _exports
 });
 
-var require$$0 = ( antlr4$1 && antlr4$1['default'] ) || antlr4$1;
+var antlr4$1 = ( antlr4 && _exports ) || antlr4;
 
 // Generated from parser/Mini.g4 by ANTLR 4.6
 // jshint ignore: start
-var antlr4$2 = require$$0;
+
 
 
 var serializedATN = ["\u0003\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd",
@@ -12180,20 +12180,20 @@ var serializedATN = ["\u0003\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd",
     "\u009c\u00a3\u0003\b\u0002\u0002"].join("");
 
 
-var atn = new antlr4$2.atn.ATNDeserializer().deserialize(serializedATN);
+var atn = new antlr4$1.atn.ATNDeserializer().deserialize(serializedATN);
 
-var decisionsToDFA = atn.decisionToState.map( function(ds, index) { return new antlr4$2.dfa.DFA(ds, index); });
+var decisionsToDFA = atn.decisionToState.map( function(ds, index) { return new antlr4$1.dfa.DFA(ds, index); });
 
 function MiniLexer$1(input) {
-	antlr4$2.Lexer.call(this, input);
-    this._interp = new antlr4$2.atn.LexerATNSimulator(this, atn, decisionsToDFA, new antlr4$2.PredictionContextCache());
+	antlr4$1.Lexer.call(this, input);
+    this._interp = new antlr4$1.atn.LexerATNSimulator(this, atn, decisionsToDFA, new antlr4$1.PredictionContextCache());
     return this;
 }
 
-MiniLexer$1.prototype = Object.create(antlr4$2.Lexer.prototype);
+MiniLexer$1.prototype = Object.create(antlr4$1.Lexer.prototype);
 MiniLexer$1.prototype.constructor = MiniLexer$1;
 
-MiniLexer$1.EOF = antlr4$2.Token.EOF;
+MiniLexer$1.EOF = antlr4$1.Token.EOF;
 MiniLexer$1.T__0 = 1;
 MiniLexer$1.T__1 = 2;
 MiniLexer$1.T__2 = 3;
@@ -12252,15 +12252,15 @@ var MiniLexer_1 = {
 
 // Generated from parser/Mini.g4 by ANTLR 4.6
 // jshint ignore: start
-var antlr4$4 = require$$0;
+
 
 // This class defines a complete listener for a parse tree produced by MiniParser.
 function MiniListener$2() {
-	antlr4$4.tree.ParseTreeListener.call(this);
+	antlr4$1.tree.ParseTreeListener.call(this);
 	return this;
 }
 
-MiniListener$2.prototype = Object.create(antlr4$4.tree.ParseTreeListener.prototype);
+MiniListener$2.prototype = Object.create(antlr4$1.tree.ParseTreeListener.prototype);
 MiniListener$2.prototype.constructor = MiniListener$2;
 
 // Enter a parse tree produced by MiniParser#mini.
@@ -12416,7 +12416,7 @@ var MiniListener_1 = {
 
 // Generated from parser/Mini.g4 by ANTLR 4.6
 // jshint ignore: start
-var antlr4$3 = require$$0;
+
 var MiniListener$1 = MiniListener_1.MiniListener;
 var serializedATN$1 = ["\u0003\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd",
     "\u0003\u001a\u00e0\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004",
@@ -12560,11 +12560,11 @@ var serializedATN$1 = ["\u0003\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd",
     "\u009d\u00a5\u00af\u00b6\u00be\u00c8\u00d7\u00da"].join("");
 
 
-var atn$1 = new antlr4$3.atn.ATNDeserializer().deserialize(serializedATN$1);
+var atn$1 = new antlr4$1.atn.ATNDeserializer().deserialize(serializedATN$1);
 
-var decisionsToDFA$1 = atn$1.decisionToState.map( function(ds, index) { return new antlr4$3.dfa.DFA(ds, index); });
+var decisionsToDFA$1 = atn$1.decisionToState.map( function(ds, index) { return new antlr4$1.dfa.DFA(ds, index); });
 
-var sharedContextCache = new antlr4$3.PredictionContextCache();
+var sharedContextCache = new antlr4$1.PredictionContextCache();
 
 var literalNames = [ null, "'function'", "'('", "')'", "'^'", "'*'", "'/'", 
                      "'+'", "'-'", "'|'", "':'", "'!'", "','", "'['", "']'", 
@@ -12580,15 +12580,15 @@ var ruleNames =  [ "mini", "mainExpr", "expr", "range", "cell", "sheet_ref",
                    "array", "object" ];
 
 function MiniParser$1 (input) {
-	antlr4$3.Parser.call(this, input);
-    this._interp = new antlr4$3.atn.ParserATNSimulator(this, atn$1, decisionsToDFA$1, sharedContextCache);
+	antlr4$1.Parser.call(this, input);
+    this._interp = new antlr4$1.atn.ParserATNSimulator(this, atn$1, decisionsToDFA$1, sharedContextCache);
     this.ruleNames = ruleNames;
     this.literalNames = literalNames;
     this.symbolicNames = symbolicNames;
     return this;
 }
 
-MiniParser$1.prototype = Object.create(antlr4$3.Parser.prototype);
+MiniParser$1.prototype = Object.create(antlr4$1.Parser.prototype);
 MiniParser$1.prototype.constructor = MiniParser$1;
 
 Object.defineProperty(MiniParser$1.prototype, "atn", {
@@ -12597,7 +12597,7 @@ Object.defineProperty(MiniParser$1.prototype, "atn", {
 	}
 });
 
-MiniParser$1.EOF = antlr4$3.Token.EOF;
+MiniParser$1.EOF = antlr4$1.Token.EOF;
 MiniParser$1.T__0 = 1;
 MiniParser$1.T__1 = 2;
 MiniParser$1.T__2 = 3;
@@ -12647,13 +12647,13 @@ function MiniContext(parser, parent, invokingState) {
 	if(invokingState===undefined || invokingState===null) {
 		invokingState = -1;
 	}
-	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
+	antlr4$1.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
     this.ruleIndex = MiniParser$1.RULE_mini;
     return this;
 }
 
-MiniContext.prototype = Object.create(antlr4$3.ParserRuleContext.prototype);
+MiniContext.prototype = Object.create(antlr4$1.ParserRuleContext.prototype);
 MiniContext.prototype.constructor = MiniContext;
 
 MiniContext.prototype.mainExpr = function() {
@@ -12722,7 +12722,7 @@ MiniParser$1.prototype.mini = function() {
 
         }
     } catch (re) {
-    	if(re instanceof antlr4$3.error.RecognitionException) {
+    	if(re instanceof antlr4$1.error.RecognitionException) {
 	        localctx.exception = re;
 	        this._errHandler.reportError(this, re);
 	        this._errHandler.recover(this, re);
@@ -12742,13 +12742,13 @@ function MainExprContext(parser, parent, invokingState) {
 	if(invokingState===undefined || invokingState===null) {
 		invokingState = -1;
 	}
-	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
+	antlr4$1.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
     this.ruleIndex = MiniParser$1.RULE_mainExpr;
     return this;
 }
 
-MainExprContext.prototype = Object.create(antlr4$3.ParserRuleContext.prototype);
+MainExprContext.prototype = Object.create(antlr4$1.ParserRuleContext.prototype);
 MainExprContext.prototype.constructor = MainExprContext;
 
 MainExprContext.prototype.id_seq = function() {
@@ -12811,10 +12811,10 @@ MiniParser$1.prototype.mainExpr = function() {
              localctx.type = 'simple'; 
             break;
         default:
-            throw new antlr4$3.error.NoViableAltException(this);
+            throw new antlr4$1.error.NoViableAltException(this);
         }
     } catch (re) {
-    	if(re instanceof antlr4$3.error.RecognitionException) {
+    	if(re instanceof antlr4$1.error.RecognitionException) {
 	        localctx.exception = re;
 	        this._errHandler.reportError(this, re);
 	        this._errHandler.recover(this, re);
@@ -12834,13 +12834,13 @@ function ExprContext(parser, parent, invokingState) {
 	if(invokingState===undefined || invokingState===null) {
 		invokingState = -1;
 	}
-	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
+	antlr4$1.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
     this.ruleIndex = MiniParser$1.RULE_expr;
     return this;
 }
 
-ExprContext.prototype = Object.create(antlr4$3.ParserRuleContext.prototype);
+ExprContext.prototype = Object.create(antlr4$1.ParserRuleContext.prototype);
 ExprContext.prototype.constructor = ExprContext;
 
 ExprContext.prototype.BOOLEAN = function() {
@@ -12953,7 +12953,7 @@ MiniParser$1.prototype.expr = function(_p) {
             this.match(MiniParser$1.ID);
             this.state = 68;
             if (!( this._input.LA(1) !== MiniParser$1.EQ)) {
-                throw new antlr4$3.error.FailedPredicateException(this, "this._input.LA(1) !== MiniParser.EQ");
+                throw new antlr4$1.error.FailedPredicateException(this, "this._input.LA(1) !== MiniParser.EQ");
             }
              localctx.type = 'var'; 
             break;
@@ -13003,7 +13003,7 @@ MiniParser$1.prototype.expr = function(_p) {
         this.state = 123;
         this._errHandler.sync(this);
         var _alt = this._interp.adaptivePredict(this._input,4,this._ctx);
-        while(_alt!=2 && _alt!=antlr4$3.atn.ATN.INVALID_ALT_NUMBER) {
+        while(_alt!=2 && _alt!=antlr4$1.atn.ATN.INVALID_ALT_NUMBER) {
             if(_alt===1) {
                 if(this._parseListeners!==null) {
                     this.triggerExitRuleEvent();
@@ -13018,7 +13018,7 @@ MiniParser$1.prototype.expr = function(_p) {
                     this.pushNewRecursionContext(localctx, _startState, MiniParser$1.RULE_expr);
                     this.state = 91;
                     if (!( this.precpred(this._ctx, 17))) {
-                        throw new antlr4$3.error.FailedPredicateException(this, "this.precpred(this._ctx, 17)");
+                        throw new antlr4$1.error.FailedPredicateException(this, "this.precpred(this._ctx, 17)");
                     }
                     this.state = 92;
                     this.match(MiniParser$1.T__3);
@@ -13032,7 +13032,7 @@ MiniParser$1.prototype.expr = function(_p) {
                     this.pushNewRecursionContext(localctx, _startState, MiniParser$1.RULE_expr);
                     this.state = 96;
                     if (!( this.precpred(this._ctx, 16))) {
-                        throw new antlr4$3.error.FailedPredicateException(this, "this.precpred(this._ctx, 16)");
+                        throw new antlr4$1.error.FailedPredicateException(this, "this.precpred(this._ctx, 16)");
                     }
                     this.state = 97;
                     this.match(MiniParser$1.T__4);
@@ -13046,7 +13046,7 @@ MiniParser$1.prototype.expr = function(_p) {
                     this.pushNewRecursionContext(localctx, _startState, MiniParser$1.RULE_expr);
                     this.state = 101;
                     if (!( this.precpred(this._ctx, 15))) {
-                        throw new antlr4$3.error.FailedPredicateException(this, "this.precpred(this._ctx, 15)");
+                        throw new antlr4$1.error.FailedPredicateException(this, "this.precpred(this._ctx, 15)");
                     }
                     this.state = 102;
                     this.match(MiniParser$1.T__5);
@@ -13060,7 +13060,7 @@ MiniParser$1.prototype.expr = function(_p) {
                     this.pushNewRecursionContext(localctx, _startState, MiniParser$1.RULE_expr);
                     this.state = 106;
                     if (!( this.precpred(this._ctx, 14))) {
-                        throw new antlr4$3.error.FailedPredicateException(this, "this.precpred(this._ctx, 14)");
+                        throw new antlr4$1.error.FailedPredicateException(this, "this.precpred(this._ctx, 14)");
                     }
                     this.state = 107;
                     this.match(MiniParser$1.T__6);
@@ -13074,7 +13074,7 @@ MiniParser$1.prototype.expr = function(_p) {
                     this.pushNewRecursionContext(localctx, _startState, MiniParser$1.RULE_expr);
                     this.state = 111;
                     if (!( this.precpred(this._ctx, 13))) {
-                        throw new antlr4$3.error.FailedPredicateException(this, "this.precpred(this._ctx, 13)");
+                        throw new antlr4$1.error.FailedPredicateException(this, "this.precpred(this._ctx, 13)");
                     }
                     this.state = 112;
                     this.match(MiniParser$1.T__7);
@@ -13088,7 +13088,7 @@ MiniParser$1.prototype.expr = function(_p) {
                     this.pushNewRecursionContext(localctx, _startState, MiniParser$1.RULE_expr);
                     this.state = 116;
                     if (!( this.precpred(this._ctx, 12))) {
-                        throw new antlr4$3.error.FailedPredicateException(this, "this.precpred(this._ctx, 12)");
+                        throw new antlr4$1.error.FailedPredicateException(this, "this.precpred(this._ctx, 12)");
                     }
                     this.state = 117;
                     this.match(MiniParser$1.T__8);
@@ -13105,7 +13105,7 @@ MiniParser$1.prototype.expr = function(_p) {
         }
 
     } catch( error) {
-        if(error instanceof antlr4$3.error.RecognitionException) {
+        if(error instanceof antlr4$1.error.RecognitionException) {
 	        localctx.exception = error;
 	        this._errHandler.reportError(this, error);
 	        this._errHandler.recover(this, error);
@@ -13125,13 +13125,13 @@ function RangeContext(parser, parent, invokingState) {
 	if(invokingState===undefined || invokingState===null) {
 		invokingState = -1;
 	}
-	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
+	antlr4$1.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
     this.ruleIndex = MiniParser$1.RULE_range;
     return this;
 }
 
-RangeContext.prototype = Object.create(antlr4$3.ParserRuleContext.prototype);
+RangeContext.prototype = Object.create(antlr4$1.ParserRuleContext.prototype);
 RangeContext.prototype.constructor = RangeContext;
 
 RangeContext.prototype.CELL = function(i) {
@@ -13176,7 +13176,7 @@ MiniParser$1.prototype.range = function() {
         this.state = 128;
         this.match(MiniParser$1.CELL);
     } catch (re) {
-    	if(re instanceof antlr4$3.error.RecognitionException) {
+    	if(re instanceof antlr4$1.error.RecognitionException) {
 	        localctx.exception = re;
 	        this._errHandler.reportError(this, re);
 	        this._errHandler.recover(this, re);
@@ -13196,13 +13196,13 @@ function CellContext(parser, parent, invokingState) {
 	if(invokingState===undefined || invokingState===null) {
 		invokingState = -1;
 	}
-	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
+	antlr4$1.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
     this.ruleIndex = MiniParser$1.RULE_cell;
     return this;
 }
 
-CellContext.prototype = Object.create(antlr4$3.ParserRuleContext.prototype);
+CellContext.prototype = Object.create(antlr4$1.ParserRuleContext.prototype);
 CellContext.prototype.constructor = CellContext;
 
 CellContext.prototype.CELL = function() {
@@ -13235,7 +13235,7 @@ MiniParser$1.prototype.cell = function() {
         this.state = 130;
         this.match(MiniParser$1.CELL);
     } catch (re) {
-    	if(re instanceof antlr4$3.error.RecognitionException) {
+    	if(re instanceof antlr4$1.error.RecognitionException) {
 	        localctx.exception = re;
 	        this._errHandler.reportError(this, re);
 	        this._errHandler.recover(this, re);
@@ -13255,13 +13255,13 @@ function Sheet_refContext(parser, parent, invokingState) {
 	if(invokingState===undefined || invokingState===null) {
 		invokingState = -1;
 	}
-	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
+	antlr4$1.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
     this.ruleIndex = MiniParser$1.RULE_sheet_ref;
     return this;
 }
 
-Sheet_refContext.prototype = Object.create(antlr4$3.ParserRuleContext.prototype);
+Sheet_refContext.prototype = Object.create(antlr4$1.ParserRuleContext.prototype);
 Sheet_refContext.prototype.constructor = Sheet_refContext;
 
 Sheet_refContext.prototype.ID = function() {
@@ -13319,7 +13319,7 @@ MiniParser$1.prototype.sheet_ref = function() {
 
         }
     } catch (re) {
-    	if(re instanceof antlr4$3.error.RecognitionException) {
+    	if(re instanceof antlr4$1.error.RecognitionException) {
 	        localctx.exception = re;
 	        this._errHandler.reportError(this, re);
 	        this._errHandler.recover(this, re);
@@ -13339,14 +13339,14 @@ function Function_callContext(parser, parent, invokingState) {
 	if(invokingState===undefined || invokingState===null) {
 		invokingState = -1;
 	}
-	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
+	antlr4$1.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
     this.ruleIndex = MiniParser$1.RULE_function_call;
     this.args = null; // Call_argumentsContext
     return this;
 }
 
-Function_callContext.prototype = Object.create(antlr4$3.ParserRuleContext.prototype);
+Function_callContext.prototype = Object.create(antlr4$1.ParserRuleContext.prototype);
 Function_callContext.prototype.constructor = Function_callContext;
 
 Function_callContext.prototype.ID = function() {
@@ -13390,7 +13390,7 @@ MiniParser$1.prototype.function_call = function() {
         this.match(MiniParser$1.T__2);
          localctx.type = 'call'; 
     } catch (re) {
-    	if(re instanceof antlr4$3.error.RecognitionException) {
+    	if(re instanceof antlr4$1.error.RecognitionException) {
 	        localctx.exception = re;
 	        this._errHandler.reportError(this, re);
 	        this._errHandler.recover(this, re);
@@ -13410,13 +13410,13 @@ function NumberContext(parser, parent, invokingState) {
 	if(invokingState===undefined || invokingState===null) {
 		invokingState = -1;
 	}
-	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
+	antlr4$1.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
     this.ruleIndex = MiniParser$1.RULE_number;
     return this;
 }
 
-NumberContext.prototype = Object.create(antlr4$3.ParserRuleContext.prototype);
+NumberContext.prototype = Object.create(antlr4$1.ParserRuleContext.prototype);
 NumberContext.prototype.constructor = NumberContext;
 
 NumberContext.prototype.INT = function() {
@@ -13465,10 +13465,10 @@ MiniParser$1.prototype.number = function() {
              localctx.type = 'float'; 
             break;
         default:
-            throw new antlr4$3.error.NoViableAltException(this);
+            throw new antlr4$1.error.NoViableAltException(this);
         }
     } catch (re) {
-    	if(re instanceof antlr4$3.error.RecognitionException) {
+    	if(re instanceof antlr4$1.error.RecognitionException) {
 	        localctx.exception = re;
 	        this._errHandler.reportError(this, re);
 	        this._errHandler.recover(this, re);
@@ -13488,7 +13488,7 @@ function SeqContext(parser, parent, invokingState) {
 	if(invokingState===undefined || invokingState===null) {
 		invokingState = -1;
 	}
-	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
+	antlr4$1.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
     this.ruleIndex = MiniParser$1.RULE_seq;
     this._expr = null; // ExprContext
@@ -13496,7 +13496,7 @@ function SeqContext(parser, parent, invokingState) {
     return this;
 }
 
-SeqContext.prototype = Object.create(antlr4$3.ParserRuleContext.prototype);
+SeqContext.prototype = Object.create(antlr4$1.ParserRuleContext.prototype);
 SeqContext.prototype.constructor = SeqContext;
 
 SeqContext.prototype.expr = function(i) {
@@ -13551,7 +13551,7 @@ MiniParser$1.prototype.seq = function() {
             _la = this._input.LA(1);
         }
     } catch (re) {
-    	if(re instanceof antlr4$3.error.RecognitionException) {
+    	if(re instanceof antlr4$1.error.RecognitionException) {
 	        localctx.exception = re;
 	        this._errHandler.reportError(this, re);
 	        this._errHandler.recover(this, re);
@@ -13571,7 +13571,7 @@ function Id_seqContext(parser, parent, invokingState) {
 	if(invokingState===undefined || invokingState===null) {
 		invokingState = -1;
 	}
-	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
+	antlr4$1.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
     this.ruleIndex = MiniParser$1.RULE_id_seq;
     this._ID = null; // Token
@@ -13579,7 +13579,7 @@ function Id_seqContext(parser, parent, invokingState) {
     return this;
 }
 
-Id_seqContext.prototype = Object.create(antlr4$3.ParserRuleContext.prototype);
+Id_seqContext.prototype = Object.create(antlr4$1.ParserRuleContext.prototype);
 Id_seqContext.prototype.constructor = Id_seqContext;
 
 Id_seqContext.prototype.ID = function(i) {
@@ -13635,7 +13635,7 @@ MiniParser$1.prototype.id_seq = function() {
             _la = this._input.LA(1);
         }
     } catch (re) {
-    	if(re instanceof antlr4$3.error.RecognitionException) {
+    	if(re instanceof antlr4$1.error.RecognitionException) {
 	        localctx.exception = re;
 	        this._errHandler.reportError(this, re);
 	        this._errHandler.recover(this, re);
@@ -13655,7 +13655,7 @@ function Call_argumentsContext(parser, parent, invokingState) {
 	if(invokingState===undefined || invokingState===null) {
 		invokingState = -1;
 	}
-	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
+	antlr4$1.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
     this.ruleIndex = MiniParser$1.RULE_call_arguments;
     this.args = null; // Positional_argumentsContext
@@ -13663,7 +13663,7 @@ function Call_argumentsContext(parser, parent, invokingState) {
     return this;
 }
 
-Call_argumentsContext.prototype = Object.create(antlr4$3.ParserRuleContext.prototype);
+Call_argumentsContext.prototype = Object.create(antlr4$1.ParserRuleContext.prototype);
 Call_argumentsContext.prototype.constructor = Call_argumentsContext;
 
 Call_argumentsContext.prototype.positional_arguments = function() {
@@ -13729,7 +13729,7 @@ MiniParser$1.prototype.call_arguments = function() {
 
         }
     } catch (re) {
-    	if(re instanceof antlr4$3.error.RecognitionException) {
+    	if(re instanceof antlr4$1.error.RecognitionException) {
 	        localctx.exception = re;
 	        this._errHandler.reportError(this, re);
 	        this._errHandler.recover(this, re);
@@ -13749,7 +13749,7 @@ function Positional_argumentsContext(parser, parent, invokingState) {
 	if(invokingState===undefined || invokingState===null) {
 		invokingState = -1;
 	}
-	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
+	antlr4$1.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
     this.ruleIndex = MiniParser$1.RULE_positional_arguments;
     this._expr = null; // ExprContext
@@ -13757,7 +13757,7 @@ function Positional_argumentsContext(parser, parent, invokingState) {
     return this;
 }
 
-Positional_argumentsContext.prototype = Object.create(antlr4$3.ParserRuleContext.prototype);
+Positional_argumentsContext.prototype = Object.create(antlr4$1.ParserRuleContext.prototype);
 Positional_argumentsContext.prototype.constructor = Positional_argumentsContext;
 
 Positional_argumentsContext.prototype.expr = function(i) {
@@ -13800,7 +13800,7 @@ MiniParser$1.prototype.positional_arguments = function() {
         this.state = 180;
         this._errHandler.sync(this);
         var _alt = this._interp.adaptivePredict(this._input,10,this._ctx);
-        while(_alt!=2 && _alt!=antlr4$3.atn.ATN.INVALID_ALT_NUMBER) {
+        while(_alt!=2 && _alt!=antlr4$1.atn.ATN.INVALID_ALT_NUMBER) {
             if(_alt===1) {
                 this.state = 176;
                 this.match(MiniParser$1.T__11);
@@ -13814,7 +13814,7 @@ MiniParser$1.prototype.positional_arguments = function() {
         }
 
     } catch (re) {
-    	if(re instanceof antlr4$3.error.RecognitionException) {
+    	if(re instanceof antlr4$1.error.RecognitionException) {
 	        localctx.exception = re;
 	        this._errHandler.reportError(this, re);
 	        this._errHandler.recover(this, re);
@@ -13834,7 +13834,7 @@ function Named_argumentsContext(parser, parent, invokingState) {
 	if(invokingState===undefined || invokingState===null) {
 		invokingState = -1;
 	}
-	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
+	antlr4$1.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
     this.ruleIndex = MiniParser$1.RULE_named_arguments;
     this._named_argument = null; // Named_argumentContext
@@ -13842,7 +13842,7 @@ function Named_argumentsContext(parser, parent, invokingState) {
     return this;
 }
 
-Named_argumentsContext.prototype = Object.create(antlr4$3.ParserRuleContext.prototype);
+Named_argumentsContext.prototype = Object.create(antlr4$1.ParserRuleContext.prototype);
 Named_argumentsContext.prototype.constructor = Named_argumentsContext;
 
 Named_argumentsContext.prototype.named_argument = function(i) {
@@ -13897,7 +13897,7 @@ MiniParser$1.prototype.named_arguments = function() {
             _la = this._input.LA(1);
         }
     } catch (re) {
-    	if(re instanceof antlr4$3.error.RecognitionException) {
+    	if(re instanceof antlr4$1.error.RecognitionException) {
 	        localctx.exception = re;
 	        this._errHandler.reportError(this, re);
 	        this._errHandler.recover(this, re);
@@ -13917,13 +13917,13 @@ function Named_argumentContext(parser, parent, invokingState) {
 	if(invokingState===undefined || invokingState===null) {
 		invokingState = -1;
 	}
-	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
+	antlr4$1.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
     this.ruleIndex = MiniParser$1.RULE_named_argument;
     return this;
 }
 
-Named_argumentContext.prototype = Object.create(antlr4$3.ParserRuleContext.prototype);
+Named_argumentContext.prototype = Object.create(antlr4$1.ParserRuleContext.prototype);
 Named_argumentContext.prototype.constructor = Named_argumentContext;
 
 Named_argumentContext.prototype.ID = function() {
@@ -13969,7 +13969,7 @@ MiniParser$1.prototype.named_argument = function() {
         this.expr(0);
          localctx.type = 'named-argument'; 
     } catch (re) {
-    	if(re instanceof antlr4$3.error.RecognitionException) {
+    	if(re instanceof antlr4$1.error.RecognitionException) {
 	        localctx.exception = re;
 	        this._errHandler.reportError(this, re);
 	        this._errHandler.recover(this, re);
@@ -13989,13 +13989,13 @@ function ArrayContext(parser, parent, invokingState) {
 	if(invokingState===undefined || invokingState===null) {
 		invokingState = -1;
 	}
-	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
+	antlr4$1.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
     this.ruleIndex = MiniParser$1.RULE_array;
     return this;
 }
 
-ArrayContext.prototype = Object.create(antlr4$3.ParserRuleContext.prototype);
+ArrayContext.prototype = Object.create(antlr4$1.ParserRuleContext.prototype);
 ArrayContext.prototype.constructor = ArrayContext;
 
 ArrayContext.prototype.seq = function() {
@@ -14040,7 +14040,7 @@ MiniParser$1.prototype.array = function() {
         this.match(MiniParser$1.T__13);
          localctx.type = 'array'; 
     } catch (re) {
-    	if(re instanceof antlr4$3.error.RecognitionException) {
+    	if(re instanceof antlr4$1.error.RecognitionException) {
 	        localctx.exception = re;
 	        this._errHandler.reportError(this, re);
 	        this._errHandler.recover(this, re);
@@ -14060,7 +14060,7 @@ function ObjectContext(parser, parent, invokingState) {
 	if(invokingState===undefined || invokingState===null) {
 		invokingState = -1;
 	}
-	antlr4$3.ParserRuleContext.call(this, parent, invokingState);
+	antlr4$1.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
     this.ruleIndex = MiniParser$1.RULE_object;
     this._ID = null; // Token
@@ -14070,7 +14070,7 @@ function ObjectContext(parser, parent, invokingState) {
     return this;
 }
 
-ObjectContext.prototype = Object.create(antlr4$3.ParserRuleContext.prototype);
+ObjectContext.prototype = Object.create(antlr4$1.ParserRuleContext.prototype);
 ObjectContext.prototype.constructor = ObjectContext;
 
 ObjectContext.prototype.ID = function(i) {
@@ -14158,7 +14158,7 @@ MiniParser$1.prototype.object = function() {
         this.match(MiniParser$1.T__15);
          localctx.type = 'object'; 
     } catch (re) {
-    	if(re instanceof antlr4$3.error.RecognitionException) {
+    	if(re instanceof antlr4$1.error.RecognitionException) {
 	        localctx.exception = re;
 	        this._errHandler.reportError(this, re);
 	        this._errHandler.recover(this, re);
@@ -14209,14 +14209,12 @@ var MiniParser_1 = {
 	MiniParser: MiniParser_2
 };
 
-var antlr4 = require$$0;
-
-var InputStream = antlr4.InputStream;
-var CommonTokenStream = antlr4.CommonTokenStream;
+var InputStream = antlr4$1.InputStream;
+var CommonTokenStream = antlr4$1.CommonTokenStream;
 var MiniLexer = MiniLexer_1.MiniLexer;
 var MiniParser = MiniParser_1.MiniParser;
 var MiniListener = MiniListener_1.MiniListener;
-var treeWalker = antlr4.tree.ParseTreeWalker.DEFAULT;
+var treeWalker = antlr4$1.tree.ParseTreeWalker.DEFAULT;
 
 var _parser = {
 	InputStream: InputStream,
