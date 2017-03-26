@@ -26,7 +26,7 @@
     "karma-tap": "^3.1.1",
     "karma-tape-reporter": "^1.0.3",
     "substance": "beta-7-preview",
-    "substance-bundler": "^0.15.3",
+    "substance-bundler": "^0.16.4",
     "substance-test": "^0.9.3"
   },
   "files": [

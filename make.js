@@ -70,11 +70,12 @@ function _buildLib() {
       format: 'cjs'
     }, {
       dest: DIST+'substance-mini.js',
-      format: 'umd', moduleName: 'substanceMini'
+      format: 'umd', moduleName: 'substanceMini',
+      globals: {
+        'substance': 'substance'
+      }
     }],
-    external: {
-      'substance': 'substance'
-    }
+    external: ['substance']
   })
 }
 
@@ -82,13 +83,14 @@ function _buildTestsBrowser() {
   b.js('./test/index.js', {
     target: {
       dest: TMP+'tests.js',
-      format: 'umd', moduleName: 'tests'
+      format: 'umd', moduleName: 'tests',
+      globals: {
+        'substance': 'window.substance',
+        'substance-mini': 'window.substanceMini',
+        'substance-test': 'window.substanceTest'
+      }
     },
-    external: {
-      'substance': 'window.substance',
-      'substance-mini': 'window.substanceMini',
-      'substance-test': 'window.substanceTest'
-    }
+    external: ['substance', 'substance-mini', 'substance-test']
   })
 }
 
