@@ -4,12 +4,14 @@ import TestEngineComponent from './engine/TestEngineComponent'
 
 const test = module('Eval')
 
+const MESSAGE_CELL_READY = 'Cell should be ready'
 const MESSAGE_CORRECT_VALUE = 'Value should be correct'
 
 test('Number', (t) => {
   const { engine } = setup()
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('1')
+  t.ok(cell.isReady(), MESSAGE_CELL_READY)
   t.equal(cell.value, 1, MESSAGE_CORRECT_VALUE)
   t.end()
 })
@@ -20,6 +22,7 @@ test('Boolean', (t) => {
   let cell = engine.addExpression('true')
   t.equal(cell.value, true, MESSAGE_CORRECT_VALUE)
   cell = engine.addExpression('false')
+  t.ok(cell.isReady(), MESSAGE_CELL_READY)
   t.equal(cell.value, false, MESSAGE_CORRECT_VALUE)
   t.end()
 })
@@ -29,6 +32,7 @@ test('Var', (t) => {
   engine.addExpression('x = 4')
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('x')
+  t.ok(cell.isReady(), MESSAGE_CELL_READY)
   t.equal(cell.value, 4, MESSAGE_CORRECT_VALUE)
   t.end()
 })
@@ -37,6 +41,7 @@ test('String', (t) => {
   const { engine } = setup()
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('"foo"')
+  t.ok(cell.isReady(), MESSAGE_CELL_READY)
   t.equal(cell.value, "foo", MESSAGE_CORRECT_VALUE)
   t.end()
 })
@@ -47,6 +52,7 @@ test('Array', (t) => {
   engine.setValue('$data', [[10]])
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('[1,x,A1]')
+  t.ok(cell.isReady(), MESSAGE_CELL_READY)
   t.deepEqual(cell.value, [1, 4, 10], MESSAGE_CORRECT_VALUE)
   t.end()
 })
@@ -57,6 +63,7 @@ test('Object', (t) => {
   engine.setValue('$data', [[10]])
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('{foo: 1, bar: x, baz: A1}')
+  t.ok(cell.isReady(), MESSAGE_CELL_READY)
   t.deepEqual(cell.value, {foo: 1, bar: 4, baz: 10}, MESSAGE_CORRECT_VALUE)
   t.end()
 })
@@ -66,6 +73,7 @@ test('Cell', (t) => {
   engine.setValue('$data', [[0,0],[0,0],[0,10]])
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('B3')
+  t.ok(cell.isReady(), MESSAGE_CELL_READY)
   t.equal(cell.value, 10, MESSAGE_CORRECT_VALUE)
   t.end()
 })
@@ -75,6 +83,7 @@ test('Range', (t) => {
   engine.setValue('$data', [[1,2,3],[4,5,6],[7,8,9],[10,11,12]])
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('A1:C4')
+  t.ok(cell.isReady(), MESSAGE_CELL_READY)
   t.deepEqual(cell.value, [[1,2,3],[4,5,6],[7,8,9],[10,11,12]], MESSAGE_CORRECT_VALUE)
   t.end()
 })
@@ -83,6 +92,7 @@ test('Definition', (t) => {
   const { engine } = setup()
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('x = 42')
+  t.ok(cell.isReady(), MESSAGE_CELL_READY)
   t.deepEqual(cell.value, 42, MESSAGE_CORRECT_VALUE)
   t.equal(cell.expr.name, 'x', 'Expression should have correct name')
   t.end()
@@ -92,6 +102,7 @@ test('Plus', (t) => {
   const { engine } = setup()
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('1+2')
+  t.ok(cell.isReady(), MESSAGE_CELL_READY)
   t.deepEqual(cell.value, 3, MESSAGE_CORRECT_VALUE)
   t.end()
 })
@@ -100,6 +111,7 @@ test('Times', (t) => {
   const { engine } = setup()
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('2*3')
+  t.ok(cell.isReady(), MESSAGE_CELL_READY)
   t.deepEqual(cell.value, 6, MESSAGE_CORRECT_VALUE)
   t.end()
 })
@@ -108,6 +120,7 @@ test('Minus', (t) => {
   const { engine } = setup()
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('5-3')
+  t.ok(cell.isReady(), MESSAGE_CELL_READY)
   t.deepEqual(cell.value, 2, MESSAGE_CORRECT_VALUE)
   t.end()
 })
@@ -116,6 +129,7 @@ test('Division', (t) => {
   const { engine } = setup()
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('6/3')
+  t.ok(cell.isReady(), MESSAGE_CELL_READY)
   t.deepEqual(cell.value, 2, MESSAGE_CORRECT_VALUE)
   t.end()
 })
@@ -124,6 +138,7 @@ test('Power', (t) => {
   const { engine } = setup()
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('2^3')
+  t.ok(cell.isReady(), MESSAGE_CELL_READY)
   t.deepEqual(cell.value, 8, MESSAGE_CORRECT_VALUE)
   t.end()
 })
@@ -134,6 +149,7 @@ test('1+x+A1', (t) => {
   engine.setValue('$data', [[10]])
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('1+x+A1')
+  t.ok(cell.isReady(), MESSAGE_CELL_READY)
   t.deepEqual(cell.value, 15, MESSAGE_CORRECT_VALUE)
   t.end()
 })
@@ -143,19 +159,22 @@ test('Function call (sync)', (t) => {
   engine.registerFunction('sum', sum)
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('sum(1,2,3)')
+  t.ok(cell.isReady(), MESSAGE_CELL_READY)
   t.equal(cell.value, 6, MESSAGE_CORRECT_VALUE)
   t.end()
 })
 
 test('Function call (async)', (t) => {
-  t.plan(2)
+  t.plan(4)
   const { engine } = setup()
   engine.registerFunction('sum', sumAsync)
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('sum(1,2,3)')
+  t.ok(cell.isPending(), 'Cell should be pending')
   t.nil(cell.value, 'Value should be undefined first')
   // Note: deferring the next check to get the promise resolved first
   setTimeout(() => {
+    t.ok(cell.isReady(), MESSAGE_CELL_READY)
     t.equal(cell.value, 6, MESSAGE_CORRECT_VALUE)
   }, 0)
 })
@@ -168,12 +187,52 @@ test('Function call with positional and named arguments', (t) => {
   })
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('foo(4,z=5)')
+  t.ok(cell.isReady(), MESSAGE_CELL_READY)
   t.equal(cell.value, 11, MESSAGE_CORRECT_VALUE)
   t.end()
 })
 
+test('Nested function call (sync)', (t) => {
+  const { engine } = setup()
+  engine.registerFunction('foo', (val) => {
+    return 2*val
+  })
+  engine.registerFunction('bar', (val) => {
+    return val+1
+  })
+  TestEngineComponent.mount({engine}, t.sandbox)
+  let cell = engine.addExpression('foo(bar(2))')
+  t.ok(cell.isReady(), MESSAGE_CELL_READY)
+  t.equal(cell.value, 6, MESSAGE_CORRECT_VALUE)
+  t.end()
+})
+
+test('Nested function call (async)', (t) => {
+  t.plan(4)
+  const { engine } = setup()
+  engine.registerFunction('foo', (val) => {
+    return 2*val
+  })
+  let go
+  engine.registerFunction('bar', (val) => {
+    return new Promise((resolve) => {
+      go = () => {
+        resolve(val+1)
+      }
+    })
+  })
+  TestEngineComponent.mount({engine}, t.sandbox)
+  let cell = engine.addExpression('foo(bar(2))')
+  t.ok(cell.isPending(), 'Cell should be pending')
+  t.equal(cell.value, undefined, 'Cell value should be undefined at first')
+  go()
+  setTimeout(() => {
+    t.ok(cell.isReady(), MESSAGE_CELL_READY)
+    t.equal(cell.value, 6, MESSAGE_CORRECT_VALUE)
+  }, 0)
+})
+
 test('Pipe operator', (t) => {
-  t.plan(1)
   const { engine } = setup()
   engine.registerFunction('foo', () => {
     return 5
@@ -183,14 +242,13 @@ test('Pipe operator', (t) => {
   })
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('foo() | bar()')
-  // Note: deferring the next check to get the promise resolved first
-  setTimeout(() => {
-    t.equal(cell.value, 10, MESSAGE_CORRECT_VALUE)
-  }, 0)
+  t.ok(cell.isReady(), MESSAGE_CELL_READY)
+  t.equal(cell.value, 10, MESSAGE_CORRECT_VALUE)
+  t.end()
 })
 
 test('Pipe operator (with async calls)', (t) => {
-  t.plan(1)
+  t.plan(2)
   const { engine } = setup()
   engine.registerFunction('foo', () => {
     return Promise.resolve(5)
@@ -202,22 +260,21 @@ test('Pipe operator (with async calls)', (t) => {
   let cell = engine.addExpression('foo() | bar()')
   // Note: deferring the next check to get the promise resolved first
   setTimeout(() => {
+    t.ok(cell.isReady(), MESSAGE_CELL_READY)
     t.equal(cell.value, 10, MESSAGE_CORRECT_VALUE)
   }, 10)
 })
 
 test('Piping into a function using named arguments', (t) => {
-  t.plan(1)
   const { engine } = setup()
   engine.registerFunction('baz', (x=1,y=2,z=3) => {
     return x+y+z
   })
   TestEngineComponent.mount({engine}, t.sandbox)
   let cell = engine.addExpression('5 | baz(z=42)')
-  // Note: deferring the next check to get the promise resolved first
-  setTimeout(() => {
-    t.equal(cell.value, 49, MESSAGE_CORRECT_VALUE)
-  }, 0)
+  t.ok(cell.isReady(), MESSAGE_CELL_READY)
+  t.equal(cell.value, 49, MESSAGE_CORRECT_VALUE)
+  t.end()
 })
 
 test('Groups', (t) => {
