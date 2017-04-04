@@ -6,11 +6,8 @@ class ExprNode {
   }
 
   setValue(val) {
-    let oldVal = this.value
-    if (!isEqual(oldVal, val)) {
-      this.value = val
-      this.getExpression()._requestPropagation(this)
-    }
+    this.value = val
+    this.getExpression()._requestPropagation(this)
   }
 
   getValue() {
