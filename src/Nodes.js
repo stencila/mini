@@ -244,6 +244,9 @@ export class FunctionCall extends ExprNode {
   }
 
   evaluate() {
+    // HACK: when this is used as RHS of a pipe operator
+    // this is skipped and called manually
+    if (this.skip) return
     const self = this
     const context = this.getContext()
     if (context) {
@@ -330,6 +333,9 @@ export class PipeOp extends ExprNode {
     this.right = right
     this.left.parent = this
     this.right.parent = this
+    // do not evaluate the rhs funtion automatically
+    this.right.skip = true
+    this.right._pending = false
   }
 
   get type() { return "pipe" }
