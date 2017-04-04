@@ -1,6 +1,7 @@
 import { module } from 'substance-test'
 import TestEngine from './engine/TestEngine'
 import TestEngineComponent from './engine/TestEngineComponent'
+import { wait } from './testHelpers'
 
 const test = module('Eval')
 
@@ -283,6 +284,34 @@ test('Groups', (t) => {
   let cell = engine.addExpression('(1+2)*(3+4)')
   t.deepEqual(cell.value, 21, MESSAGE_CORRECT_VALUE)
   t.end()
+})
+
+test('#12: Eager propagation to prevent stalling of pipe-expressions', (t) => {
+  t.plan(4)
+  const { engine } = setup()
+  let run = 1
+  engine.registerFunction('foo', () => {
+    return Promise.resolve(2)
+  })
+  engine.registerFunction('bar', () => {
+    return Promise.resolve(run++)
+  })
+  TestEngineComponent.mount({engine}, t.sandbox)
+  let cell = engine.addExpression('foo() | bar()')
+  Promise.resolve()
+  .then(wait(10))
+  .then(() => {
+    t.ok(cell.isReady(), MESSAGE_CELL_READY)
+    t.equal(cell.value, 1, MESSAGE_CORRECT_VALUE)
+  })
+  .then(() => {
+    cell.expr.propagate()
+  })
+  .then(wait(10))
+  .then(() => {
+    t.ok(cell.isReady(), MESSAGE_CELL_READY)
+    t.equal(cell.value, 2, MESSAGE_CORRECT_VALUE)
+  })
 })
 
 function setup() {
