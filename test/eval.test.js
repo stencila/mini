@@ -293,7 +293,7 @@ test('#12: Eager propagation to prevent stalling of pipe-expressions', (t) => {
   engine.registerFunction('foo', () => {
     return Promise.resolve(2)
   })
-  engine.registerFunction('bar', (val) => {
+  engine.registerFunction('bar', () => {
     return Promise.resolve(run++)
   })
   TestEngineComponent.mount({engine}, t.sandbox)

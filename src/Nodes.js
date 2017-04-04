@@ -1,5 +1,3 @@
-import { isEqual } from 'substance'
-
 class ExprNode {
   constructor(id) {
     this.id = id
