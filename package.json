@@ -1,6 +1,6 @@
 {
   "name": "substance-mini",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "",
   "main": "dist/substance-mini.cjs.js",
   "jsntext:main": "index.js",
