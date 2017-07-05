@@ -25,9 +25,9 @@
     "karma-source-map-support": "^1.2.0",
     "karma-tap": "^3.1.1",
     "karma-tape-reporter": "^1.0.3",
-    "substance": "beta-7-preview",
+    "substance": "1.0.0-beta.7-preview.7",
     "substance-bundler": "^0.16.4",
-    "substance-test": "^0.9.3"
+    "substance-test": "^0.9.4"
   },
   "files": [
     "dist",

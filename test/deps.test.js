@@ -1,6 +1,7 @@
 import { module } from 'substance-test'
 import TestEngine from './engine/TestEngine'
 import TestEngineComponent from './engine/TestEngineComponent'
+import { getMountPoint } from './testHelpers'
 
 // TestCell.DEBUG = true
 
@@ -10,7 +11,7 @@ const MESSAGE_CORRECT_VALUE = 'Value should be correct'
 
 test('simple dependency', (t) => {
   const { engine } = setup()
-  TestEngineComponent.mount({engine}, t.sandbox)
+  TestEngineComponent.mount({engine}, getMountPoint(t))
   engine.addExpression('x=1')
   let cell2 = engine.addExpression('x+1')
   t.equal(cell2.value, 2, MESSAGE_CORRECT_VALUE)
@@ -19,7 +20,7 @@ test('simple dependency', (t) => {
 
 test('updating an expression', (t) => {
   const { engine } = setup()
-  TestEngineComponent.mount({engine}, t.sandbox)
+  TestEngineComponent.mount({engine}, getMountPoint(t))
   let cell1 = engine.addExpression('x=1')
   let cell2 = engine.addExpression('x+1')
   t.deepEqual(_sortedIds(engine), [cell1.id, cell2.id], 'The cells should be scheduled in correct order')
@@ -30,7 +31,7 @@ test('updating an expression', (t) => {
 
 test('cyclic dependency', (t) => {
   const { engine } = setup()
-  TestEngineComponent.mount({engine}, t.sandbox)
+  TestEngineComponent.mount({engine}, getMountPoint(t))
   t.throws(() => {
     engine.addExpression('x = z+1')
     engine.addExpression('y = x+1')
@@ -48,7 +49,7 @@ test('dependencies and async calls', (t) => {
       resolve(x+2)
     })
   })
-  TestEngineComponent.mount({engine}, t.sandbox)
+  TestEngineComponent.mount({engine}, getMountPoint(t))
   let cell1 = engine.addExpression('x = 3')
   let cell2 = engine.addExpression('y = foo(x)')
   let cell3 = engine.addExpression('z = y+1')
