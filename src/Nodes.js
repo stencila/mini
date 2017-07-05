@@ -1,6 +1,8 @@
 class ExprNode {
+
   constructor(id) {
     this.id = id
+    this.errors = null
   }
 
   setValue(val) {
@@ -24,7 +26,17 @@ class ExprNode {
     return false
   }
 
-  evaluate() {}
+  evaluate() {
+    this.errors = null
+  }
+
+  addErrors(errors) {
+    if (!this.errors) {
+      this.errors = errors.slice()
+    } else {
+      this.errors = this.errors.concat(errors)
+    }
+  }
 }
 
 export class Definition extends ExprNode {
@@ -39,6 +51,11 @@ export class Definition extends ExprNode {
   get type() { return 'definition' }
 
   evaluate() {
+    super.evaluate()
+
+    if (this.rhs.errors) {
+      this.addErrors(this.rhs.errors)
+    }
     this.setValue(this.rhs.getValue())
   }
 
@@ -245,6 +262,9 @@ export class FunctionCall extends ExprNode {
     // HACK: when this is used as RHS of a pipe operator
     // this is skipped and called manually
     if (this.skip) return
+
+    super.evaluate()
+
     const self = this
     const context = this.getContext()
     if (context) {
@@ -264,7 +284,6 @@ export class FunctionCall extends ExprNode {
       self.setValue(val)
     }
   }
-
 }
 
 export class NamedArgument extends ExprNode {
@@ -279,6 +298,11 @@ export class NamedArgument extends ExprNode {
   get type() { return 'named-argument' }
 
   evaluate() {
+    super.evaluate()
+
+    if (this.rhs.errors) {
+      this.addErrors(this.rhs.errors)
+    }
     this.setValue(this.rhs.getValue())
   }
 
@@ -318,6 +342,12 @@ export class BinaryNumericOp extends ExprNode {
       default:
         val = undefined
     }
+    if (this.left.errors) {
+      this.addErrors(this.left.errors)
+    }
+    if (this.right.errors) {
+      this.addErrors(this.right.errors)
+    }
     this.setValue(val)
   }
 
@@ -339,8 +369,13 @@ export class PipeOp extends ExprNode {
   get type() { return "pipe" }
 
   evaluate() {
+    super.evaluate()
+
+    const self = this
     // f(x) | g()
     let pipeArg = this.left.getValue()
+    // HACK: creating a quasi Expression node
+    // but maybe we should create a real one?
     let right = {
       name: this.right.name,
       expr: this.right.expr,
@@ -350,7 +385,8 @@ export class PipeOp extends ExprNode {
           return pipeArg
         }
       }].concat(this.right.args),
-      namedArgs: this.right.namedArgs
+      namedArgs: this.right.namedArgs,
+      addErrors: ExprNode.prototype.addErrors
     }
 
     const context = this.getContext()
@@ -358,13 +394,20 @@ export class PipeOp extends ExprNode {
       let res = context.callFunction(right)
       if (res instanceof Promise) {
         res.then((val) => {
-          this.setValue(val)
+          _finish(val)
         })
       } else {
-        this.setValue(res)
+        _finish(res)
       }
     } else {
-      this.setValue(undefined)
+      _finish(undefined)
+    }
+
+    function _finish(val) {
+      if (right.errors) {
+        self.addErrors(right.errors)
+      }
+      self.setValue(val)
     }
   }
 }
