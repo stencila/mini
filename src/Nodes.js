@@ -364,50 +364,79 @@ export class PipeOp extends ExprNode {
     // do not evaluate the rhs funtion automatically
     this.right.skip = true
     this.right._pending = false
+
+    this._pending = true
   }
 
   get type() { return "pipe" }
+
+  isPending() {
+    return this._pending
+  }
 
   evaluate() {
     super.evaluate()
 
     const self = this
-    // f(x) | g()
-    let pipeArg = this.left.getValue()
-    // HACK: creating a quasi Expression node
-    // but maybe we should create a real one?
-    let right = {
-      name: this.right.name,
-      expr: this.right.expr,
-      args: [{
-        name: '_pipe',
-        getValue() {
-          return pipeArg
-        }
-      }].concat(this.right.args),
-      namedArgs: this.right.namedArgs,
-      addErrors: ExprNode.prototype.addErrors
-    }
+    const left = this.left
+    const right = this.right
 
-    const context = this.getContext()
-    if (context) {
-      let res = context.callFunction(right)
-      if (res instanceof Promise) {
-        res.then((val) => {
-          _finish(val)
-        })
-      } else {
-        _finish(res)
-      }
+    this._pending = true
+
+    if (left.isPending() || right.isPending()) {
+      // don't do anything as long children are pending
+      return
+    }
+    // don't proceed if left has an error already
+    if (left.errors) {
+      self.addErrors(left.errors)
     } else {
-      _finish(undefined)
+      // f(x) | g()
+      let pipeArg = left.getValue()
+      // We need to prepare the args for the right function
+      // using the output of the left as first argument
+      // TODO: maybe we could use a real node here instead of
+      // a duck-typed one?
+      let rightProxy = {
+        name: right.name,
+        expr: right.expr,
+        args: [{
+          name: '_pipe',
+          getValue() {
+            return pipeArg
+          }
+        }].concat(right.args),
+        namedArgs: right.namedArgs,
+        addErrors: ExprNode.prototype.addErrors
+      }
+      const context = this.getContext()
+      if (context) {
+        rightProxy.errors = null
+        let res = context.callFunction(rightProxy)
+        if (res instanceof Promise) {
+          res.then((val) => {
+            this._pending = false
+            _collectErrors(left, rightProxy)
+            this.setValue(val)
+          })
+        } else {
+          this._pending = false
+          _collectErrors(left, rightProxy)
+          this.setValue(res)
+        }
+      } else {
+        this._pending = false
+        _collectErrors(left, rightProxy)
+      }
     }
 
-    function _finish(val) {
-      if (right.errors) {
+    function _collectErrors(left, right) {
+      if (left && left.errors) {
+        self.addErrors(left.errors)
+      }
+      if (right && right.errors) {
         self.addErrors(right.errors)
       }
-      self.setValue(val)
     }
   }
 }
