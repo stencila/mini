@@ -161,10 +161,11 @@ export default function createFromAST(state, ast) {
           return m.symbol.text
         })
       }
-      if (ast.name)
-      state.tokens.push(
-        new Token('function-name', ast.name)
-      )
+      if (ast.name) {
+        state.tokens.push(
+          new Token('function-name', ast.name)
+        )
+      }
       node = new FunctionCall(state.nodeId++, name, args, namedArgs, modifiers)
       break
     }
