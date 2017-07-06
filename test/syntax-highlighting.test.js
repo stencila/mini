@@ -12,7 +12,7 @@ test('Number', (t) => {
     start: 0,
     end: 1
   }]
-  _equal(t, expr.tokens, expectedTokens, MESSAGE_CORRECT_TOKENS)
+  _checkTokens(t, expr.tokens, expectedTokens, MESSAGE_CORRECT_TOKENS)
   t.end()
 })
 
@@ -27,7 +27,7 @@ test('Numbers', (t) => {
     start: 2,
     end: 3
   }]
-  _equal(t, expr.tokens, expectedTokens, MESSAGE_CORRECT_TOKENS)
+  _checkTokens(t, expr.tokens, expectedTokens, MESSAGE_CORRECT_TOKENS)
   t.end()
 })
 
@@ -38,7 +38,7 @@ test('String', (t) => {
     start: 0,
     end: 5
   }]
-  _equal(t, expr.tokens, expectedTokens, MESSAGE_CORRECT_TOKENS)
+  _checkTokens(t, expr.tokens, expectedTokens, MESSAGE_CORRECT_TOKENS)
   t.end()
 })
 
@@ -49,7 +49,7 @@ test('Boolean', (t) => {
     start: 0,
     end: 4
   }]
-  _equal(t, expr.tokens, expectedTokens, MESSAGE_CORRECT_TOKENS)
+  _checkTokens(t, expr.tokens, expectedTokens, MESSAGE_CORRECT_TOKENS)
   t.end()
 })
 
@@ -64,7 +64,7 @@ test('Definition', (t) => {
     start: 2,
     end: 3
   }]
-  _equal(t, expr.tokens, expectedTokens, MESSAGE_CORRECT_TOKENS)
+  _checkTokens(t, expr.tokens, expectedTokens, MESSAGE_CORRECT_TOKENS)
   t.end()
 })
 
@@ -95,10 +95,19 @@ test('Object', (t) => {
     start: 23,
     end: 24
   }]
-  _equal(t, expr.tokens, expectedTokens, MESSAGE_CORRECT_TOKENS)
+  _checkTokens(t, expr.tokens, expectedTokens, MESSAGE_CORRECT_TOKENS)
   t.end()
 })
 
-function _equal(t, arr1, arr2, msg) {
-  return t.equal(JSON.stringify(arr1, null, 2), JSON.stringify(arr2, null, 2), msg)
+function _checkTokens(t, act, exp, msg) {
+  // only check for some fields
+  const keys = ['type', 'start', 'end']
+  let _act = act.map((t) => {
+    let _t = {}
+    keys.forEach((k) => {
+      _t[k] = t[k]
+    })
+    return _t
+  })
+  return t.equal(JSON.stringify(exp, null, 2), JSON.stringify(_act, null, 2), msg)
 }

@@ -237,10 +237,11 @@ export class ExternalFunction extends ExprNode {
 
 export class FunctionCall extends ExprNode {
 
-  constructor(id, name, args = [], namedArgs=[]) {
+  constructor(id, name, args = [], namedArgs=[], modifiers=[]) {
     super(id)
     this.name = name
     this.args = args
+    this.modifiers = modifiers
     this.namedArgs = namedArgs
     args.forEach((arg) => {
       arg.parent = this

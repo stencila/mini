@@ -34,7 +34,9 @@ cell: CELL;
 
 sheet_ref: ID '!' ( cell | range );
 
-function_call: ID '(' args=call_arguments ')'  { $ctx.type = 'call' }
+function_modifiers: ('global');
+
+function_call: (modifiers=function_modifiers)? (name=ID) '(' args=call_arguments ')'  { $ctx.type = 'call' }
     ;
 
 number:  INT                        { $ctx.type = 'int' }
