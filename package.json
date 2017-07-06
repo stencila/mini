@@ -9,7 +9,7 @@
     "lint": "eslint -c .eslintrc.js src test",
     "start": "node make lib test -s -w",
     "dev": "node make lib test -s -w",
-    "test": "node make test",
+    "test": "npm run lint && node make test",
     "cover": "node make cover  && codecov"
   },
   "author": "",
