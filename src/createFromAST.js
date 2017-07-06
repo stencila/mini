@@ -142,11 +142,15 @@ export default function createFromAST(state, ast) {
       // HACK: sometimes we need to unwrap
       ast = ast.children[0] // eslint-disable-line no-fallthrough
     case 'call': {
-      let name = ast.name.text
-      let argsCtx = ast.args
-      let args = arg_sequence(state, argsCtx.args)
-      let namedArgs = arg_sequence(state, argsCtx.namedArgs)
+      // ATTENTION we need to be robust regarding partial expressions
+      let name = ast.name ? ast.name.text : ''
+      let args, namedArgs
       let modifiers
+      let argsCtx = ast.args
+      if (argsCtx) {
+        args = arg_sequence(state, argsCtx.args)
+        namedArgs = arg_sequence(state, argsCtx.namedArgs)
+      }
       if (ast.modifiers) {
         ast.modifiers.children.forEach((m) => {
           state.tokens.push(
@@ -157,6 +161,7 @@ export default function createFromAST(state, ast) {
           return m.symbol.text
         })
       }
+      if (ast.name)
       state.tokens.push(
         new Token('function-name', ast.name)
       )
