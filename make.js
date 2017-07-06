@@ -18,7 +18,12 @@ function _generateParser() {
   // we can not build the parser without ANTLR4
   // still we don't fail so that travis is working (generated parser is checked in)
   if (!fs.existsSync('./.bin/antlr-4.6-complete.jar')) {
-    throw new Error('You need to download the antlr4 runtime.')
+    if (process.env.TRAVIS) {
+      // don't throw on travis
+      return
+    } else {
+      throw new Error('You need to download the antlr4 runtime.')
+    }
   }
   b.custom('Generating parser', {
     src: './parser/Mini.g4',
