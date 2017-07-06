@@ -1,4 +1,4 @@
-import { Engine } from 'substance-mini'
+import { Engine } from 'stencila-mini'
 import TestCell from './TestCell'
 
 /*

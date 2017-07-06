@@ -66,11 +66,11 @@ function _buildLib() {
 
   b.js('index.js', {
     targets: [{
-      dest: DIST+'substance-mini.cjs.js',
+      dest: DIST+'stencila-mini.cjs.js',
       format: 'cjs'
     }, {
-      dest: DIST+'substance-mini.js',
-      format: 'umd', moduleName: 'substanceMini',
+      dest: DIST+'stencila-mini.js',
+      format: 'umd', moduleName: 'stencilaMini',
       globals: {
         'substance': 'substance'
       }
@@ -86,11 +86,11 @@ function _buildTestsBrowser() {
       format: 'umd', moduleName: 'tests',
       globals: {
         'substance': 'window.substance',
-        'substance-mini': 'window.substanceMini',
+        'stencila-mini': 'window.stencilaMini',
         'substance-test': 'window.substanceTest'
       }
     },
-    external: ['substance', 'substance-mini', 'substance-test']
+    external: ['substance', 'stencila-mini', 'substance-test']
   })
 }
 
@@ -101,7 +101,7 @@ function _buildTestsNodejs() {
       format: 'cjs'
     },
     alias: {
-      'substance-mini': path.join(__dirname, 'index.js')
+      'stencila-mini': path.join(__dirname, 'index.js')
     },
     external: ['substance-test', 'substance']
   })
@@ -114,7 +114,7 @@ function _buildTestsCov() {
       format: 'cjs'
     },
     alias: {
-      'substance-mini': path.join(__dirname, 'index.js')
+      'stencila-mini': path.join(__dirname, 'index.js')
     },
     external: ['substance-test', 'substance'],
     istanbul: {

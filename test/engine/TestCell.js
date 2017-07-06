@@ -1,5 +1,5 @@
 import { EventEmitter, uuid } from 'substance'
-import { parse } from 'substance-mini'
+import { parse } from 'stencila-mini'
 
 export default class TestCell extends EventEmitter {
 
