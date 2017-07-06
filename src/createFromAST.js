@@ -142,14 +142,25 @@ export default function createFromAST(state, ast) {
       // HACK: sometimes we need to unwrap
       ast = ast.children[0] // eslint-disable-line no-fallthrough
     case 'call': {
-      let name = ast.children[0].toString()
-      state.tokens.push(
-        new Token('function-name', ast.children[0].symbol)
-      )
+      let name = ast.name.text
       let argsCtx = ast.args
       let args = arg_sequence(state, argsCtx.args)
       let namedArgs = arg_sequence(state, argsCtx.namedArgs)
-      node = new FunctionCall(state.nodeId++, name, args, namedArgs)
+      let modifiers
+      if (ast.modifiers) {
+        ast.modifiers.children.forEach((m) => {
+          state.tokens.push(
+            new Token('function-modifier', m.symbol)
+          )
+        })
+        modifiers = ast.modifiers.children.map((m) => {
+          return m.symbol.text
+        })
+      }
+      state.tokens.push(
+        new Token('function-name', ast.name)
+      )
+      node = new FunctionCall(state.nodeId++, name, args, namedArgs, modifiers)
       break
     }
     case 'named-argument': {
@@ -176,8 +187,10 @@ export default function createFromAST(state, ast) {
 }
 
 class Token {
-  constructor(type, {start, stop}) {
+  constructor(type, symbol) {
     /* istanbul ignore next */
+    const start = symbol.start
+    const stop = symbol.stop
     if (!isString(type)) {
       throw new Error('Illegal argument: "type" must be a string')
     }
@@ -193,6 +206,7 @@ class Token {
     this.start = start
     // ATTENTION: seems that symbol.end is inclusive
     this.end = stop+1
+    this.text = symbol.text
   }
 }
 
