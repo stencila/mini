@@ -321,6 +321,8 @@ export class BinaryNumericOp extends ExprNode {
   }
 
   evaluate() {
+    super.evaluate()
+
     let left = Number(this.left.getValue())
     let right = Number(this.right.getValue())
     let val
