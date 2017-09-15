@@ -34,7 +34,7 @@ class Expression extends EventEmitter {
       root.value = val
       this.value = val
       this.state = READY
-      this.emit('evaluation:finished', val)
+      this.emit('evaluation:finished', val, this)
     }
     // execution state
     this._cursor = -1
@@ -81,7 +81,7 @@ class Expression extends EventEmitter {
     this.value = undefined
     this._cursor = start
     try {
-      this.emit('evaluation:started')
+      this.emit('evaluation:started', this)
       const nodes = this.nodes
       const L = nodes.length
       for (let i = start; i < L; i++) {
