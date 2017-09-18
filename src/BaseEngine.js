@@ -4,7 +4,7 @@ import AbstractContext from './AbstractContext'
 const WAIT_FOR_IDLE = 500
 
 export default
-class Engine extends AbstractContext {
+class BaseEngine extends AbstractContext {
 
   constructor(options = {}) {
     super()
@@ -146,9 +146,10 @@ class Engine extends AbstractContext {
   _addExpression(expr) {
     expr.id = expr.id || uuid()
     expr.context = this
-    expr.on('evaluation:finished', (val) => {
-      this.setValue(expr.id, val)
-    })
+    expr.on('evaluation:started', this._onEvaluationStarted, this)
+    expr.on('evaluation:deferred', this._onEvaluationDeferred, this)
+    expr.on('evaluation:finished', this._onEvaluationFinished, this)
+
     let entry = new ExpressionEntry(expr)
     this._entries[expr.id] = entry
     const name = entry.expr.name
@@ -163,6 +164,7 @@ class Engine extends AbstractContext {
     let entry = this._entries[id]
     if (entry) {
       delete this._entries[id]
+      entry.expr.off(this)
       const name = entry.expr.name
       if (name) {
         delete this._aliases[name]
@@ -345,6 +347,15 @@ class Engine extends AbstractContext {
       return this._aliases[id].expr
     }
   }
+
+  _onEvaluationFinished(val, expr) {
+    this.setValue(expr.id, val)
+  }
+
+  _onEvaluationStarted(expr) {} // eslint-disable-line
+
+  _onEvaluationDeferred(expr) {} // eslint-disable-line
+
 }
 
 class ExpressionEntry {

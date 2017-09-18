@@ -1,4 +1,4 @@
-import { Engine } from 'stencila-mini'
+import { BaseEngine } from 'stencila-mini'
 import TestCell from './TestCell'
 
 /*
@@ -8,7 +8,7 @@ import TestCell from './TestCell'
 */
 
 export default
-class TestEngine extends Engine {
+class TestEngine extends BaseEngine {
 
   constructor() {
     // Note: waiting just a bit, not too long so that we

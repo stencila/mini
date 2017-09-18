@@ -1,6 +1,6 @@
 import Expression from './src/Expression'
-import Engine from './src/Engine'
+import BaseEngine from './src/BaseEngine'
 import parse from './src/parse'
 import walk from './src/walk'
 
-export { Expression, Engine, parse, walk }
+export { Expression, BaseEngine, parse, walk }
