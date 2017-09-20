@@ -61,7 +61,7 @@ class BaseEngine extends AbstractContext {
     } else {
       this._propagateDebounced()
     }
-    this.emit('updated')
+    this.emit('updated', this)
   }
 
   getValue(id) {
@@ -110,7 +110,7 @@ class BaseEngine extends AbstractContext {
         const expr = entry.expr
         if (skip[entry.id]) {
           // console.log('## Skipping expression ', entry.id)
-          expr.emit('evaluation:deferred')
+          expr.emit('evaluation:deferred', this)
           continue
         }
         this._cursor = entry.position
