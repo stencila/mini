@@ -40,6 +40,10 @@ class Expression extends EventEmitter {
     this._cursor = -1
   }
 
+  getSource() {
+    return this.source
+  }
+
   getValue() {
     return this.value
   }
