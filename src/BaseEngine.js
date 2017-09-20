@@ -110,7 +110,7 @@ class BaseEngine extends AbstractContext {
         const expr = entry.expr
         if (skip[entry.id]) {
           // console.log('## Skipping expression ', entry.id)
-          expr.emit('evaluation:deferred', this)
+          expr.emit('evaluation:deferred', expr, this)
           continue
         }
         this._cursor = entry.position
