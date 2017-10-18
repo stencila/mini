@@ -1,10 +1,9 @@
 import { module } from 'substance-test'
-import { wait, getMountPoint } from './testHelpers'
+// import { wait, getMountPoint } from './testHelpers'
 import TestContext from './TestContext'
 
 const test = module('Eval')
 
-const MESSAGE_CELL_READY = 'Cell should be ready'
 const MESSAGE_CORRECT_VALUE = 'Value should be correct'
 
 test('Number', (t) => {
