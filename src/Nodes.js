@@ -73,8 +73,9 @@ export class ArrayNode extends ExprNode {
   get type() { return 'array' }
 
   evaluate() {
+    const context = this.getContext()
     let vals = this.vals.map(val => val.getValue())
-    this.setValue(vals)
+    this.setValue(context.marshal('array', vals))
   }
 }
 
@@ -90,11 +91,12 @@ export class ObjectNode extends ExprNode {
   get type() { return 'object' }
 
   evaluate() {
+    const context = this.getContext()
     let obj = {}
     this.entries.forEach((entry) => {
       obj[entry.key] = entry.val.getValue()
     })
-    this.setValue(obj)
+    this.setValue(context.marshal('object', obj))
   }
 }
 
@@ -111,7 +113,8 @@ export class NumberNode extends ExprNode {
   get type() { return 'number' }
 
   evaluate() {
-    this.setValue(this.number)
+    const context = this.getContext()
+    this.setValue(context.marshal('number', this.number))
   }
 
 }
@@ -126,7 +129,8 @@ export class BooleanNode extends ExprNode {
   get type() { return 'boolean' }
 
   evaluate() {
-    this.setValue(this.bool)
+    const context = this.getContext()
+    this.setValue(context.marshal('boolean', this.bool))
   }
 }
 
@@ -141,7 +145,8 @@ export class StringNode extends ExprNode {
   get type() { return 'string' }
 
   evaluate() {
-    this.setValue(this.str)
+    const context = this.getContext()
+    this.setValue(context.marshal('string', this.str))
   }
 
 }
@@ -157,12 +162,8 @@ export class Var extends ExprNode {
 
   evaluate() {
     const context = this.getContext()
-    if (context) {
-      let val = context.lookup(this)
-      this.setValue(val)
-    } else {
-      this.setValue(undefined)
-    }
+    let val = context.lookup(this)
+    this.setValue(val)
   }
 
 }
@@ -180,12 +181,8 @@ export class Cell extends ExprNode {
 
   evaluate() {
     const context = this.getContext()
-    if (context) {
-      let val = context.lookup(this)
-      this.setValue(val)
-    } else {
-      this.setValue(undefined)
-    }
+    let val = context.lookup(this)
+    this.setValue(val)
   }
 
 }
@@ -207,12 +204,8 @@ export class Range extends ExprNode {
     // TODO: rethink, it seems a bit heavy to implement
     // range -> matrix conversion in lookup
     const context = this.getContext()
-    if (context) {
-      let matrix = context.lookup(this)
-      this.setValue(matrix)
-    } else {
-      this.setValue(undefined)
-    }
+    let matrix = context.lookup(this)
+    this.setValue(matrix)
   }
 
 }
@@ -268,16 +261,12 @@ export class FunctionCall extends ExprNode {
 
     const self = this
     const context = this.getContext()
-    if (context) {
-      this._pending = true
-      let res = context.callFunction(this)
-      if (res instanceof Promise) {
-        res.then(_done)
-      } else {
-        _done(res)
-      }
+    this._pending = true
+    let res = context.callFunction(this)
+    if (res instanceof Promise) {
+      res.then(_done)
     } else {
-      _done(undefined)
+      _done(res)
     }
 
     function _done(val) {
@@ -323,24 +312,25 @@ export class BinaryNumericOp extends ExprNode {
   evaluate() {
     super.evaluate()
 
-    let left = Number(this.left.getValue())
-    let right = Number(this.right.getValue())
+    let left = this.left.getValue()
+    let right = this.right.getValue()
+    const context = this.getContext()
     let val
     switch(this.type) {
       case 'plus':
-        val = left + right
+        val = context.plus(left, right)
         break
       case 'minus':
-        val = left - right
+        val = context.minus(left, right)
         break
       case 'mult':
-        val = left * right
+        val = context.multiply(left, right)
         break
       case 'div':
-        val = left / right
+        val = context.divide(left, right)
         break
       case 'power':
-        val = Math.pow(left,right)
+        val = context.pow(left,right)
         break
       default:
         val = undefined
