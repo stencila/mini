@@ -162,7 +162,10 @@ export class Var extends ExprNode {
 
   evaluate() {
     const context = this.getContext()
-    let val = context.lookup(this)
+    let val = context.lookup({
+      type: 'var',
+      name: this.name
+    })
     this.setValue(val)
   }
 
@@ -172,7 +175,8 @@ export class Cell extends ExprNode {
 
   constructor(id, row, col) {
     super(id)
-    this.tableName = '$data'
+    // TODO: where does the table name come from?
+    this.tableName = ''
     this.row = row
     this.col = col
   }
@@ -181,7 +185,12 @@ export class Cell extends ExprNode {
 
   evaluate() {
     const context = this.getContext()
-    let val = context.lookup(this)
+    let val = context.lookup({
+      type: 'cell',
+      tableName: this.tableName,
+      row: this.row,
+      col: this.col
+    })
     this.setValue(val)
   }
 
@@ -191,7 +200,8 @@ export class Range extends ExprNode {
 
   constructor(id, startRow, startCol, endRow, endCol) {
     super(id)
-    this.tableName = '$data'
+    // TODO: where does the table name come from?
+    this.tableName =
     this.startRow = startRow
     this.startCol = startCol
     this.endRow = endRow
@@ -204,7 +214,14 @@ export class Range extends ExprNode {
     // TODO: rethink, it seems a bit heavy to implement
     // range -> matrix conversion in lookup
     const context = this.getContext()
-    let matrix = context.lookup(this)
+    let matrix = context.lookup({
+      type: 'range',
+      tableName: this.tableName,
+      startRow: this.startRow,
+      startCol: this.startCol,
+      endRow: this.endRow,
+      endCol: this.endCol,
+    })
     this.setValue(matrix)
   }
 
