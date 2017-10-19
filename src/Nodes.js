@@ -1,7 +1,14 @@
+import {isNumber} from 'substance'
+
 class ExprNode {
 
-  constructor(id) {
+  constructor(id, start, end) {
     this.id = id
+    this.start = start
+    this.end = end
+    if (!isNumber(start) || !isNumber(end)) {
+      throw new Error("'start' and 'end' are mandatory")
+    }
     this.errors = null
   }
 
@@ -41,8 +48,8 @@ class ExprNode {
 
 export class Definition extends ExprNode {
 
-  constructor(id, name, rhs) {
-    super(id)
+  constructor(id, start, end, name, rhs) {
+    super(id, start, end)
     this.name = name
     this.rhs = rhs
     rhs.parent = this
@@ -62,8 +69,8 @@ export class Definition extends ExprNode {
 }
 
 export class ArrayNode extends ExprNode {
-  constructor(id, vals) {
-    super(id)
+  constructor(id, start, end, vals) {
+    super(id, start, end)
     this.vals = vals
     vals.forEach((val) => {
       val.parent = this
@@ -80,8 +87,8 @@ export class ArrayNode extends ExprNode {
 }
 
 export class ObjectNode extends ExprNode {
-  constructor(id, entries) {
-    super(id)
+  constructor(id, start, end, entries) {
+    super(id, start, end)
     this.entries = entries
     entries.forEach((entry) => {
       entry.parent = this
@@ -105,8 +112,8 @@ export class ObjectNode extends ExprNode {
 */
 export class NumberNode extends ExprNode {
 
-  constructor(id, number) {
-    super(id)
+  constructor(id, start, end, number) {
+    super(id, start, end)
     this.number = number
   }
 
@@ -121,8 +128,8 @@ export class NumberNode extends ExprNode {
 
 export class BooleanNode extends ExprNode {
 
-  constructor(id, bool) {
-    super(id)
+  constructor(id, start, end, bool) {
+    super(id, start, end)
     this.bool = bool
   }
 
@@ -137,8 +144,8 @@ export class BooleanNode extends ExprNode {
 
 export class StringNode extends ExprNode {
 
-  constructor(id, str) {
-    super(id)
+  constructor(id, start, end, str) {
+    super(id, start, end)
     this.str = str
   }
 
@@ -153,8 +160,8 @@ export class StringNode extends ExprNode {
 
 export class Var extends ExprNode {
 
-  constructor(id, name) {
-    super(id)
+  constructor(id, start, end, name) {
+    super(id, start, end)
     this.name = name
   }
 
@@ -171,10 +178,25 @@ export class Var extends ExprNode {
 
 }
 
+export class EmptyArgument extends ExprNode {
+
+  constructor(id, start, end) {
+    super(id, start, end)
+  }
+
+  get type() { return 'empty-arg' }
+
+  evaluate() {
+    this.setValue(undefined)
+  }
+
+}
+
+
 export class Cell extends ExprNode {
 
-  constructor(id, row, col) {
-    super(id)
+  constructor(id, start, end, row, col) {
+    super(id, start, end)
     // TODO: where does the table name come from?
     this.tableName = ''
     this.row = row
@@ -198,8 +220,8 @@ export class Cell extends ExprNode {
 
 export class Range extends ExprNode {
 
-  constructor(id, startRow, startCol, endRow, endCol) {
-    super(id)
+  constructor(id, start, end, startRow, startCol, endRow, endCol) {
+    super(id, start, end)
     // TODO: where does the table name come from?
     this.tableName =
     this.startRow = startRow
@@ -228,8 +250,8 @@ export class Range extends ExprNode {
 }
 
 export class ExternalFunction extends ExprNode {
-  constructor(id, args = []) {
-    super(id)
+  constructor(id, start, end, args = []) {
+    super(id, start, end)
     this.args = args
     args.forEach((c) => {
       c.parent = this
@@ -247,8 +269,8 @@ export class ExternalFunction extends ExprNode {
 
 export class FunctionCall extends ExprNode {
 
-  constructor(id, name, args = [], namedArgs=[], modifiers=[]) {
-    super(id)
+  constructor(id, start, end, name, args = [], namedArgs=[], modifiers=[]) {
+    super(id, start, end)
     this.name = name
     this.args = args
     this.modifiers = modifiers
@@ -295,8 +317,8 @@ export class FunctionCall extends ExprNode {
 
 export class NamedArgument extends ExprNode {
 
-  constructor(id, name, rhs) {
-    super(id)
+  constructor(id, start, end, name, rhs) {
+    super(id, start, end)
     this.name = name
     this.rhs = rhs
     rhs.parent = this
@@ -317,8 +339,8 @@ export class NamedArgument extends ExprNode {
 
 export class BinaryNumericOp extends ExprNode {
 
-  constructor(id, type, left, right) {
-    super(id)
+  constructor(id, start, end, type, left, right) {
+    super(id, start, end)
     this.type = type
     this.left = left
     this.right = right
@@ -365,8 +387,8 @@ export class BinaryNumericOp extends ExprNode {
 
 export class PipeOp extends ExprNode {
 
-  constructor(id, left, right) {
-    super(id)
+  constructor(id, start, end, left, right) {
+    super(id, start, end)
     this.left = left
     this.right = right
     this.left.parent = this
@@ -453,8 +475,8 @@ export class PipeOp extends ExprNode {
 
 export class ErrorNode extends ExprNode {
 
-  constructor(id, exception) {
-    super(id)
+  constructor(id, start, end, exception) {
+    super(id, start, end)
 
     this.exception = exception
   }
