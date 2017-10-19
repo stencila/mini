@@ -53,9 +53,9 @@ call_arguments:
     | args=positional_arguments ',' namedArgs=named_arguments
     ;
 
-positional_arguments: (args+=expr) (',' args+=expr)*;
+positional_arguments: (expr)? (',' expr?)*;
 
-named_arguments: args+=named_argument (',' args+=named_argument)*;
+named_arguments: named_argument (',' named_argument?)*;
 
 named_argument: ID EQ expr { $ctx.type = 'named-argument' };
 
