@@ -21,4 +21,17 @@ class ErrorListener {
       expectedTokens,
     })
   }
+
+  reportAttemptingFullContext() {
+    console.error('Attempting Full Context: ', arguments)
+  }
+
+  reportAmbiguity() {
+    console.error('Ambiguity:', arguments)
+  }
+
+  reportContextSensitivity() {
+    console.error('ContextSensitivity:', arguments)
+  }
+
 }
