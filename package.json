@@ -1,6 +1,6 @@
 {
   "name": "stencila-mini",
-  "version": "0.12.2",
+  "version": "0.12.3",
   "description": "",
   "main": "dist/stencila-mini.cjs.js",
   "jsntext:main": "index.js",
