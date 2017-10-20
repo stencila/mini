@@ -81,7 +81,12 @@ export class ArrayNode extends ExprNode {
 
   evaluate() {
     const context = this.getContext()
-    let vals = this.vals.map(val => val.getValue())
+    // HACK: if mini was supporting types explicitly
+    // we would unmarshal values, and compute a coerced array type here
+    // and not in the marshaller
+    let vals = this.vals.map((val) => {
+      return val.getValue()
+    })
     this.setValue(context.marshal('array', vals))
   }
 }
@@ -101,7 +106,7 @@ export class ObjectNode extends ExprNode {
     const context = this.getContext()
     let obj = {}
     this.entries.forEach((entry) => {
-      obj[entry.key] = entry.val.getValue()
+      obj[entry.key] = context.unmarshal(entry.val.getValue())
     })
     this.setValue(context.marshal('object', obj))
   }
@@ -244,7 +249,7 @@ export class Range extends ExprNode {
       endRow: this.endRow,
       endCol: this.endCol,
     })
-    this.setValue(matrix)
+    this.setValue(context.marshal('range', matrix))
   }
 
 }
