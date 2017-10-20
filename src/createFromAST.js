@@ -268,7 +268,11 @@ function arg_sequence(state, args) {
 
 function _getStartStop(n) {
   if (n.start) {
-    return [n.start.start, n.stop.stop+1]
+    if (n.stop) {
+      return [n.start.start, n.stop.stop+1]
+    } else {
+      return [n.start.start, n.start.stop+1]
+    }
   } else if (n.symbol) {
     return [n.symbol.start, n.symbol.stop+1]
   } else {

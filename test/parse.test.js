@@ -5,6 +5,13 @@ const test = module('Parse')
 
 const MESSAGE_CORRECT_AST = 'AST should have correct structure'
 
+test('Empty Expression', (t) => {
+  const expr = parse('')
+  const expectedTypes = ['error']
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.end()
+})
+
 test('Number', (t) => {
   const expr = parse('1')
   const expectedTypes = ['number']
