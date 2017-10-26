@@ -10,10 +10,8 @@ mainExpr:
     ;
 
 expr:  expr '^'<assoc=right> expr { $ctx.type = 'power' }
-    |  expr '*' expr            { $ctx.type = 'mult' }
-    |  expr '/' expr            { $ctx.type = 'div' }
-    |  expr '+' expr            { $ctx.type = 'plus' }
-    |  expr '-' expr            { $ctx.type = 'minus' }
+    |  expr op=('*'|'/') expr     { $ctx.type = ($ctx.op.text === '*') ? 'mult' : 'div' }
+    |  expr op=('+'|'-') expr     { $ctx.type = ($ctx.op.text === '+') ? 'plus' : 'minus' }
     |  expr '|' function_call   { $ctx.type = 'pipe' }
     |  BOOLEAN                  { $ctx.type = 'boolean' }
     |  number                   { $ctx.type = 'number' }

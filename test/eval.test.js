@@ -134,6 +134,14 @@ test('1+x+A1', (t) => {
   })
 })
 
+test('6/2*8', (t) => {
+  t.plan(1)
+  const context = new TestContext()
+  context.evaluate('6/2*8').then((res) => {
+    t.deepEqual(res, 24, MESSAGE_CORRECT_VALUE)
+  })
+})
+
 /*
 
 test('Pipe operator', (t) => {
