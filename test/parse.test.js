@@ -85,6 +85,23 @@ test('Range', (t) => {
   t.end()
 })
 
+test('Not', (t) => {
+  _equal(t, getNodeTypes(parse('!true')), ['not', 'boolean'], MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+
+test('Positive', (t) => {
+  _equal(t, getNodeTypes(parse('+1')), ['pos', 'number'], MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+
+test('Negative', (t) => {
+  _equal(t, getNodeTypes(parse('-1')), ['neg', 'number'], MESSAGE_CORRECT_AST)
+  t.end()
+})
+
 test('Less than', (t) => {
   const expr = parse('1 < 2')
   const expectedTypes = ['lt', 'number', 'number']
@@ -99,13 +116,6 @@ test('Greater than', (t) => {
   t.end()
 })
 
-test('Equal to', (t) => {
-  const expr = parse('"foo" == "bar"')
-  const expectedTypes = ['eq', 'string', 'string']
-  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
-  t.end()
-})
-
 test('Less than or equal', (t) => {
   const expr = parse('1 <= 2')
   const expectedTypes = ['lte', 'number', 'number']
@@ -116,6 +126,20 @@ test('Less than or equal', (t) => {
 test('Greater than or equal', (t) => {
   const expr = parse('1 >= 2')
   const expectedTypes = ['gte', 'number', 'number']
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+test('Equal to', (t) => {
+  const expr = parse('"foo" == "bar"')
+  const expectedTypes = ['eq', 'string', 'string']
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+test('Not equal to', (t) => {
+  const expr = parse('"foo" != "bar"')
+  const expectedTypes = ['neq', 'string', 'string']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.end()
 })

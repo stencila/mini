@@ -213,6 +213,15 @@ test('Range', (t) => {
   })
 })
 
+test('2*-x', (t) => {
+  t.plan(1)
+  const context = new TestContext()
+  context.setValue('x', 4)
+  context.evaluate('2*-x').then((res) => {
+    t.deepEqual(res, -8, MESSAGE_CORRECT_VALUE)
+  })
+})
+
 test('1+x+A1', (t) => {
   t.plan(1)
   const context = new TestContext()

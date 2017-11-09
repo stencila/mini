@@ -28,11 +28,17 @@ export default function walk(expr, fn) {
       case 'named-argument':
         stack.push(next.rhs)
         break
+      case 'not':
+      case 'pos':
+      case 'neg':
+        stack.push(next.right)
+        break
       case 'lt':
       case 'gt':
-      case 'eq':
       case 'lte':
       case 'gte':
+      case 'eq':
+      case 'neq':
       case 'and':
       case 'or':
       case 'plus':

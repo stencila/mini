@@ -63,6 +63,18 @@ export default class TestContext {
     return evaluate(str, this)
   }
 
+  not(a) {
+    return !a
+  }
+
+  pos(a) {
+    return a
+  }
+
+  neg(a) {
+    return -a
+  }
+
   lt(a, b) {
     return a < b
   }
@@ -71,16 +83,20 @@ export default class TestContext {
     return a > b
   }
 
-  eq(a, b) {
-    return a === b
-  }
-
   lte(a, b) {
     return a <= b
   }
 
   gte(a, b) {
     return a >= b
+  }
+
+  eq(a, b) {
+    return a === b
+  }
+
+  neq(a, b) {
+    return a !== b
   }
 
   and(a, b) {
