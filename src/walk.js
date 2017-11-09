@@ -28,6 +28,11 @@ export default function walk(expr, fn) {
       case 'named-argument':
         stack.push(next.rhs)
         break
+      case 'lt':
+      case 'gt':
+      case 'eq':
+      case 'lte':
+      case 'gte':
       case 'plus':
       case 'minus':
       case 'mult':

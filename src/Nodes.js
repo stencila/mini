@@ -361,6 +361,21 @@ export class BinaryNumericOp extends ExprNode {
     const context = this.getContext()
     let val
     switch(this.type) {
+      case 'lt':
+        val = context.lt(left, right)
+        break
+      case 'gt':
+        val = context.gt(left, right)
+        break
+      case 'eq':
+        val = context.eq(left, right)
+        break
+      case 'lte':
+        val = context.lte(left, right)
+        break
+      case 'gte':
+        val = context.gte(left, right)
+        break
       case 'plus':
         val = context.plus(left, right)
         break

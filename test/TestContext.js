@@ -63,6 +63,26 @@ export default class TestContext {
     return evaluate(str, this)
   }
 
+  lt(a, b) {
+    return a < b
+  }
+
+  gt(a, b) {
+    return a > b
+  }
+
+  eq(a, b) {
+    return a === b
+  }
+
+  lte(a, b) {
+    return a <= b
+  }
+
+  gte(a, b) {
+    return a >= b
+  }
+
   plus(a, b) {
     return a + b
   }

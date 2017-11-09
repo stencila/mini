@@ -85,6 +85,41 @@ test('Range', (t) => {
   t.end()
 })
 
+test('Less than', (t) => {
+  const expr = parse('1 < 2')
+  const expectedTypes = ['lt', 'number', 'number']
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+test('Greater than', (t) => {
+  const expr = parse('1 > 2')
+  const expectedTypes = ['gt', 'number', 'number']
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+test('Equal to', (t) => {
+  const expr = parse('"foo" == "bar"')
+  const expectedTypes = ['eq', 'string', 'string']
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+test('Less than or equal', (t) => {
+  const expr = parse('1 <= 2')
+  const expectedTypes = ['lte', 'number', 'number']
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+test('Greater than or equal', (t) => {
+  const expr = parse('1 >= 2')
+  const expectedTypes = ['gte', 'number', 'number']
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.end()
+})
+
 test('Plus', (t) => {
   const expr = parse('1+2')
   const expectedTypes = ['plus', 'number', 'number']

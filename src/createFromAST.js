@@ -30,6 +30,11 @@ export default function createFromAST(state, ast) {
       node = new ExternalFunction(state.nodeId++, start, end, args)
       break
     }
+    case 'lt':
+    case 'gt':
+    case 'eq':
+    case 'lte':
+    case 'gte':
     case 'plus':
     case 'minus':
     case 'mult':
