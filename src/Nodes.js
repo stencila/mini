@@ -376,6 +376,12 @@ export class BinaryNumericOp extends ExprNode {
       case 'gte':
         val = context.gte(left, right)
         break
+      case 'and':
+        val = context.and(left, right)
+        break
+      case 'or':
+        val = context.or(left, right)
+        break
       case 'plus':
         val = context.plus(left, right)
         break

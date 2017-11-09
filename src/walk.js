@@ -33,6 +33,8 @@ export default function walk(expr, fn) {
       case 'eq':
       case 'lte':
       case 'gte':
+      case 'and':
+      case 'or':
       case 'plus':
       case 'minus':
       case 'mult':

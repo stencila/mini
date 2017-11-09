@@ -9,16 +9,19 @@ mainExpr:
     |  expr                       { $ctx.type = 'simple' }
     ;
 
-expr:  expr op=('<'|'>'|'=='|'>='|'<=') expr { switch ($ctx.op.text) {
+expr:
+       expr '^'<assoc=right> expr { $ctx.type = 'power' }
+    |  expr op=('*'|'/') expr     { $ctx.type = ($ctx.op.text === '*') ? 'mult' : 'div' }
+    |  expr op=('+'|'-') expr     { $ctx.type = ($ctx.op.text === '+') ? 'plus' : 'minus' }
+    |  expr op=('<'|'>'|'=='|'>='|'<=') expr { switch ($ctx.op.text) {
             case '<': $ctx.type = 'lt'; break 
             case '>': $ctx.type = 'gt'; break 
             case '==': $ctx.type = 'eq'; break
             case '<=': $ctx.type = 'lte'; break
             case '>=': $ctx.type = 'gte'; break
        }}
-    |  expr '^'<assoc=right> expr { $ctx.type = 'power' }
-    |  expr op=('*'|'/') expr     { $ctx.type = ($ctx.op.text === '*') ? 'mult' : 'div' }
-    |  expr op=('+'|'-') expr     { $ctx.type = ($ctx.op.text === '+') ? 'plus' : 'minus' }
+    |  expr 'and' expr            { $ctx.type = 'and' }
+    |  expr 'or' expr             { $ctx.type = 'or' }
     |  expr '|' function_call   { $ctx.type = 'pipe' }
     |  BOOLEAN                  { $ctx.type = 'boolean' }
     |  number                   { $ctx.type = 'number' }

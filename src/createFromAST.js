@@ -35,6 +35,8 @@ export default function createFromAST(state, ast) {
     case 'eq':
     case 'lte':
     case 'gte':
+    case 'and':
+    case 'or':
     case 'plus':
     case 'minus':
     case 'mult':

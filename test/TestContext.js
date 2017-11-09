@@ -83,6 +83,14 @@ export default class TestContext {
     return a >= b
   }
 
+  and(a, b) {
+    return a && b
+  }
+
+  or(a, b) {
+    return a || b
+  }
+
   plus(a, b) {
     return a + b
   }

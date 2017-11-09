@@ -104,6 +104,40 @@ test('Greater than or equal to', (t) => {
   })
 })
 
+test('And', (t) => {
+  t.plan(4)
+  const context = new TestContext()
+  context.evaluate('true and true').then((res) => {
+    t.equal(res, true, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('true and false').then((res) => {
+    t.equal(res, false, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('1<2 and 3<4').then((res) => {
+    t.equal(res, true, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('1>2 and 3<4').then((res) => {
+    t.equal(res, false, MESSAGE_CORRECT_VALUE)
+  })
+})
+
+test('Or', (t) => {
+  t.plan(4)
+  const context = new TestContext()
+  context.evaluate('true or false').then((res) => {
+    t.equal(res, true, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('false or false').then((res) => {
+    t.equal(res, false, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('1<2 or 3>4').then((res) => {
+    t.equal(res, true, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('1>2 or 3>4').then((res) => {
+    t.equal(res, false, MESSAGE_CORRECT_VALUE)
+  })
+})
+
 test('Plus', (t) => {
   t.plan(1)
   const context = new TestContext()
@@ -194,6 +228,14 @@ test('6/2*8', (t) => {
   const context = new TestContext()
   context.evaluate('6/2*8').then((res) => {
     t.deepEqual(res, 24, MESSAGE_CORRECT_VALUE)
+  })
+})
+
+test('2*2==4 and 3+1<=4', (t) => {
+  t.plan(1)
+  const context = new TestContext()
+  context.evaluate('2*2==4 and 3+1<=4').then((res) => {
+    t.deepEqual(res, true, MESSAGE_CORRECT_VALUE)
   })
 })
 
