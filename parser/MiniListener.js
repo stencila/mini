@@ -65,15 +65,6 @@ MiniListener.prototype.exitSheet_ref = function(ctx) {
 };
 
 
-// Enter a parse tree produced by MiniParser#function_modifiers.
-MiniListener.prototype.enterFunction_modifiers = function(ctx) {
-};
-
-// Exit a parse tree produced by MiniParser#function_modifiers.
-MiniListener.prototype.exitFunction_modifiers = function(ctx) {
-};
-
-
 // Enter a parse tree produced by MiniParser#function_call.
 MiniListener.prototype.enterFunction_call = function(ctx) {
 };

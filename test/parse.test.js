@@ -203,12 +203,6 @@ test('foo(x,y', (t) => {
   t.end()
 })
 
-test('global', (t) => {
-  const expr = parse('global')
-  t.notNil(expr.syntaxError, 'There should be a syntaxError.')
-  t.end()
-})
-
 test('x 7', (t) => {
   const expr = parse('x 7')
   t.notNil(expr.syntaxError, 'There should be a syntaxError.')

@@ -32,9 +32,7 @@ cell: CELL;
 
 sheet_ref: ID '!' ( cell | range );
 
-function_modifiers: ('global');
-
-function_call: (modifiers=function_modifiers)? (name=ID) '(' args=call_arguments ')'  { $ctx.type = 'call' }
+function_call: (name=ID) '(' args=call_arguments ')'  { $ctx.type = 'call' }
     ;
 
 number:  INT                        { $ctx.type = 'int' }
