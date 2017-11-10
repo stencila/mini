@@ -145,14 +145,14 @@ test('Not equal to', (t) => {
 })
 
 test('Or', (t) => {
-  _equal(t, getNodeTypes(parse('true or false')), ['or', 'boolean', 'boolean'], MESSAGE_CORRECT_AST)
-  _equal(t, getNodeTypes(parse('a==1 or b>=2')), ['or', 'eq', 'var', 'number', 'gte', 'var', 'number'], MESSAGE_CORRECT_AST)
+  _equal(t, getNodeTypes(parse('true || false')), ['or', 'boolean', 'boolean'], MESSAGE_CORRECT_AST)
+  _equal(t, getNodeTypes(parse('a==1 || b>=2')), ['or', 'eq', 'var', 'number', 'gte', 'var', 'number'], MESSAGE_CORRECT_AST)
   t.end()
 })
 
 test('And', (t) => {
-  _equal(t, getNodeTypes(parse('true and false')), ['and', 'boolean', 'boolean'], MESSAGE_CORRECT_AST)
-  _equal(t, getNodeTypes(parse('a==1 and b>=2')), ['and', 'eq', 'var', 'number', 'gte', 'var', 'number'], MESSAGE_CORRECT_AST)
+  _equal(t, getNodeTypes(parse('true && false')), ['and', 'boolean', 'boolean'], MESSAGE_CORRECT_AST)
+  _equal(t, getNodeTypes(parse('a==1 && b>=2')), ['and', 'eq', 'var', 'number', 'gte', 'var', 'number'], MESSAGE_CORRECT_AST)
   t.end()
 })
 

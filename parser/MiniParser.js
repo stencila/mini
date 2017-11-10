@@ -173,7 +173,7 @@ var sharedContextCache = new antlr4.PredictionContextCache();
 
 var literalNames = [ null, "'function'", "'('", "')'", "'!'", "'+'", "'-'", 
                      "'^'", "'*'", "'/'", "'<'", "'<='", "'>'", "'>='", 
-                     "'=='", "'!='", "'and'", "'or'", "'|'", "':'", "','", 
+                     "'=='", "'!='", "'&&'", "'||'", "'|'", "':'", "','", 
                      "'['", "']'", "'{'", "'}'", null, null, null, null, 
                      null, null, "'='" ];
 

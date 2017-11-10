@@ -25,8 +25,8 @@ expr:
             case '>=': $ctx.type = 'gte'; break
        }}
     |  expr op=('=='|'!=') expr   { $ctx.type = ($ctx.op.text === '==') ? 'eq' : 'neq' }
-    |  expr 'and' expr            { $ctx.type = 'and' }
-    |  expr 'or' expr             { $ctx.type = 'or' }
+    |  expr '&&' expr            { $ctx.type = 'and' }
+    |  expr '||' expr             { $ctx.type = 'or' }
     |  expr '|' function_call   { $ctx.type = 'pipe' }
     |  BOOLEAN                  { $ctx.type = 'boolean' }
     |  number                   { $ctx.type = 'number' }
