@@ -9,9 +9,24 @@ mainExpr:
     |  expr                       { $ctx.type = 'simple' }
     ;
 
-expr:  expr '^'<assoc=right> expr { $ctx.type = 'power' }
+expr:
+       op=('!'|'+'|'-') expr      { switch ($ctx.op.text) {
+            case '!': $ctx.type = 'not'; break 
+            case '+': $ctx.type = 'pos'; break
+            case '-': $ctx.type = 'neg'; break
+       }}
+    |  expr '^'<assoc=right> expr { $ctx.type = 'power' }
     |  expr op=('*'|'/') expr     { $ctx.type = ($ctx.op.text === '*') ? 'mult' : 'div' }
     |  expr op=('+'|'-') expr     { $ctx.type = ($ctx.op.text === '+') ? 'plus' : 'minus' }
+    |  expr op=('<'|'<='|'>'|'>=') expr { switch ($ctx.op.text) {
+            case '<': $ctx.type = 'lt'; break 
+            case '<=': $ctx.type = 'lte'; break
+            case '>': $ctx.type = 'gt'; break 
+            case '>=': $ctx.type = 'gte'; break
+       }}
+    |  expr op=('=='|'!=') expr   { $ctx.type = ($ctx.op.text === '==') ? 'eq' : 'neq' }
+    |  expr '&&' expr            { $ctx.type = 'and' }
+    |  expr '||' expr             { $ctx.type = 'or' }
     |  expr '|' function_call   { $ctx.type = 'pipe' }
     |  BOOLEAN                  { $ctx.type = 'boolean' }
     |  number                   { $ctx.type = 'number' }
@@ -32,9 +47,7 @@ cell: CELL;
 
 sheet_ref: ID '!' ( cell | range );
 
-function_modifiers: ('global');
-
-function_call: (modifiers=function_modifiers)? (name=ID) '(' args=call_arguments ')'  { $ctx.type = 'call' }
+function_call: (name=ID) '(' args=call_arguments ')'  { $ctx.type = 'call' }
     ;
 
 number:  INT                        { $ctx.type = 'int' }

@@ -85,6 +85,77 @@ test('Range', (t) => {
   t.end()
 })
 
+test('Not', (t) => {
+  _equal(t, getNodeTypes(parse('!true')), ['not', 'boolean'], MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+
+test('Positive', (t) => {
+  _equal(t, getNodeTypes(parse('+1')), ['pos', 'number'], MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+
+test('Negative', (t) => {
+  _equal(t, getNodeTypes(parse('-1')), ['neg', 'number'], MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+test('Less than', (t) => {
+  const expr = parse('1 < 2')
+  const expectedTypes = ['lt', 'number', 'number']
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+test('Greater than', (t) => {
+  const expr = parse('1 > 2')
+  const expectedTypes = ['gt', 'number', 'number']
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+test('Less than or equal', (t) => {
+  const expr = parse('1 <= 2')
+  const expectedTypes = ['lte', 'number', 'number']
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+test('Greater than or equal', (t) => {
+  const expr = parse('1 >= 2')
+  const expectedTypes = ['gte', 'number', 'number']
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+test('Equal to', (t) => {
+  const expr = parse('"foo" == "bar"')
+  const expectedTypes = ['eq', 'string', 'string']
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+test('Not equal to', (t) => {
+  const expr = parse('"foo" != "bar"')
+  const expectedTypes = ['neq', 'string', 'string']
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+test('Or', (t) => {
+  _equal(t, getNodeTypes(parse('true || false')), ['or', 'boolean', 'boolean'], MESSAGE_CORRECT_AST)
+  _equal(t, getNodeTypes(parse('a==1 || b>=2')), ['or', 'eq', 'var', 'number', 'gte', 'var', 'number'], MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+test('And', (t) => {
+  _equal(t, getNodeTypes(parse('true && false')), ['and', 'boolean', 'boolean'], MESSAGE_CORRECT_AST)
+  _equal(t, getNodeTypes(parse('a==1 && b>=2')), ['and', 'eq', 'var', 'number', 'gte', 'var', 'number'], MESSAGE_CORRECT_AST)
+  t.end()
+})
+
 test('Plus', (t) => {
   const expr = parse('1+2')
   const expectedTypes = ['plus', 'number', 'number']
@@ -199,12 +270,6 @@ test('1+', (t) => {
 
 test('foo(x,y', (t) => {
   const expr = parse('foo(x,y')
-  t.notNil(expr.syntaxError, 'There should be a syntaxError.')
-  t.end()
-})
-
-test('global', (t) => {
-  const expr = parse('global')
   t.notNil(expr.syntaxError, 'There should be a syntaxError.')
   t.end()
 })

@@ -49,6 +49,95 @@ test('Object', (t) => {
   })
 })
 
+test('Less than', (t) => {
+  t.plan(2)
+  const context = new TestContext()
+  context.evaluate('1<2').then((res) => {
+    t.equal(res, true, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('2<1').then((res) => {
+    t.equal(res, false, MESSAGE_CORRECT_VALUE)
+  })
+})
+
+test('Greater than', (t) => {
+  t.plan(2)
+  const context = new TestContext()
+  context.evaluate('2>1').then((res) => {
+    t.equal(res, true, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('1>2').then((res) => {
+    t.equal(res, false, MESSAGE_CORRECT_VALUE)
+  })
+})
+
+test('Equal to', (t) => {
+  t.plan(2)
+  const context = new TestContext()
+  context.evaluate('1==1').then((res) => {
+    t.equal(res, true, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('1==2').then((res) => {
+    t.equal(res, false, MESSAGE_CORRECT_VALUE)
+  })
+})
+
+test('Less than or equal to', (t) => {
+  t.plan(2)
+  const context = new TestContext()
+  context.evaluate('1<=2').then((res) => {
+    t.equal(res, true, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('2<=1').then((res) => {
+    t.equal(res, false, MESSAGE_CORRECT_VALUE)
+  })
+})
+
+test('Greater than or equal to', (t) => {
+  t.plan(2)
+  const context = new TestContext()
+  context.evaluate('2>=1').then((res) => {
+    t.equal(res, true, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('1>=2').then((res) => {
+    t.equal(res, false, MESSAGE_CORRECT_VALUE)
+  })
+})
+
+test('And', (t) => {
+  t.plan(4)
+  const context = new TestContext()
+  context.evaluate('true && true').then((res) => {
+    t.equal(res, true, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('true && false').then((res) => {
+    t.equal(res, false, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('1<2 && 3<4').then((res) => {
+    t.equal(res, true, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('1>2 && 3<4').then((res) => {
+    t.equal(res, false, MESSAGE_CORRECT_VALUE)
+  })
+})
+
+test('Or', (t) => {
+  t.plan(4)
+  const context = new TestContext()
+  context.evaluate('true || false').then((res) => {
+    t.equal(res, true, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('false || false').then((res) => {
+    t.equal(res, false, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('1<2 || 3>4').then((res) => {
+    t.equal(res, true, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('1>2 || 3>4').then((res) => {
+    t.equal(res, false, MESSAGE_CORRECT_VALUE)
+  })
+})
+
 test('Plus', (t) => {
   t.plan(1)
   const context = new TestContext()
@@ -124,6 +213,15 @@ test('Range', (t) => {
   })
 })
 
+test('2*-x', (t) => {
+  t.plan(1)
+  const context = new TestContext()
+  context.setValue('x', 4)
+  context.evaluate('2*-x').then((res) => {
+    t.deepEqual(res, -8, MESSAGE_CORRECT_VALUE)
+  })
+})
+
 test('1+x+A1', (t) => {
   t.plan(1)
   const context = new TestContext()
@@ -139,6 +237,14 @@ test('6/2*8', (t) => {
   const context = new TestContext()
   context.evaluate('6/2*8').then((res) => {
     t.deepEqual(res, 24, MESSAGE_CORRECT_VALUE)
+  })
+})
+
+test('2*2==4 && 3+1<=4', (t) => {
+  t.plan(1)
+  const context = new TestContext()
+  context.evaluate('2*2==4 && 3+1<=4').then((res) => {
+    t.deepEqual(res, true, MESSAGE_CORRECT_VALUE)
   })
 })
 

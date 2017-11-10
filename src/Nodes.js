@@ -342,6 +342,43 @@ export class NamedArgument extends ExprNode {
 
 }
 
+
+export class UnaryOp extends ExprNode {
+
+  constructor(id, start, end, type, right) {
+    super(id, start, end)
+    this.type = type
+    this.right = right
+    this.right.parent = this
+  }
+
+  evaluate() {
+    super.evaluate()
+
+    const context = this.getContext()
+    const right = this.right.getValue()
+    let val
+    switch (this.type) {
+      case 'not':
+        val = context.not(right)
+        break
+      case 'pos':
+        val = context.pos(right)
+        break
+      case 'neg':
+        val = context.neg(right)
+        break
+      default:
+        val = undefined
+    }
+    if (this.right.errors) {
+      this.addErrors(this.right.errors)
+    }
+    this.setValue(val)
+  }
+
+}
+
 export class BinaryNumericOp extends ExprNode {
 
   constructor(id, start, end, type, left, right) {
@@ -361,6 +398,27 @@ export class BinaryNumericOp extends ExprNode {
     const context = this.getContext()
     let val
     switch(this.type) {
+      case 'lt':
+        val = context.lt(left, right)
+        break
+      case 'gt':
+        val = context.gt(left, right)
+        break
+      case 'eq':
+        val = context.eq(left, right)
+        break
+      case 'lte':
+        val = context.lte(left, right)
+        break
+      case 'gte':
+        val = context.gte(left, right)
+        break
+      case 'and':
+        val = context.and(left, right)
+        break
+      case 'or':
+        val = context.or(left, right)
+        break
       case 'plus':
         val = context.plus(left, right)
         break

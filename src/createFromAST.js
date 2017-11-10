@@ -4,6 +4,7 @@ import {
   NumberNode, StringNode, ArrayNode, ObjectNode, BooleanNode,
   Var, Cell, Range,
   FunctionCall, ExternalFunction, NamedArgument,
+  UnaryOp,
   BinaryNumericOp,
   PipeOp,
   ErrorNode,
@@ -30,6 +31,22 @@ export default function createFromAST(state, ast) {
       node = new ExternalFunction(state.nodeId++, start, end, args)
       break
     }
+    case 'not': 
+    case 'pos': 
+    case 'neg': {
+      node = new UnaryOp(state.nodeId++, start, end, ast.type,
+        createFromAST(state, ast.children[1])
+      )
+      break
+    }
+    case 'lt':
+    case 'gt':
+    case 'lte':
+    case 'gte':
+    case 'eq':
+    case 'neq':
+    case 'and':
+    case 'or':
     case 'plus':
     case 'minus':
     case 'mult':
