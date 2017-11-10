@@ -4,8 +4,6 @@ import {
   NumberNode, StringNode, ArrayNode, ObjectNode, BooleanNode,
   Var, Cell, Range,
   FunctionCall, ExternalFunction, NamedArgument,
-  UnaryOp,
-  BinaryNumericOp,
   PipeOp,
   ErrorNode,
   EmptyArgument
@@ -31,31 +29,33 @@ export default function createFromAST(state, ast) {
       node = new ExternalFunction(state.nodeId++, start, end, args)
       break
     }
+    // Unary operators
     case 'not': 
-    case 'pos': 
-    case 'neg': {
-      node = new UnaryOp(state.nodeId++, start, end, ast.type,
-        createFromAST(state, ast.children[1])
-      )
+    case 'plus': 
+    case 'minus': {
+      let name = ast.type
+      let args = expr_sequence(state, [ast.children[1]])
+      node = new FunctionCall(state.nodeId++, start, end, name, args)
       break
     }
-    case 'lt':
-    case 'gt':
-    case 'lte':
-    case 'gte':
-    case 'eq':
-    case 'neq':
+    // Binary operators (in order of precedence)
+    case 'pow':
+    case 'multiply':
+    case 'divide':
+    case 'remainder':
+    case 'add':
+    case 'subtract':
+    case 'less':
+    case 'less_or_equal':
+    case 'greater':
+    case 'greater_or_equal':
+    case 'equal':
+    case 'not_equal':
     case 'and':
-    case 'or':
-    case 'plus':
-    case 'minus':
-    case 'mult':
-    case 'div':
-    case 'power': {
-      node = new BinaryNumericOp(state.nodeId++, start, end, ast.type,
-        createFromAST(state, ast.children[0]),
-        createFromAST(state, ast.children[2])
-      )
+    case 'or': {
+      let name = ast.type
+      let args = expr_sequence(state, [ast.children[0], ast.children[2]])
+      node = new FunctionCall(state.nodeId++, start, end, name, args)
       break
     }
     case 'pipe': {
