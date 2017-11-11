@@ -12,8 +12,8 @@ mainExpr:
 expr:
        op=('!'|'+'|'-') expr      { switch ($ctx.op.text) {
             case '!': $ctx.type = 'not';   break 
-            case '+': $ctx.type = 'plus';  break
-            case '-': $ctx.type = 'minus'; break
+            case '+': $ctx.type = 'positive';  break
+            case '-': $ctx.type = 'negative'; break
         }}
     |  expr '^'<assoc=right> expr { 
             $ctx.type = 'pow'

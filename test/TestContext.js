@@ -7,7 +7,7 @@ export default class TestContext {
     this._funs = {
       // Operator functions in order of precedence; equal precedence if on same line.
       select,
-      not, plus, minus,
+      not, positive, negative,
       pow,
       multiply, divide, remainder,
       add, subtract,
@@ -105,11 +105,11 @@ function not(a) {
   return !a
 }
 
-function plus(a) {
+function positive(a) {
   return +1 * a
 }
 
-function minus(a) {
+function negative(a) {
   return -1 * a
 }
 
