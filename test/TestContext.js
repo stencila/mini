@@ -97,8 +97,8 @@ export default class TestContext {
 //   http://en.cppreference.com/w/cpp/language/operator_precedence
 //   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence
 
-function select(object, property) {
-  return object[property]
+function select(value, member) {
+  return value[member]
 }
 
 function not(a) {

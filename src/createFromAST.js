@@ -29,12 +29,27 @@ export default function createFromAST(state, ast) {
       node = new ExternalFunction(state.nodeId++, start, end, args)
       break
     }
+    // Member selection operator `.`
+    case 'select_id': {
+      const value = createFromAST(state, ast.children[0])
+      // Create a new string node from the member ID
+      const id = new StringNode(state.nodeId++, start, end, ast.children[2].getText())
+      state.nodes.push(id)
+      node = new FunctionCall(state.nodeId++, start, end, 'select', [value, id])
+      break
+    }
+    // Member selection operator `[]`
+    case 'select_expr': {
+      const args = expr_sequence(state, [ast.children[0], ast.children[2]])
+      node = new FunctionCall(state.nodeId++, start, end, 'select', args)
+      break
+    }
     // Unary operators
     case 'not': 
-    case 'plus': 
-    case 'minus': {
-      let name = ast.type
-      let args = expr_sequence(state, [ast.children[1]])
+    case 'positive': 
+    case 'negative': {
+      const name = ast.type
+      const args = expr_sequence(state, [ast.children[1]])
       node = new FunctionCall(state.nodeId++, start, end, name, args)
       break
     }
@@ -53,11 +68,12 @@ export default function createFromAST(state, ast) {
     case 'not_equal':
     case 'and':
     case 'or': {
-      let name = ast.type
-      let args = expr_sequence(state, [ast.children[0], ast.children[2]])
+      const name = ast.type
+      const args = expr_sequence(state, [ast.children[0], ast.children[2]])
       node = new FunctionCall(state.nodeId++, start, end, name, args)
       break
     }
+    // Pipe operator
     case 'pipe': {
       node = new PipeOp(state.nodeId++, start, end,
         createFromAST(state, ast.children[0]),

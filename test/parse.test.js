@@ -85,20 +85,32 @@ test('Range', (t) => {
   t.end()
 })
 
+test('Select using id', (t) => {
+  _equal(t, getNodeTypes(parse('a.b')), ['call:select', 'var', 'string'], MESSAGE_CORRECT_AST)
+  _equal(t, getNodeTypes(parse('{a:1}.a')), ['call:select', 'object', 'number', 'string'], MESSAGE_CORRECT_AST)
+  t.end()
+})
+
+test('Select using expression', (t) => {
+  _equal(t, getNodeTypes(parse('a[1]')), ['call:select', 'var', 'number'], MESSAGE_CORRECT_AST)
+  _equal(t, getNodeTypes(parse('[0,1][0]')), ['call:select', 'array', 'number', 'number', 'number'], MESSAGE_CORRECT_AST)
+  _equal(t, getNodeTypes(parse('b[i+1]')), ['call:select', 'var', 'call:add', 'var', 'number'], MESSAGE_CORRECT_AST)
+  _equal(t, getNodeTypes(parse('table[["col1","col2"]]')), ['call:select', 'var', 'array', 'string', 'string'], MESSAGE_CORRECT_AST)
+  t.end()
+})
+
 test('Not', (t) => {
   _equal(t, getNodeTypes(parse('!true')), ['call:not', 'boolean'], MESSAGE_CORRECT_AST)
   t.end()
 })
 
-
-test('Plus', (t) => {
-  _equal(t, getNodeTypes(parse('+1')), ['call:plus', 'number'], MESSAGE_CORRECT_AST)
+test('Positive', (t) => {
+  _equal(t, getNodeTypes(parse('+1')), ['call:positive', 'number'], MESSAGE_CORRECT_AST)
   t.end()
 })
 
-
-test('Minus', (t) => {
-  _equal(t, getNodeTypes(parse('-1')), ['call:minus', 'number'], MESSAGE_CORRECT_AST)
+test('Negative', (t) => {
+  _equal(t, getNodeTypes(parse('-1')), ['call:negative', 'number'], MESSAGE_CORRECT_AST)
   t.end()
 })
 

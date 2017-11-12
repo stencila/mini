@@ -49,6 +49,28 @@ test('Object', (t) => {
   })
 })
 
+test('Select', (t) => {
+  t.plan(5)
+  const context = new TestContext()
+  context.setValue('x', {a: 1, b: 2, c: 3})
+  context.setValue('y', [4, 5, 6])
+  context.evaluate('x.a').then((res) => {
+    t.equal(res, 1, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('x.b').then((res) => {
+    t.equal(res, 2, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('x["c"]').then((res) => {
+    t.equal(res, 3, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('y[0]').then((res) => {
+    t.equal(res, 4, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('y[2-1]').then((res) => {
+    t.equal(res, 5, MESSAGE_CORRECT_VALUE)
+  })
+})
+
 test('Less than', (t) => {
   t.plan(2)
   const context = new TestContext()

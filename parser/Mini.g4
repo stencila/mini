@@ -10,18 +10,24 @@ mainExpr:
     ;
 
 expr:
-       op=('!'|'+'|'-') expr      { switch ($ctx.op.text) {
-            case '!': $ctx.type = 'not';   break 
-            case '+': $ctx.type = 'positive';  break
-            case '-': $ctx.type = 'negative'; break
+    expr '.' ID { 
+            $ctx.type = 'select_id'
+        }
+    |  expr '[' expr ']' { 
+            $ctx.type = 'select_expr'
+        }
+    |  op=('!'|'+'|'-') expr      { switch ($ctx.op.text) {
+            case '!': $ctx.type = 'not';               break 
+            case '+': $ctx.type = 'positive';          break
+            case '-': $ctx.type = 'negative';          break
         }}
     |  expr '^'<assoc=right> expr { 
             $ctx.type = 'pow'
         }
     |  expr op=('*'|'/'|'%') expr     { switch ($ctx.op.text) {
-            case '*':  $ctx.type = 'multiply';           break 
-            case '/': $ctx.type = 'divide';             break
-            case '%':  $ctx.type = 'remainder';          break 
+            case '*': $ctx.type = 'multiply';          break 
+            case '/': $ctx.type = 'divide';            break
+            case '%': $ctx.type = 'remainder';         break 
         }}
     |  expr op=('+'|'-') expr     {
             $ctx.type = ($ctx.op.text === '+') ? 'add' : 'subtract' 
