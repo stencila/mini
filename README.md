@@ -58,7 +58,7 @@ Precedence | Operator | Usage example     | Function call equivalent
 7          | `==`     | `value == other`  | `equal(value, other)`
 7          | `!=`     | `value != other`  | `not_equal(value, other)`
 8          | `&&`     | `value && other`  | `and(value, other)`
-9          | `||`     | `value || other`  | `or(value, other)`
+9          | `\|\|`   | `value \|\| other`| `or(value, other)`
 
 
 ## Development
