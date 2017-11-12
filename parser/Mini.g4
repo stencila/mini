@@ -16,7 +16,7 @@ expr:
     |  expr '[' expr ']' { 
             $ctx.type = 'select_expr'
         }
-    |  op=('!'|'+'|'-') expr      { switch ($ctx.op.text) {
+    |  op=('!'<assoc=right>|'+'<assoc=right>|'-'<assoc=right>) expr { switch ($ctx.op.text) {
             case '!': $ctx.type = 'not';               break 
             case '+': $ctx.type = 'positive';          break
             case '-': $ctx.type = 'negative';          break
