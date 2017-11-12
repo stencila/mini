@@ -42,30 +42,30 @@ Operator | Usage example     | Function call equivalent
 :------: | :-----------      | :---------------------- 
 `.`      | `value.member`    | `select(value, member)`
 `[]`     | `value[member]`   | `select(value, member)`
-|
+         |                   |
 `!`      | `!value`          | `not(value)`
 `+`      | `+value`          | `positive(value)`
 `-`      | `-value`          | `negative(value)`
-|
+         |                   |
 `^`      | `value ^ expon`   | `pow(value, expon)`
-|
+         |                   |
 `*`      | `value * other`   | `multiply(value, other)`
 `/`      | `value / other`   | `divide(value, other)`
 `%`      | `value % other`   | `remainder(value, other)`
-|
+         |                   |
 `+`      | `value + other`   | `add(value, other)`
 `-`      | `value - other`   | `subtract(value, other)`
-|
+         |                   |
 `<`      | `value < other`   | `less(value, other)`
 `<=`     | `value <= other`  | `less_or_equal(value, other)`
 `>`      | `value > other`   | `greater(value, other)`
 `>=`     | `value >= other`  | `greater_or_equal(value, other)`
-|
+         |                   |
 `==`     | `value == other`  | `equal(value, other)`
 `!=`     | `value != other`  | `not_equal(value, other)`
-|
+         |                   |
 `&&`     | `value && other`  | `and(value, other)`
-|      |
+         |                   |
 `||`     | `value || other`  | `or(value, other)`
 
 
