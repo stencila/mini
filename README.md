@@ -38,36 +38,27 @@ Operators have differing levels of precedence. Precedence determines the order i
 
 The following table list the operators in Mini in order of decreasing precedence (in groups of equal precedence) along with their function call equivalents. See [`stencila/libcore`](https://github.com/stencila/libcore) for implementation and documentation for these functions.
 
-Operator | Usage example     | Function call equivalent
-:------: | :-----------      | :---------------------- 
-`.`      | `value.member`    | `select(value, member)`
-`[]`     | `value[member]`   | `select(value, member)`
-         |                   |
-`!`      | `!value`          | `not(value)`
-`+`      | `+value`          | `positive(value)`
-`-`      | `-value`          | `negative(value)`
-         |                   |
-`^`      | `value ^ expon`   | `pow(value, expon)`
-         |                   |
-`*`      | `value * other`   | `multiply(value, other)`
-`/`      | `value / other`   | `divide(value, other)`
-`%`      | `value % other`   | `remainder(value, other)`
-         |                   |
-`+`      | `value + other`   | `add(value, other)`
-`-`      | `value - other`   | `subtract(value, other)`
-         |                   |
-`<`      | `value < other`   | `less(value, other)`
-`<=`     | `value <= other`  | `less_or_equal(value, other)`
-`>`      | `value > other`   | `greater(value, other)`
-`>=`     | `value >= other`  | `greater_or_equal(value, other)`
-         |                   |
-`==`     | `value == other`  | `equal(value, other)`
-`!=`     | `value != other`  | `not_equal(value, other)`
-         |                   |
-`&&`     | `value && other`  | `and(value, other)`
-         |                   |
-`||`     | `value || other`  | `or(value, other)`
-
+Precedence | Operator | Usage example     | Function call equivalent
+:--------- | :------: | :-----------      | :---------------------- 
+1          | `.`      | `value.member`    | `select(value, member)`
+1          | `[]`     | `value[member]`   | `select(value, member)`
+2          | `!`      | `!value`          | `not(value)`
+2          | `+`      | `+value`          | `positive(value)`
+2          | `-`      | `-value`          | `negative(value)`
+3          | `^`      | `value ^ expon`   | `pow(value, expon)`
+4          | `*`      | `value * other`   | `multiply(value, other)`
+4          | `/`      | `value / other`   | `divide(value, other)`
+4          | `%`      | `value % other`   | `remainder(value, other)`
+5          | `+`      | `value + other`   | `add(value, other)`
+5          | `-`      | `value - other`   | `subtract(value, other)`
+6          | `<`      | `value < other`   | `less(value, other)`
+6          | `<=`     | `value <= other`  | `less_or_equal(value, other)`
+6          | `>`      | `value > other`   | `greater(value, other)`
+6          | `>=`     | `value >= other`  | `greater_or_equal(value, other)`
+7          | `==`     | `value == other`  | `equal(value, other)`
+7          | `!=`     | `value != other`  | `not_equal(value, other)`
+8          | `&&`     | `value && other`  | `and(value, other)`
+9          | `||`     | `value || other`  | `or(value, other)`
 
 
 ## Development
