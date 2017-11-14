@@ -225,7 +225,7 @@ test('Function definition', (t) => {
   t.end()
 })
 
-test.skip('Function call without arguments', (t) => {
+test('Function call without arguments', (t) => {
   const expr = parse('foo()')
   const expectedTypes = ['call:foo']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
@@ -267,7 +267,7 @@ test('Function call with multiple positional and multiple named arguments', (t) 
   t.end()
 })
 
-test.skip('Piping a function call into another', (t) => {
+test('Piping a function call into another', (t) => {
   const expr = parse('foo() | bar()')
   const expectedTypes = ['pipe', 'call:foo', 'call:bar']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)

@@ -180,28 +180,17 @@ export default function createFromAST(state, ast) {
       // ATTENTION we need to be robust regarding partial expressions
       let name = ast.name ? ast.name.text : ''
       let args, namedArgs
-      let modifiers
       let argsCtx = ast.args
       if (argsCtx) {
         args = arg_sequence(state, argsCtx.args)
         namedArgs = arg_sequence(state, argsCtx.namedArgs)
-      }
-      if (ast.modifiers) {
-        ast.modifiers.children.forEach((m) => {
-          state.tokens.push(
-            new Token('function-modifier', m.symbol)
-          )
-        })
-        modifiers = ast.modifiers.children.map((m) => {
-          return m.symbol.text
-        })
       }
       if (ast.name) {
         state.tokens.push(
           new Token('function-name', ast.name)
         )
       }
-      node = new FunctionCall(state.nodeId++, start, end, name, args, namedArgs, modifiers)
+      node = new FunctionCall(state.nodeId++, start, end, name, args, namedArgs)
       break
     }
     case 'named-argument': {
@@ -210,10 +199,6 @@ export default function createFromAST(state, ast) {
       node = new NamedArgument(state.nodeId++, start, end, name.toString(),
         createFromAST(state, ast.children[2])
       )
-      break
-    }
-    case 'empty-argument': {
-      // HACK: we inject empty arguments in 'call' handler
       break
     }
     default: {

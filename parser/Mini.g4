@@ -63,7 +63,9 @@ cell: CELL;
 
 sheet_ref: ID '!' ( cell | range );
 
-function_call: (name=ID) '(' args=call_arguments ')'  { $ctx.type = 'call' }
+function_call: 
+      name=ID '()'                         { $ctx.type = 'call' }
+    | name=ID '(' args=call_arguments ')'  { $ctx.type = 'call' }
     ;
 
 number:  INT                        { $ctx.type = 'int' }
@@ -80,7 +82,7 @@ call_arguments:
     | args=positional_arguments ',' namedArgs=named_arguments
     ;
 
-positional_arguments: (expr)? (',' expr?)*;
+positional_arguments: expr (',' expr?)*;
 
 named_arguments: named_argument (',' named_argument?)*;
 
