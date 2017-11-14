@@ -4,8 +4,6 @@ import {
   NumberNode, StringNode, ArrayNode, ObjectNode, BooleanNode,
   Var, Cell, Range,
   FunctionCall, ExternalFunction, NamedArgument,
-  UnaryOp,
-  BinaryNumericOp,
   PipeOp,
   ErrorNode,
   EmptyArgument
@@ -31,33 +29,51 @@ export default function createFromAST(state, ast) {
       node = new ExternalFunction(state.nodeId++, start, end, args)
       break
     }
+    // Member selection operator `.`
+    case 'select_id': {
+      const value = createFromAST(state, ast.children[0])
+      // Create a new string node from the member ID
+      const id = new StringNode(state.nodeId++, start, end, ast.children[2].getText())
+      state.nodes.push(id)
+      node = new FunctionCall(state.nodeId++, start, end, 'select', [value, id])
+      break
+    }
+    // Member selection operator `[]`
+    case 'select_expr': {
+      const args = expr_sequence(state, [ast.children[0], ast.children[2]])
+      node = new FunctionCall(state.nodeId++, start, end, 'select', args)
+      break
+    }
+    // Unary operators
     case 'not': 
-    case 'pos': 
-    case 'neg': {
-      node = new UnaryOp(state.nodeId++, start, end, ast.type,
-        createFromAST(state, ast.children[1])
-      )
+    case 'positive': 
+    case 'negative': {
+      const name = ast.type
+      const args = expr_sequence(state, [ast.children[1]])
+      node = new FunctionCall(state.nodeId++, start, end, name, args)
       break
     }
-    case 'lt':
-    case 'gt':
-    case 'lte':
-    case 'gte':
-    case 'eq':
-    case 'neq':
+    // Binary operators (in order of precedence)
+    case 'pow':
+    case 'multiply':
+    case 'divide':
+    case 'remainder':
+    case 'add':
+    case 'subtract':
+    case 'less':
+    case 'less_or_equal':
+    case 'greater':
+    case 'greater_or_equal':
+    case 'equal':
+    case 'not_equal':
     case 'and':
-    case 'or':
-    case 'plus':
-    case 'minus':
-    case 'mult':
-    case 'div':
-    case 'power': {
-      node = new BinaryNumericOp(state.nodeId++, start, end, ast.type,
-        createFromAST(state, ast.children[0]),
-        createFromAST(state, ast.children[2])
-      )
+    case 'or': {
+      const name = ast.type
+      const args = expr_sequence(state, [ast.children[0], ast.children[2]])
+      node = new FunctionCall(state.nodeId++, start, end, name, args)
       break
     }
+    // Pipe operator
     case 'pipe': {
       node = new PipeOp(state.nodeId++, start, end,
         createFromAST(state, ast.children[0]),
@@ -164,28 +180,17 @@ export default function createFromAST(state, ast) {
       // ATTENTION we need to be robust regarding partial expressions
       let name = ast.name ? ast.name.text : ''
       let args, namedArgs
-      let modifiers
       let argsCtx = ast.args
       if (argsCtx) {
         args = arg_sequence(state, argsCtx.args)
         namedArgs = arg_sequence(state, argsCtx.namedArgs)
-      }
-      if (ast.modifiers) {
-        ast.modifiers.children.forEach((m) => {
-          state.tokens.push(
-            new Token('function-modifier', m.symbol)
-          )
-        })
-        modifiers = ast.modifiers.children.map((m) => {
-          return m.symbol.text
-        })
       }
       if (ast.name) {
         state.tokens.push(
           new Token('function-name', ast.name)
         )
       }
-      node = new FunctionCall(state.nodeId++, start, end, name, args, namedArgs, modifiers)
+      node = new FunctionCall(state.nodeId++, start, end, name, args, namedArgs)
       break
     }
     case 'named-argument': {
@@ -194,10 +199,6 @@ export default function createFromAST(state, ast) {
       node = new NamedArgument(state.nodeId++, start, end, name.toString(),
         createFromAST(state, ast.children[2])
       )
-      break
-    }
-    case 'empty-argument': {
-      // HACK: we inject empty arguments in 'call' handler
       break
     }
     default: {

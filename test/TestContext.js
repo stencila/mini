@@ -1,14 +1,32 @@
 import { evaluate } from 'stencila-mini'
 
+// An execution used for testing. Exposes the same API as `MiniContext` in the stencila/stencila repo
 export default class TestContext {
 
   constructor() {
-    this._funs = {}
+    this._funs = {
+      // Operator functions in order of precedence; equal precedence if on same line.
+      select,
+      not, positive, negative,
+      pow,
+      multiply, divide, remainder,
+      add, subtract,
+      less, less_or_equal, greater, greater_or_equal,
+      equal, not_equal,
+      and, or
+    }
     this._vals = {}
   }
 
   registerFunction(name, fn) {
     this._funs[name] = fn
+  }
+
+  callFunction(funCall) {
+    let fun = this._funs[funCall.name]
+    if (!fun) throw new Error(`Function "${funCall.name}" does not exist`)
+    let argValues = funCall.args.map((arg) => arg.getValue())
+    return fun(...argValues)
   }
 
   setValue(name, val) {
@@ -63,70 +81,6 @@ export default class TestContext {
     return evaluate(str, this)
   }
 
-  not(a) {
-    return !a
-  }
-
-  pos(a) {
-    return a
-  }
-
-  neg(a) {
-    return -a
-  }
-
-  lt(a, b) {
-    return a < b
-  }
-
-  gt(a, b) {
-    return a > b
-  }
-
-  lte(a, b) {
-    return a <= b
-  }
-
-  gte(a, b) {
-    return a >= b
-  }
-
-  eq(a, b) {
-    return a === b
-  }
-
-  neq(a, b) {
-    return a !== b
-  }
-
-  and(a, b) {
-    return a && b
-  }
-
-  or(a, b) {
-    return a || b
-  }
-
-  plus(a, b) {
-    return a + b
-  }
-
-  minus(a, b) {
-    return a - b
-  }
-
-  multiply(a, b) {
-    return a * b
-  }
-
-  divide(a, b) {
-    return a / b
-  }
-
-  pow(a, b) {
-    return Math.pow(a, b)
-  }
-
   marshal(type, val) {
     return val
   }
@@ -135,4 +89,82 @@ export default class TestContext {
     return val
   }
 
+}
+
+// Operator functions in order of precedence
+// 
+// For operator precendece in other languages see
+//   http://en.cppreference.com/w/cpp/language/operator_precedence
+//   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence
+
+function select(value, member) {
+  return value[member]
+}
+
+function not(a) {
+  return !a
+}
+
+function positive(a) {
+  return +1 * a
+}
+
+function negative(a) {
+  return -1 * a
+}
+
+function pow(a, b) {
+  return Math.pow(a, b)
+}
+
+function multiply(a, b) {
+  return a * b
+}
+
+function divide(a, b) {
+  return a / b
+}
+
+function remainder(a, b) {
+  return a % b
+}
+
+function add(a, b) {
+  return a + b
+}
+
+function subtract(a, b) {
+  return a - b
+}
+
+function less(a, b) {
+  return a < b
+}
+
+function less_or_equal(a, b) {
+  return a <= b
+}
+
+function greater(a, b) {
+  return a > b
+}
+
+function greater_or_equal(a, b) {
+  return a >= b
+}
+
+function equal(a, b) {
+  return a === b
+}
+
+function not_equal(a, b) {
+  return a !== b
+}
+
+function and(a, b) {
+  return a && b
+}
+
+function or(a, b) {
+  return a || b
 }

@@ -49,6 +49,28 @@ test('Object', (t) => {
   })
 })
 
+test('Select', (t) => {
+  t.plan(5)
+  const context = new TestContext()
+  context.setValue('x', {a: 1, b: 2, c: 3})
+  context.setValue('y', [4, 5, 6])
+  context.evaluate('x.a').then((res) => {
+    t.equal(res, 1, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('x.b').then((res) => {
+    t.equal(res, 2, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('x["c"]').then((res) => {
+    t.equal(res, 3, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('y[0]').then((res) => {
+    t.equal(res, 4, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('y[2-1]').then((res) => {
+    t.equal(res, 5, MESSAGE_CORRECT_VALUE)
+  })
+})
+
 test('Less than', (t) => {
   t.plan(2)
   const context = new TestContext()
@@ -83,9 +105,12 @@ test('Equal to', (t) => {
 })
 
 test('Less than or equal to', (t) => {
-  t.plan(2)
+  t.plan(3)
   const context = new TestContext()
   context.evaluate('1<=2').then((res) => {
+    t.equal(res, true, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('2<=2').then((res) => {
     t.equal(res, true, MESSAGE_CORRECT_VALUE)
   })
   context.evaluate('2<=1').then((res) => {
@@ -94,9 +119,12 @@ test('Less than or equal to', (t) => {
 })
 
 test('Greater than or equal to', (t) => {
-  t.plan(2)
+  t.plan(3)
   const context = new TestContext()
   context.evaluate('2>=1').then((res) => {
+    t.equal(res, true, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('2>=2').then((res) => {
     t.equal(res, true, MESSAGE_CORRECT_VALUE)
   })
   context.evaluate('1>=2').then((res) => {
@@ -213,6 +241,22 @@ test('Range', (t) => {
   })
 })
 
+test('Pipe', (t) => {
+  t.plan(3)
+  const context = new TestContext()
+  context.setValue('x', 4)
+  context.registerFunction('foo', function (x) { return x + 5 })
+  context.evaluate('1 | add(x)').then((res) => {
+    t.equal(res, 5, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('x | add(2) | divide(2)').then((res) => {
+    t.equal(res, 3, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('x | foo()').then((res) => {
+    t.equal(res, 9, MESSAGE_CORRECT_VALUE)
+  })
+})
+
 test('2*-x', (t) => {
   t.plan(1)
   const context = new TestContext()
@@ -247,62 +291,3 @@ test('2*2==4 && 3+1<=4', (t) => {
     t.deepEqual(res, true, MESSAGE_CORRECT_VALUE)
   })
 })
-
-/*
-
-test('Pipe operator', (t) => {
-  const { engine } = setup()
-  engine.registerFunction('foo', () => {
-    return 5
-  })
-  engine.registerFunction('bar', (val) => {
-    return 2*val
-  })
-  TestEngineComponent.mount({engine}, getMountPoint(t))
-  let cell = engine.addExpression('foo() | bar()')
-  t.ok(cell.isReady(), MESSAGE_CELL_READY)
-  t.equal(cell.value, 10, MESSAGE_CORRECT_VALUE)
-  t.end()
-})
-
-test('Pipe operator (with async calls)', (t) => {
-  t.plan(2)
-  const { engine } = setup()
-  engine.registerFunction('foo', () => {
-    return Promise.resolve(5)
-  })
-  engine.registerFunction('bar', (val) => {
-    return 2*val
-  })
-  TestEngineComponent.mount({engine}, getMountPoint(t))
-  let cell = engine.addExpression('foo() | bar()')
-  // Note: deferring the next check to get the promise resolved first
-  setTimeout(() => {
-    t.ok(cell.isReady(), MESSAGE_CELL_READY)
-    t.equal(cell.value, 10, MESSAGE_CORRECT_VALUE)
-  }, 10)
-})
-
-test('Piping into a function using named arguments', (t) => {
-  const { engine } = setup()
-  engine.registerFunction('baz', (x=1,y=2,z=3) => {
-    return x+y+z
-  })
-  TestEngineComponent.mount({engine}, getMountPoint(t))
-  let cell = engine.addExpression('5 | baz(z=42)')
-  t.ok(cell.isReady(), MESSAGE_CELL_READY)
-  t.equal(cell.value, 49, MESSAGE_CORRECT_VALUE)
-  t.end()
-})
-
-function sum(...vals) {
-  return vals.reduce((sum, x)=>{return sum+x}, 0)
-}
-
-function sumAsync(...vals){
-  return new Promise((resolve) => {
-    resolve(sum(...vals))
-  })
-}
-
-*/
