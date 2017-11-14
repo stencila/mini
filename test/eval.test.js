@@ -105,9 +105,12 @@ test('Equal to', (t) => {
 })
 
 test('Less than or equal to', (t) => {
-  t.plan(2)
+  t.plan(3)
   const context = new TestContext()
   context.evaluate('1<=2').then((res) => {
+    t.equal(res, true, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('2<=2').then((res) => {
     t.equal(res, true, MESSAGE_CORRECT_VALUE)
   })
   context.evaluate('2<=1').then((res) => {
@@ -116,9 +119,12 @@ test('Less than or equal to', (t) => {
 })
 
 test('Greater than or equal to', (t) => {
-  t.plan(2)
+  t.plan(3)
   const context = new TestContext()
   context.evaluate('2>=1').then((res) => {
+    t.equal(res, true, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('2>=2').then((res) => {
     t.equal(res, true, MESSAGE_CORRECT_VALUE)
   })
   context.evaluate('1>=2').then((res) => {
