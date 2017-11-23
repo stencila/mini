@@ -2,7 +2,7 @@ import {isString, isNumber} from 'substance'
 import {
   Definition,
   NumberNode, StringNode, ArrayNode, ObjectNode, BooleanNode,
-  Var, Cell, Range,
+  SymbolNode, Var, Cell, Range,
   FunctionCall, ExternalFunction, NamedArgument,
   PipeOp,
   ErrorNode,
@@ -127,6 +127,15 @@ export default function createFromAST(state, ast) {
         }
       }
       node = new ObjectNode(state.nodeId++, start, end, entries)
+      break
+    }
+    case 'symbol': {
+      const name = (ast.children.length > 1) ? ast.children[1].getText() : '.'
+      node = new SymbolNode(state.nodeId++, start, end, name)
+      state.tokens.push(new Token('symbol', {
+        start: ast.start.start,
+        stop: ast.stop.stop
+      }))
       break
     }
     case 'var': {

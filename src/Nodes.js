@@ -163,6 +163,26 @@ export class StringNode extends ExprNode {
 
 }
 
+export class SymbolNode extends ExprNode {
+
+  constructor(id, start, end, name) {
+    super(id, start, end)
+    this.name = name
+  }
+
+  get type() { return 'symbol' }
+
+  evaluate() {
+    const context = this.getContext()
+    const val = context.marshal('symbol', {
+      type: 'symbol',
+      name: this.name
+    })
+    this.setValue(val)
+  }
+
+}
+
 export class Var extends ExprNode {
 
   constructor(id, start, end, name) {

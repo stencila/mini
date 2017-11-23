@@ -23,10 +23,27 @@ export default class TestContext {
   }
 
   callFunction(funCall) {
-    let fun = this._funs[funCall.name]
-    if (!fun) throw new Error(`Function "${funCall.name}" does not exist`)
-    let argValues = funCall.args.map((arg) => arg.getValue())
-    return fun(...argValues)
+    let syntax = false
+    let argValues = funCall.args.map((arg) => {
+      const val = arg.getValue()
+      if (val) {
+        if (val.type === 'call' || val.type === 'symbol') {
+          syntax = true
+        }
+      }
+      return val
+    })
+    if (syntax) {
+      return {
+        type: 'call', 
+        name: funCall.name,
+        args: argValues
+      }
+    } else {
+      let fun = this._funs[funCall.name]
+      if (!fun) throw new Error(`Function "${funCall.name}" does not exist`)
+      return fun(...argValues)
+    }
   }
 
   setValue(name, val) {

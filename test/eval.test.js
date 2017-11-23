@@ -214,6 +214,35 @@ test('Groups', (t) => {
   })
 })
 
+test('Symbol', (t) => {
+  t.plan(3)
+  const context = new TestContext()
+  context.evaluate('.y').then((res) => {
+    t.deepEqual(res, {
+      type: 'symbol',
+      name: 'y'
+    }, MESSAGE_CORRECT_VALUE)
+  })
+  // Partial evalution of expressions is done where possible
+  context.setValue('z', 2)
+  context.evaluate('{colour: z + 1 + .y}').then((res) => {
+    t.deepEqual(res, {
+      colour: { 
+        type: 'call',
+        name: 'add',
+        args: [ 3, { type: 'symbol', name: 'y' }], 
+      }
+    }, MESSAGE_CORRECT_VALUE)
+  })
+  context.evaluate('sum(.)').then((res) => {
+    t.deepEqual(res, {
+      type: 'call',
+      name: 'sum',
+      args: [{ type: 'symbol', name: '.' }], 
+    }, MESSAGE_CORRECT_VALUE)
+  })
+})
+
 test('Var', (t) => {
   t.plan(1)
   const context = new TestContext()

@@ -19,6 +19,14 @@ test('Number', (t) => {
   t.end()
 })
 
+test('Symbol', (t) => {
+  _equal(t, getNodeTypes(parse('.')), ['symbol'], MESSAGE_CORRECT_AST)
+  _equal(t, getNodeTypes(parse('.x')), ['symbol'], MESSAGE_CORRECT_AST)
+  _equal(t, getNodeTypes(parse('.x + .y')), ['call:add', 'symbol', 'symbol'], MESSAGE_CORRECT_AST)
+  _equal(t, getNodeTypes(parse('with(object, .x + 1')), ['call:with', 'var', 'call:add', 'symbol', 'number'], MESSAGE_CORRECT_AST)
+  t.end()
+})
+
 test('Variable', (t) => {
   const expr = parse('x')
   const expectedTypes = ['var']

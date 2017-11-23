@@ -10,7 +10,10 @@ mainExpr:
     ;
 
 expr:
-    expr '.' ID {
+       '.' ID? { 
+            $ctx.type = 'symbol'
+        }
+    |  expr '.' ID { 
             $ctx.type = 'select_id'
         }
     |  expr '[' expr ']' {
