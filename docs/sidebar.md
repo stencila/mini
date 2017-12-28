@@ -1,0 +1,5 @@
+- [Introduction](home.md)
+- [Types](types.md)
+- [Variables](variables.md)
+- [Functions](functions.md)
+- [Operators](operators.md)
