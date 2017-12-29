@@ -357,10 +357,6 @@ export class FunctionCall extends ExprNode {
   }
 
   evaluate() {
-    // HACK: when this is used as RHS of a pipe operator
-    // this is skipped and called manually
-    if (this.skip) return
-
     super.evaluate()
 
     this.args.forEach((arg) => {
