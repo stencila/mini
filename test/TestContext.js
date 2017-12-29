@@ -1,20 +1,27 @@
 import { evaluate } from 'stencila-mini'
 
+const FUNCTIONS = {
+  // Call a function
+  call,
+  // Operator functions in order of precedence; equal precedence if on same line.
+  select,
+  not, positive, negative,
+  pow,
+  multiply, divide, remainder,
+  add, subtract,
+  less, less_or_equal, greater, greater_or_equal,
+  equal, not_equal,
+  and, or,
+  // Example functions that take functions as arguments
+  with: with_,
+  filter
+}
+
 // An execution used for testing. Exposes the same API as `MiniContext` in the stencila/stencila repo
 export default class TestContext {
 
   constructor() {
-    this._funs = {
-      // Operator functions in order of precedence; equal precedence if on same line.
-      select,
-      not, positive, negative,
-      pow,
-      multiply, divide, remainder,
-      add, subtract,
-      less, less_or_equal, greater, greater_or_equal,
-      equal, not_equal,
-      and, or
-    }
+    this._funs = FUNCTIONS
     this._vals = {}
   }
 
@@ -23,27 +30,12 @@ export default class TestContext {
   }
 
   callFunction(funCall) {
-    let syntax = false
+    let fun = this._funs[funCall.name]
+    if (!fun) throw new Error(`Function "${funCall.name}" does not exist`)
     let argValues = funCall.args.map((arg) => {
-      const val = arg.getValue()
-      if (val) {
-        if (val.type === 'call' || val.type === 'symbol') {
-          syntax = true
-        }
-      }
-      return val
+      return arg.getValue()
     })
-    if (syntax) {
-      return {
-        type: 'call', 
-        name: funCall.name,
-        args: argValues
-      }
-    } else {
-      let fun = this._funs[funCall.name]
-      if (!fun) throw new Error(`Function "${funCall.name}" does not exist`)
-      return fun(...argValues)
-    }
+    return fun(...argValues)
   }
 
   setValue(name, val) {
@@ -106,6 +98,41 @@ export default class TestContext {
     return val
   }
 
+}
+
+// Evaluation function for evaluating expressions
+function call(fun, args, binding = null) {
+  const variables = {}
+  let index = 0
+  fun.params.forEach((name) => {
+    variables[name] = args[index++]
+  })
+  variables['this'] = binding
+  return eval_(fun.body, variables)
+}
+
+function eval_(node, variables) {
+  let func
+  let args
+  let value
+  switch (node.type) {
+    case 'boolean':
+    case 'number':
+    case 'string':
+    case 'array':
+    case 'object':
+      return node.value
+    case 'var':
+      value = variables[node.name]
+      return value
+    case 'call':
+      func = FUNCTIONS[node.name]
+      if (!func) throw new Error(`Unknown function "${node.name}"`) 
+      args = node.args.map(arg => eval_(arg, variables))
+      return func(...args)
+    default:
+      throw new Error(`Unhandled node type ${node.type}`)
+  }
 }
 
 // Operator functions in order of precedence
@@ -184,4 +211,15 @@ function and(a, b) {
 
 function or(a, b) {
   return a || b
+}
+
+
+// Filter function
+
+function with_(object, func) {
+  return call(func, [], object)
+}
+
+function filter(array, func) {
+  return array.filter(value => with_(value, func))
 }

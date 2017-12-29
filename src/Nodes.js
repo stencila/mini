@@ -14,7 +14,7 @@ class ExprNode {
 
   setValue(val) {
     this.value = val
-    this.getExpression()._requestPropagation(this)
+    //this.getExpression()._requestPropagation(this)
   }
 
   getValue() {
@@ -85,6 +85,7 @@ export class ArrayNode extends ExprNode {
     // we would unmarshal values, and compute a coerced array type here
     // and not in the marshaller
     let vals = this.vals.map((val) => {
+      val.evaluate()
       return val.getValue()
     })
     this.setValue(context.marshal('array', vals))
@@ -106,6 +107,7 @@ export class ObjectNode extends ExprNode {
     const context = this.getContext()
     let obj = {}
     this.entries.forEach((entry) => {
+      entry.val.evaluate()
       obj[entry.key] = context.unmarshal(entry.val.getValue())
     })
     this.setValue(context.marshal('object', obj))
@@ -159,6 +161,64 @@ export class StringNode extends ExprNode {
   evaluate() {
     const context = this.getContext()
     this.setValue(context.marshal('string', this.str))
+  }
+
+}
+
+export class FunctionNode extends ExprNode {
+
+  constructor(id, start, end, params, body) {
+    super(id, start, end)
+    this.params = params
+    params.forEach((param) => {
+      param.parent = this
+    })
+    this.body = body
+    body.parent = this
+  }
+
+  get type() { return 'function' }
+
+  evaluate() {
+    const context = this.getContext()
+    const value = context.marshal('function', {
+      type: 'function',
+      params: this.params.map(param => param.name),
+      body: _marshall(this.body)
+    })
+    function _marshall (node) {
+      switch (node.type) {
+        case 'boolean':
+          return {
+            type: 'boolean',
+            value: node.bool
+          }
+        case 'number':
+          return {
+            type: 'number',
+            value: node.number
+          }
+        case 'string':
+          return {
+            type: 'string',
+            value: node.str
+          }
+        case 'var':
+          return {
+            type: 'var',
+            name: node.name
+          }
+        case 'call':
+          return {
+            type: 'call',
+            name: node.name,
+            args: node.args.map(arg => _marshall(arg))
+          }
+        default:
+          throw new Error(`Unhandled node type ${node.type}`)
+      }
+    }
+    this.setValue(value)
   }
 
 }
@@ -273,24 +333,6 @@ export class Range extends ExprNode {
 
 }
 
-export class ExternalFunction extends ExprNode {
-  constructor(id, start, end, args = []) {
-    super(id, start, end)
-    this.args = args
-    args.forEach((c) => {
-      c.parent = this
-    })
-  }
-
-  get type() { return 'function' }
-
-  evaluate() {
-    console.error('TODO: implement this')
-    this.setValue(undefined)
-  }
-
-}
-
 export class FunctionCall extends ExprNode {
 
   constructor(id, start, end, name, args = [], namedArgs=[], modifiers=[]) {
@@ -321,6 +363,13 @@ export class FunctionCall extends ExprNode {
     if (this.skip) return
 
     super.evaluate()
+
+    this.args.forEach((arg) => {
+      arg.evaluate()
+    })
+    this.namedArgs.forEach((arg) => {
+      arg.evaluate()
+    })
 
     const self = this
     const context = this.getContext()
@@ -359,94 +408,6 @@ export class NamedArgument extends ExprNode {
     this.setValue(this.rhs.getValue())
   }
 
-}
-
-export class PipeOp extends ExprNode {
-
-  constructor(id, start, end, left, right) {
-    super(id, start, end)
-    this.left = left
-    this.right = right
-    this.left.parent = this
-    this.right.parent = this
-    // do not evaluate the rhs funtion automatically
-    this.right.skip = true
-    this.right._pending = false
-
-    this._pending = true
-  }
-
-  get type() { return "pipe" }
-
-  isPending() {
-    return this._pending
-  }
-
-  evaluate() {
-    super.evaluate()
-
-    const self = this
-    const left = this.left
-    const right = this.right
-
-    this._pending = true
-
-    if (left.isPending() || right.isPending()) {
-      // don't do anything as long children are pending
-      return
-    }
-    // don't proceed if left has an error already
-    if (left.errors) {
-      self.addErrors(left.errors)
-    } else {
-      // f(x) | g()
-      let pipeArg = left.getValue()
-      // We need to prepare the args for the right function
-      // using the output of the left as first argument
-      // TODO: maybe we could use a real node here instead of
-      // a duck-typed one?
-      let rightProxy = {
-        name: right.name,
-        expr: right.expr,
-        args: [{
-          name: '_pipe',
-          getValue() {
-            return pipeArg
-          }
-        }].concat(right.args),
-        namedArgs: right.namedArgs,
-        addErrors: ExprNode.prototype.addErrors
-      }
-      const context = this.getContext()
-      if (context) {
-        rightProxy.errors = null
-        let res = context.callFunction(rightProxy)
-        if (res instanceof Promise) {
-          res.then((val) => {
-            this._pending = false
-            _collectErrors(left, rightProxy)
-            this.setValue(val)
-          })
-        } else {
-          this._pending = false
-          _collectErrors(left, rightProxy)
-          this.setValue(res)
-        }
-      } else {
-        this._pending = false
-        _collectErrors(left, rightProxy)
-      }
-    }
-
-    function _collectErrors(left, right) {
-      if (left && left.errors) {
-        self.addErrors(left.errors)
-      }
-      if (right && right.errors) {
-        self.addErrors(right.errors)
-      }
-    }
-  }
 }
 
 export class ErrorNode extends ExprNode {

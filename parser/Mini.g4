@@ -4,9 +4,7 @@ mini:  mainExpr EOF            { $ctx.type = 'evaluation' }
     |  ID EQ mainExpr EOF   { $ctx.type = 'definition'}
     ;
 
-mainExpr:
-       'function' '(' id_seq ')'  { $ctx.type = 'function'}
-    |  expr                       { $ctx.type = 'simple' }
+mainExpr: expr                       { $ctx.type = 'simple' }
     ;
 
 expr:
@@ -58,6 +56,10 @@ expr:
     |  array                    { $ctx.type = 'array' }
     |  object                   { $ctx.type = 'object' }
     |  STRING                   { $ctx.type = 'string' }
+    
+    |  'function' '()'           expr    { $ctx.type = 'function' }
+    |  'function' '(' id_seq ')' expr    { $ctx.type = 'function' }
+
     ;
 
 range: CELL ':' CELL            { $ctx.type = '_range' };
@@ -93,6 +95,7 @@ named_argument: ID EQ expr { $ctx.type = 'named-argument' };
 
 array: '[' ( seq )? ']'   { $ctx.type = 'array' }
     ;
+
 object: '{' ( keys+=ID ':' vals+=expr (',' keys+=ID ':' vals+=expr)* )? '}' { $ctx.type = 'object' }
     ;
 

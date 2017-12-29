@@ -1,10 +1,9 @@
 import {isString, isNumber} from 'substance'
 import {
   Definition,
-  NumberNode, StringNode, ArrayNode, ObjectNode, BooleanNode,
+  BooleanNode, NumberNode, StringNode, ArrayNode, ObjectNode, FunctionNode,
   SymbolNode, Var, Cell, Range,
-  FunctionCall, ExternalFunction, NamedArgument,
-  PipeOp,
+  FunctionCall, NamedArgument,
   ErrorNode,
   EmptyArgument
 } from './Nodes'
@@ -24,11 +23,6 @@ export default function createFromAST(state, ast) {
     }
     case 'simple':
       return createFromAST(state, ast.children[0])
-    case 'function': {
-      const args = var_sequence(state, ast.children[2])
-      node = new ExternalFunction(state.nodeId++, start, end, args)
-      break
-    }
     // Member selection operator `.`
     case 'select_id': {
       const value = createFromAST(state, ast.children[0])
@@ -75,12 +69,13 @@ export default function createFromAST(state, ast) {
     }
     // Pipe operator
     case 'pipe': {
-      node = new PipeOp(state.nodeId++, start, end,
-        createFromAST(state, ast.children[0]),
-        createFromAST(state, ast.children[2])
-      )
+      // Insert the left hand side as the first argument to the right
+      // hand side function call
+      node = createFromAST(state, ast.children[2])
+      node.args.unshift(createFromAST(state, ast.children[0]))
       break
     }
+    // Values
     case 'int':
     case 'float':
     case 'number': {
@@ -129,6 +124,20 @@ export default function createFromAST(state, ast) {
       node = new ObjectNode(state.nodeId++, start, end, entries)
       break
     }
+    case 'function': {
+      let params
+      let body
+      if (ast.children.length === 3) {
+        params = []
+        body = createFromAST(state, ast.children[2])
+      } else {
+        params = var_sequence(state, ast.children[2])
+        body = createFromAST(state, ast.children[4])
+      }
+      node = new FunctionNode(state.nodeId++, start, end, params, body)
+      break
+    }
+
     case 'symbol': {
       const name = (ast.children.length > 1) ? ast.children[1].getText() : '.'
       node = new SymbolNode(state.nodeId++, start, end, name)

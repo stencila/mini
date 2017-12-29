@@ -64,6 +64,13 @@ test('Object', (t) => {
   t.end()
 })
 
+test('Function', (t) => {
+  const expr = parse('function(x,y) x + y * 2')
+  const expectedTypes = ['function', 'var', 'var', 'call:add', 'var', 'call:multiply', 'var', 'number']
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.end()
+})
+
 test('Group', (t) => {
   const expr = parse('(1+2)*3')
   const expectedTypes = ['call:multiply', 'call:add', 'number', 'number', 'number']
@@ -228,7 +235,6 @@ test('1+x+A1', (t) => {
   t.end()
 })
 
-
 test('Definition', (t) => {
   const expr = parse('x = 42')
   const expectedTypes = ['definition', 'number']
@@ -236,9 +242,9 @@ test('Definition', (t) => {
   t.end()
 })
 
-test('Function definition', (t) => {
-  const expr = parse('x = function(x,y)')
-  const expectedTypes = ['definition', 'function', 'var', 'var']
+test('Definition', (t) => {
+  const expr = parse('answer = function (x) x * 7')
+  const expectedTypes = ['definition', 'function', 'var', 'call:multiply', 'var', 'number']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.end()
 })
@@ -287,7 +293,7 @@ test('Function call with multiple positional and multiple named arguments', (t) 
 
 test('Piping a function call into another', (t) => {
   const expr = parse('foo() | bar()')
-  const expectedTypes = ['pipe', 'call:foo', 'call:bar']
+  const expectedTypes = ['call:bar', 'call:foo']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.end()
 })
