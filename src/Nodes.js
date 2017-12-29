@@ -335,11 +335,10 @@ export class Range extends ExprNode {
 
 export class FunctionCall extends ExprNode {
 
-  constructor(id, start, end, name, args = [], namedArgs=[], modifiers=[]) {
+  constructor(id, start, end, name, args = [], namedArgs=[]) {
     super(id, start, end)
     this.name = name
     this.args = args
-    this.modifiers = modifiers
     this.namedArgs = namedArgs
     args.forEach((arg) => {
       arg.parent = this
