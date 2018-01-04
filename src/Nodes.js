@@ -68,6 +68,37 @@ export class Definition extends ExprNode {
 
 }
 
+export class ValueNode extends ExprNode {
+
+  constructor(id, start, end, child) {
+    super(id, start, end)
+    this.child = child
+    child.parent = this
+  }
+
+  get type() { return 'value' }
+
+  evaluate() {
+    super.evaluate()
+
+    this.child.evaluate()
+    let value = this.child.getValue()
+    if (isAst(value) && value.type !== 'fun') {
+      value = {
+        type: 'fun',
+        params: [],
+        body: value
+      }
+    }
+    this.setValue(value)
+
+    if (this.child.errors) {
+      this.addErrors(this.child.errors)
+    }
+  }
+
+}
+
 export class ArrayNode extends ExprNode {
   constructor(id, start, end, vals) {
     super(id, start, end)
@@ -177,68 +208,15 @@ export class FunctionNode extends ExprNode {
     body.parent = this
   }
 
-  get type() { return 'function' }
+  get type() { return 'fun' }
 
   evaluate() {
-    const context = this.getContext()
-    const value = context.marshal('function', {
-      type: 'function',
+    const value = {
+      type: 'fun',
       params: this.params.map(param => param.name),
-      body: _marshall(this.body)
-    })
-    function _marshall (node) {
-      switch (node.type) {
-        case 'boolean':
-          return {
-            type: 'boolean',
-            value: node.bool
-          }
-        case 'number':
-          return {
-            type: 'number',
-            value: node.number
-          }
-        case 'string':
-          return {
-            type: 'string',
-            value: node.str
-          }
-        case 'var':
-          return {
-            type: 'var',
-            name: node.name
-          }
-        case 'call':
-          return {
-            type: 'call',
-            name: node.name,
-            args: node.args.map(arg => _marshall(arg))
-          }
-        default:
-          throw new Error(`Unhandled node type ${node.type}`)
-      }
+      body: astify(this.body)
     }
     this.setValue(value)
-  }
-
-}
-
-export class SymbolNode extends ExprNode {
-
-  constructor(id, start, end, name) {
-    super(id, start, end)
-    this.name = name
-  }
-
-  get type() { return 'symbol' }
-
-  evaluate() {
-    const context = this.getContext()
-    const val = context.marshal('symbol', {
-      type: 'symbol',
-      name: this.name
-    })
-    this.setValue(val)
   }
 
 }
@@ -253,12 +231,20 @@ export class Var extends ExprNode {
   get type() { return 'var' }
 
   evaluate() {
-    const context = this.getContext()
-    let val = context.lookup({
-      type: 'var',
-      name: this.name
-    })
-    this.setValue(val)
+    let value
+    if (this.name === 'this') {
+      value = {
+        type: 'get',
+        name: 'this'
+      }
+    } else {
+      const context = this.getContext()
+      value = context.lookup({
+        type: 'var',
+        name: this.name
+      })
+    }
+    this.setValue(value)
   }
 
 }
@@ -337,12 +323,15 @@ export class FunctionCall extends ExprNode {
 
   constructor(id, start, end, name, args = [], namedArgs=[]) {
     super(id, start, end)
+    
     this.name = name
+    
     this.args = args
-    this.namedArgs = namedArgs
     args.forEach((arg) => {
       arg.parent = this
     })
+    
+    this.namedArgs = namedArgs
     namedArgs.forEach((arg) => {
       arg.parent = this
     })
@@ -359,26 +348,46 @@ export class FunctionCall extends ExprNode {
   evaluate() {
     super.evaluate()
 
-    this.args.forEach((arg) => {
+    // Evaluate and each argument and check if any is an AST node
+    let ast = false
+    const argsValues = this.args.map((arg) => {
       arg.evaluate()
+      const value = arg.getValue()
+      if (isAst(value) && value.type !== 'fun') ast = true
+      return value
     })
-    this.namedArgs.forEach((arg) => {
+    const namedArgsValues = {}
+    Object.keys(this.namedArgs).forEach((name) => {
+      const arg = this.namedArgs[name]
       arg.evaluate()
+      const value = arg.getValue()
+      if (isAst(value) && value.type !== 'fun') ast = true
+      return value
     })
 
     const self = this
-    const context = this.getContext()
-    this._pending = true
-    let res = context.callFunction(this)
-    if (res instanceof Promise) {
-      res.then(_done)
-    } else {
-      _done(res)
-    }
-
     function _done(val) {
       self._pending = false
       self.setValue(val)
+    }
+    if (ast) {
+      this.setValue({
+        type: 'call',
+        name: this.name,
+        // Transform any non-AST arguments (i.e those that were able to be evaluated) into AST nodes
+        args: astifyArray(argsValues),
+        namedArgs: astifyObject(namedArgsValues)
+      })
+      return
+    } else {
+      const context = this.getContext()
+      this._pending = true
+      let res = context.callFunction(this.name, argsValues, namedArgsValues)
+      if (res instanceof Promise) {
+        res.then(_done)
+      } else {
+        _done(res)
+      }
     }
   }
 }
@@ -418,4 +427,47 @@ export class ErrorNode extends ExprNode {
   evaluate() {
     return undefined
   }
+}
+
+function isAst (value) {
+  return value && value.type && ['set','get','fun','call'].indexOf(value.type)
+}
+
+function astify (node) {
+  if (node instanceof ExprNode) {
+    switch (node.type) {
+      case 'number':
+        return node.number
+      case 'string':
+        return node.str
+      case 'var':
+        return {
+          type: 'get',
+          name: node.name
+        }
+      case 'call':
+        return {
+          type: 'call',
+          name: node.name,
+          args: astifyArray(node.args),
+          namedArgs: astifyObject(node.namedArgs)
+        }
+      default:
+        throw new Error(`Unhandled node type ${node.type} : ${node}`)
+    }
+  } else {
+    return node
+  }
+}
+
+function astifyArray (nodes) {
+  return nodes.map(item => astify(item))
+}
+
+function astifyObject (nodes) {
+  let astified = {}
+  Object.keys(nodes).forEach(key => {
+    astified[key] = astify(nodes[key])
+  })
+  return astified
 }

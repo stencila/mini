@@ -1,8 +1,9 @@
 import {isString, isNumber} from 'substance'
 import {
   Definition,
+  ValueNode,
   BooleanNode, NumberNode, StringNode, ArrayNode, ObjectNode, FunctionNode,
-  SymbolNode, Var, Cell, Range,
+  Var, Cell, Range,
   FunctionCall, NamedArgument,
   ErrorNode,
   EmptyArgument
@@ -21,8 +22,9 @@ export default function createFromAST(state, ast) {
       node = new Definition(state.nodeId++, start, end, lhs.getText(), createFromAST(state, ast.children[2]))
       break
     }
-    case 'simple':
-      return createFromAST(state, ast.children[0])
+    case 'value':
+      node = new ValueNode(state.nodeId++, start, end, createFromAST(state, ast.children[0]))
+      break
     // Member selection operator `.`
     case 'select_id': {
       const value = createFromAST(state, ast.children[0])
@@ -100,10 +102,9 @@ export default function createFromAST(state, ast) {
     }
     case 'array': {
       const ctx = ast.children[0]
-      const seq = ctx.children[1]
       let vals = []
-      if (seq && seq.items) {
-        vals = expr_sequence(state, seq.items)
+      if (ctx && ctx.items) {
+        vals = expr_sequence(state, ctx.items)
       }
       node = new ArrayNode(state.nodeId++, start, end, vals)
       break
@@ -138,15 +139,6 @@ export default function createFromAST(state, ast) {
       break
     }
 
-    case 'symbol': {
-      const name = (ast.children.length > 1) ? ast.children[1].getText() : '.'
-      node = new SymbolNode(state.nodeId++, start, end, name)
-      state.tokens.push(new Token('symbol', {
-        start: ast.start.start,
-        stop: ast.stop.stop
-      }))
-      break
-    }
     case 'var': {
       node = new Var(state.nodeId++, start, end, ast.getText())
       state.tokens.push(new Token('input-variable-name', {

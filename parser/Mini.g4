@@ -1,15 +1,15 @@
 grammar Mini;
 
-mini:  mainExpr EOF            { $ctx.type = 'evaluation' }
-    |  ID EQ mainExpr EOF   { $ctx.type = 'definition'}
+mini:  value EOF            { $ctx.type = 'evaluation' }
+    |  ID EQ value EOF      { $ctx.type = 'definition'}
     ;
 
-mainExpr: expr                       { $ctx.type = 'simple' }
+value: expr                 { $ctx.type = 'value' }
     ;
 
 expr:
        '.' ID? { 
-            $ctx.type = 'symbol'
+            $ctx.type = 'select_id'
         }
     |  expr '.' ID { 
             $ctx.type = 'select_id'
@@ -57,8 +57,8 @@ expr:
     |  object                   { $ctx.type = 'object' }
     |  STRING                   { $ctx.type = 'string' }
     
-    |  'function' '()'           expr    { $ctx.type = 'function' }
-    |  'function' '(' id_seq ')' expr    { $ctx.type = 'function' }
+    |  'fun' '()'           expr    { $ctx.type = 'function' }
+    |  'fun' '(' id_seq ')' expr    { $ctx.type = 'function' }
 
     ;
 
@@ -77,7 +77,9 @@ number:  INT                        { $ctx.type = 'int' }
     |  FLOAT                        { $ctx.type = 'float' }
     ;
 
-seq: items+=expr (',' items+=expr)*;
+array: '[' ( items+=value (',' items+=value)* )? ']'                          { $ctx.type = 'array' };
+
+object: '{' ( keys+=ID ':' vals+=value (',' keys+=ID ':' vals+=value)* )? '}' { $ctx.type = 'object' };
 
 id_seq: items+= ID (',' items+=ID)*;
 
@@ -87,17 +89,11 @@ call_arguments:
     | args=positional_arguments ',' namedArgs=named_arguments
     ;
 
-positional_arguments: expr (',' expr?)*;
+positional_arguments: value (',' value?)*;
 
 named_arguments: named_argument (',' named_argument?)*;
 
-named_argument: ID EQ expr { $ctx.type = 'named-argument' };
-
-array: '[' ( seq )? ']'   { $ctx.type = 'array' }
-    ;
-
-object: '{' ( keys+=ID ':' vals+=expr (',' keys+=ID ':' vals+=expr)* )? '}' { $ctx.type = 'object' }
-    ;
+named_argument: ID EQ value { $ctx.type = 'named-argument' };
 
 BOOLEAN: 'true'|'false';
 CELL: [A-Z]+[1-9][0-9]*;

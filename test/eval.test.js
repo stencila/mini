@@ -6,6 +6,29 @@ const test = module('Eval')
 
 const MESSAGE_CORRECT_VALUE = 'Value should be correct'
 
+test('Value', (t) => {
+  t.plan(1)
+  const context = new TestContext()
+  context.evaluate('this.y').then((res) => {
+    t.deepEqual(res, {
+      type: 'fun',
+      params: [],
+      body: {
+        type: 'call',
+        name: 'select',
+        args: [
+          {type: 'get', name: 'this'},
+          'y'
+        ],
+        namedArgs: {}
+      }
+    })
+  }).catch(error => {
+    console.error(error)
+    t.fail()
+  })
+})
+
 test('Number', (t) => {
   t.plan(1)
   const context = new TestContext()
@@ -215,65 +238,43 @@ test('Groups', (t) => {
 })
 
 test('Function', (t) => {
-  t.plan(6)
+  t.plan(7)
   const context = new TestContext()
-  context.evaluate('function(x) x + this.y').then((res) => {
+  context.evaluate('fun(x) x + this.y').then((res) => {
     t.deepEqual(res, {
-      type: 'function',
+      type: 'fun',
       params: [ 'x' ],
       body: { 
         type: 'call',
         name: 'add',
         args: [
-          { type: 'var', name: 'x' }, 
-          { type: 'call', name: 'select', args: [ {type: 'var', name: 'this'}, {type: 'string', value: 'y'}] }
-        ]
+          { type: 'get', name: 'x' }, 
+          { type: 'call', name: 'select', args: [ {type: 'get', name: 'this'}, 'y'], namedArgs: {} }
+        ], 
+        namedArgs: {}
       }
     })
+  }).catch(error => {
+    console.error(error)
+    t.fail()
   })
-  context.evaluate('call(function(x, y) x + y, [1, 2])').then((res) => {
+  context.evaluate('call(fun(x, y) x + y, [1, 2])').then((res) => {
     t.deepEqual(res, 3, 'call with two arguments')
   })
-  context.evaluate('call(function() this, [], 3)').then((res) => {
+  context.evaluate('call(fun() this, [], 3)').then((res) => {
     t.deepEqual(res, 3, 'call with no args but a binding')
   })
-  context.evaluate('call(function() this.a + this.b, [], {a: 1, b: 2})').then((res) => {
+  context.evaluate('call(fun() this.a + this.b, [], {a: 1, b: 2})').then((res) => {
     t.deepEqual(res, 3, 'call function using select from this')
   })
-  context.evaluate('with({a: 1, b: 2}, function() this.a + this.b)').then((res) => {
+  context.evaluate('with({a: 1, b: 2}, fun() this.a + this.b)').then((res) => {
     t.deepEqual(res, 3, 'using a function as an argument to another function')
   })
-  context.evaluate('filter([0, 1, 2, 3], function() this <= 2)').then((res) => {
-    t.deepEqual(res, [0, 1, 2], 'using a function as an argument to another function')
+  context.evaluate('filter([0, 1, 2, 3], fun() this < 2)').then((res) => {
+    t.deepEqual(res, [0, 1], 'using a function as an argument to another function')
   })
-})
-
-test.skip('Symbol', (t) => {
-  t.plan(3)
-  const context = new TestContext()
-  context.evaluate('.y').then((res) => {
-    t.deepEqual(res, {
-      type: 'symbol',
-      name: 'y'
-    })
-  })
-  // Partial evalution of expressions is done where possible
-  context.setValue('z', 2)
-  context.evaluate('{colour: z + 1 + .y}').then((res) => {
-    t.deepEqual(res, {
-      colour: { 
-        type: 'call',
-        name: 'add',
-        args: [ 3, { type: 'symbol', name: 'y' }], 
-      }
-    })
-  })
-  context.evaluate('sum(.)').then((res) => {
-    t.deepEqual(res, {
-      type: 'call',
-      name: 'sum',
-      args: [{ type: 'symbol', name: '.' }], 
-    })
+  context.evaluate('filter([0, 1, 2, 3], this < 2)').then((res) => {
+    t.deepEqual(res, [0, 1], 'using a function as an argument to another function')
   })
 })
 

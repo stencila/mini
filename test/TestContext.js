@@ -29,13 +29,10 @@ export default class TestContext {
     this._funs[name] = fn
   }
 
-  callFunction(funCall) {
-    let fun = this._funs[funCall.name]
-    if (!fun) throw new Error(`Function "${funCall.name}" does not exist`)
-    let argValues = funCall.args.map((arg) => {
-      return arg.getValue()
-    })
-    return fun(...argValues)
+  callFunction(name, args/*, namedArgs*/) {
+    let fun = this._funs[name]
+    if (!fun) throw new Error(`Function "${name}" does not exist`)
+    return fun(...args)
   }
 
   setValue(name, val) {
@@ -116,13 +113,7 @@ function eval_(node, variables) {
   let args
   let value
   switch (node.type) {
-    case 'boolean':
-    case 'number':
-    case 'string':
-    case 'array':
-    case 'object':
-      return node.value
-    case 'var':
+    case 'get':
       value = variables[node.name]
       return value
     case 'call':
@@ -131,7 +122,7 @@ function eval_(node, variables) {
       args = node.args.map(arg => eval_(arg, variables))
       return func(...args)
     default:
-      throw new Error(`Unhandled node type ${node.type}`)
+      return node
   }
 }
 

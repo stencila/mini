@@ -20,12 +20,12 @@ MiniListener.prototype.exitMini = function(ctx) {
 };
 
 
-// Enter a parse tree produced by MiniParser#mainExpr.
-MiniListener.prototype.enterMainExpr = function(ctx) {
+// Enter a parse tree produced by MiniParser#value.
+MiniListener.prototype.enterValue = function(ctx) {
 };
 
-// Exit a parse tree produced by MiniParser#mainExpr.
-MiniListener.prototype.exitMainExpr = function(ctx) {
+// Exit a parse tree produced by MiniParser#value.
+MiniListener.prototype.exitValue = function(ctx) {
 };
 
 
@@ -83,12 +83,21 @@ MiniListener.prototype.exitNumber = function(ctx) {
 };
 
 
-// Enter a parse tree produced by MiniParser#seq.
-MiniListener.prototype.enterSeq = function(ctx) {
+// Enter a parse tree produced by MiniParser#array.
+MiniListener.prototype.enterArray = function(ctx) {
 };
 
-// Exit a parse tree produced by MiniParser#seq.
-MiniListener.prototype.exitSeq = function(ctx) {
+// Exit a parse tree produced by MiniParser#array.
+MiniListener.prototype.exitArray = function(ctx) {
+};
+
+
+// Enter a parse tree produced by MiniParser#object.
+MiniListener.prototype.enterObject = function(ctx) {
+};
+
+// Exit a parse tree produced by MiniParser#object.
+MiniListener.prototype.exitObject = function(ctx) {
 };
 
 
@@ -134,24 +143,6 @@ MiniListener.prototype.enterNamed_argument = function(ctx) {
 
 // Exit a parse tree produced by MiniParser#named_argument.
 MiniListener.prototype.exitNamed_argument = function(ctx) {
-};
-
-
-// Enter a parse tree produced by MiniParser#array.
-MiniListener.prototype.enterArray = function(ctx) {
-};
-
-// Exit a parse tree produced by MiniParser#array.
-MiniListener.prototype.exitArray = function(ctx) {
-};
-
-
-// Enter a parse tree produced by MiniParser#object.
-MiniListener.prototype.enterObject = function(ctx) {
-};
-
-// Exit a parse tree produced by MiniParser#object.
-MiniListener.prototype.exitObject = function(ctx) {
 };
 
 
