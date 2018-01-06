@@ -8,7 +8,7 @@ A minimal, functional language focused on data analysis and visualization and av
 
 ## Documentation
 
-The pipe operator, `|`, allows for several functions to be combined in a "pipeline". It passes the expression on the left as the first argument of the function call on the right. So a set of nested function calls like:
+See the documentation at https://github.com/stencila/stencila/blob/develop/docs/mini.
 
 ## Development
 
