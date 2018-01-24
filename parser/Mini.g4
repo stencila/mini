@@ -10,35 +10,35 @@ mainExpr:
     ;
 
 expr:
-    expr '.' ID { 
+    expr '.' ID {
             $ctx.type = 'select_id'
         }
-    |  expr '[' expr ']' { 
+    |  expr '[' expr ']' {
             $ctx.type = 'select_expr'
         }
     |  op=('!'<assoc=right>|'+'<assoc=right>|'-'<assoc=right>) expr { switch ($ctx.op.text) {
-            case '!': $ctx.type = 'not';               break 
+            case '!': $ctx.type = 'not';               break
             case '+': $ctx.type = 'positive';          break
             case '-': $ctx.type = 'negative';          break
         }}
-    |  expr '^'<assoc=right> expr { 
+    |  expr '^'<assoc=right> expr {
             $ctx.type = 'pow'
         }
     |  expr op=('*'|'/'|'%') expr     { switch ($ctx.op.text) {
-            case '*': $ctx.type = 'multiply';          break 
+            case '*': $ctx.type = 'multiply';          break
             case '/': $ctx.type = 'divide';            break
-            case '%': $ctx.type = 'remainder';         break 
+            case '%': $ctx.type = 'remainder';         break
         }}
     |  expr op=('+'|'-') expr     {
-            $ctx.type = ($ctx.op.text === '+') ? 'add' : 'subtract' 
+            $ctx.type = ($ctx.op.text === '+') ? 'add' : 'subtract'
         }
     |  expr op=('<'|'<='|'>'|'>=') expr { switch ($ctx.op.text) {
-            case '<':  $ctx.type = 'less';             break 
+            case '<':  $ctx.type = 'less';             break
             case '<=': $ctx.type = 'less_or_equal';    break
-            case '>':  $ctx.type = 'greater';          break 
+            case '>':  $ctx.type = 'greater';          break
             case '>=': $ctx.type = 'greater_or_equal'; break
         }}
-    |  expr op=('=='|'!=') expr   { 
+    |  expr op=('=='|'!=') expr   {
             $ctx.type = ($ctx.op.text === '==') ? 'equal' : 'not_equal'
         }
     |  expr '&&' expr           { $ctx.type = 'and' }
