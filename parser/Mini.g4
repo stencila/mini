@@ -57,13 +57,13 @@ expr:
     |  STRING                   { $ctx.type = 'string' }
     ;
 
-range: CELL ':' CELL;
+range: CELL ':' CELL            { $ctx.type = '_range' };
 
-cell: CELL;
+cell: CELL                      { $ctx.type = '_cell' };
 
 sheet_ref: ID '!' ( cell | range );
 
-function_call: 
+function_call:
       name=ID '()'                         { $ctx.type = 'call' }
     | name=ID '(' args=call_arguments ')'  { $ctx.type = 'call' }
     ;

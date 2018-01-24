@@ -197,15 +197,14 @@ export class EmptyArgument extends ExprNode {
 
 }
 
-
 export class Cell extends ExprNode {
 
   constructor(id, start, end, row, col) {
     super(id, start, end)
-    // TODO: where does the table name come from?
-    this.tableName = ''
     this.row = row
     this.col = col
+    // Note: the tableName is only set when used in a sheet reference expression
+    this.sheetId = null
   }
 
   get type() { return 'cell' }
@@ -214,7 +213,7 @@ export class Cell extends ExprNode {
     const context = this.getContext()
     let val = context.lookup({
       type: 'cell',
-      tableName: this.tableName,
+      sheetId: this.sheetId,
       row: this.row,
       col: this.col
     })
@@ -227,12 +226,12 @@ export class Range extends ExprNode {
 
   constructor(id, start, end, startRow, startCol, endRow, endCol) {
     super(id, start, end)
-    // TODO: where does the table name come from?
-    this.tableName =
     this.startRow = startRow
     this.startCol = startCol
     this.endRow = endRow
     this.endCol = endCol
+    // Note: the tableName is only set when used in a sheet reference expression
+    this.sheetId = null
   }
 
   get type() { return 'range' }
@@ -243,7 +242,7 @@ export class Range extends ExprNode {
     const context = this.getContext()
     let matrix = context.lookup({
       type: 'range',
-      tableName: this.tableName,
+      sheetId: this.sheetId,
       startRow: this.startRow,
       startCol: this.startCol,
       endRow: this.endRow,

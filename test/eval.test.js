@@ -241,6 +241,24 @@ test('Range', (t) => {
   })
 })
 
+test('Cross-sheet referenced cell', (t) => {
+  t.plan(1)
+  const context = new TestContext()
+  context.setValue('sheet1', [[0,0],[0,0],[0,10]])
+  context.evaluate('sheet1!B3').then((res) => {
+    t.equal(res, 10, MESSAGE_CORRECT_VALUE)
+  })
+})
+
+test('Cross-sheet referenced range', (t) => {
+  t.plan(1)
+  const context = new TestContext()
+  context.setValue('sheet1', [[1,2,3],[4,5,6],[7,8,9],[10,11,12]])
+  context.evaluate('sheet1!A1:C4').then((res) => {
+    t.deepEqual(res, [[1,2,3],[4,5,6],[7,8,9],[10,11,12]], MESSAGE_CORRECT_VALUE)
+  })
+})
+
 test('Pipe', (t) => {
   t.plan(3)
   const context = new TestContext()

@@ -85,6 +85,16 @@ test('Range', (t) => {
   t.end()
 })
 
+test('Sheet Reference', (t) => {
+  const expr = parse('sheet1!A1:C4')
+  const expectedTypes = ['range']
+  const root = expr.root
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.equal(root.sheetId, 'sheet1', 'Sheet reference should have correct sheet id')
+  t.deepEqual([root.startRow, root.startCol, root.endRow, root.endCol], [0,0,3,2], '.. and correct cell range')
+  t.end()
+})
+
 test('Select using id', (t) => {
   _equal(t, getNodeTypes(parse('a.b')), ['call:select', 'var', 'string'], MESSAGE_CORRECT_AST)
   _equal(t, getNodeTypes(parse('{a:1}.a')), ['call:select', 'object', 'number', 'string'], MESSAGE_CORRECT_AST)
