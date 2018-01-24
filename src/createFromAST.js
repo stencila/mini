@@ -45,8 +45,8 @@ export default function createFromAST(state, ast) {
       break
     }
     // Unary operators
-    case 'not': 
-    case 'positive': 
+    case 'not':
+    case 'positive':
     case 'negative': {
       const name = ast.type
       const args = expr_sequence(state, [ast.children[1]])
@@ -143,7 +143,10 @@ export default function createFromAST(state, ast) {
       return createFromAST(state, ast.children[1])
     }
     case 'range': {
-      let ctx = ast.children[0]
+      return createFromAST(state, ast.children[0])
+    }
+    case '_range': {
+      let ctx = ast
       state.tokens.push(new Token('input-cell', ctx.children[0].symbol))
       state.tokens.push(new Token('input-cell', ctx.children[2].symbol))
       let [startRow, startCol] = getRowCol(ctx.children[0].toString())
@@ -159,7 +162,10 @@ export default function createFromAST(state, ast) {
       break
     }
     case 'cell': {
-      let ctx = ast.children[0]
+      return createFromAST(state, ast.children[0])
+    }
+    case '_cell': {
+      let ctx = ast
       state.tokens.push(new Token('input-cell', ctx.children[0].symbol))
       let [row, col] = getRowCol(ctx.children[0].toString())
       node = new Cell(state.nodeId++, start, end, row, col)
@@ -167,10 +173,17 @@ export default function createFromAST(state, ast) {
       break
     }
     case 'sheet-ref': {
-      const name = ast.children[0].toString()
-      const target = createFromAST(state, ast.children[2])
-      target.tableName = name
-      node = target
+      const parts = ast.children[0].children
+      const sheetId = parts[0].toString()
+      // add a token for the sheet id
+      state.tokens.push(new Token('namespace', parts[0].symbol))
+      const rangeAst = parts[2]
+      if (rangeAst.type === '_cell' || rangeAst.type === '_range') {
+        node = createFromAST(state, rangeAst)
+        node.sheetId = sheetId
+      } else {
+        node = new ErrorNode(state.nodeId++, start, end, ast.exception)
+      }
       break
     }
     case '_call':
