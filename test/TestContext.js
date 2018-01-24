@@ -39,8 +39,8 @@ export default class TestContext {
         return this._vals[symbol.name]
       }
       case 'cell': {
-        let tableName = symbol.tableName || 'data'
-        let table = this._vals[tableName]
+        let sheetId = symbol.sheetId || 'data'
+        let table = this._vals[sheetId]
         if (!table) throw new Error('Invalid name.')
         let row = table[symbol.row]
         if (row) {
@@ -49,8 +49,8 @@ export default class TestContext {
         break
       }
       case 'range': {
-        let tableName = symbol.tableName || 'data'
-        let table = this._vals[tableName]
+        let sheetId = symbol.sheetId || 'data'
+        let table = this._vals[sheetId]
         if (!table) throw new Error('Invalid name.')
         let res = []
         if (symbol.startRow === symbol.endRow) {
@@ -92,7 +92,7 @@ export default class TestContext {
 }
 
 // Operator functions in order of precedence
-// 
+//
 // For operator precendece in other languages see
 //   http://en.cppreference.com/w/cpp/language/operator_precedence
 //   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence
