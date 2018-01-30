@@ -103,7 +103,7 @@ test('Range', (t) => {
 test('Sheet Reference', (t) => {
   const expr = parse('sheet1!A1:C4')
   const expectedTypes = ['range']
-  const root = expr.root
+  const root = expr.root.child
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.equal(root.sheetId, 'sheet1', 'Sheet reference should have correct sheet id')
   t.deepEqual([root.startRow, root.startCol, root.endRow, root.endCol], [0,0,3,2], '.. and correct cell range')
