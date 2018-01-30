@@ -1,10 +1,10 @@
 import {isString, isNumber} from 'substance'
 import {
   Definition,
-  NumberNode, StringNode, ArrayNode, ObjectNode, BooleanNode,
+  ValueNode,
+  BooleanNode, NumberNode, StringNode, ArrayNode, ObjectNode, FunctionNode,
   Var, Cell, Range,
-  FunctionCall, ExternalFunction, NamedArgument,
-  PipeOp,
+  FunctionCall, NamedArgument,
   ErrorNode,
   EmptyArgument
 } from './Nodes'
@@ -22,13 +22,9 @@ export default function createFromAST(state, ast) {
       node = new Definition(state.nodeId++, start, end, lhs.getText(), createFromAST(state, ast.children[2]))
       break
     }
-    case 'simple':
-      return createFromAST(state, ast.children[0])
-    case 'function': {
-      const args = var_sequence(state, ast.children[2])
-      node = new ExternalFunction(state.nodeId++, start, end, args)
+    case 'value':
+      node = new ValueNode(state.nodeId++, start, end, createFromAST(state, ast.children[0]))
       break
-    }
     // Member selection operator `.`
     case 'select_id': {
       const value = createFromAST(state, ast.children[0])
@@ -75,12 +71,13 @@ export default function createFromAST(state, ast) {
     }
     // Pipe operator
     case 'pipe': {
-      node = new PipeOp(state.nodeId++, start, end,
-        createFromAST(state, ast.children[0]),
-        createFromAST(state, ast.children[2])
-      )
+      // Insert the left hand side as the first argument to the right
+      // hand side function call
+      node = createFromAST(state, ast.children[2])
+      node.args.unshift(createFromAST(state, ast.children[0]))
       break
     }
+    // Values
     case 'int':
     case 'float':
     case 'number': {
@@ -105,10 +102,9 @@ export default function createFromAST(state, ast) {
     }
     case 'array': {
       const ctx = ast.children[0]
-      const seq = ctx.children[1]
       let vals = []
-      if (seq && seq.items) {
-        vals = expr_sequence(state, seq.items)
+      if (ctx && ctx.items) {
+        vals = expr_sequence(state, ctx.items)
       }
       node = new ArrayNode(state.nodeId++, start, end, vals)
       break
@@ -129,6 +125,20 @@ export default function createFromAST(state, ast) {
       node = new ObjectNode(state.nodeId++, start, end, entries)
       break
     }
+    case 'function': {
+      let params
+      let body
+      if (ast.children.length === 3) {
+        params = []
+        body = createFromAST(state, ast.children[2])
+      } else {
+        params = var_sequence(state, ast.children[2])
+        body = createFromAST(state, ast.children[4])
+      }
+      node = new FunctionNode(state.nodeId++, start, end, params, body)
+      break
+    }
+
     case 'var': {
       node = new Var(state.nodeId++, start, end, ast.getText())
       state.tokens.push(new Token('input-variable-name', {

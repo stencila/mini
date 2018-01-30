@@ -6,6 +6,29 @@ const test = module('Eval')
 
 const MESSAGE_CORRECT_VALUE = 'Value should be correct'
 
+test('Value', (t) => {
+  t.plan(1)
+  const context = new TestContext()
+  context.evaluate('this.y').then((res) => {
+    t.deepEqual(res, {
+      type: 'fun',
+      params: [],
+      body: {
+        type: 'call',
+        name: 'select',
+        args: [
+          {type: 'get', name: 'this'},
+          'y'
+        ],
+        namedArgs: {}
+      }
+    })
+  }).catch(error => {
+    console.error(error)
+    t.fail()
+  })
+})
+
 test('Number', (t) => {
   t.plan(1)
   const context = new TestContext()
@@ -211,6 +234,47 @@ test('Groups', (t) => {
   const context = new TestContext()
   context.evaluate('(1+2)*(3+4)').then((res) => {
     t.deepEqual(res, 21, MESSAGE_CORRECT_VALUE)
+  })
+})
+
+test('Function', (t) => {
+  t.plan(7)
+  const context = new TestContext()
+  context.evaluate('fun(x) x + this.y').then((res) => {
+    t.deepEqual(res, {
+      type: 'fun',
+      params: [ 'x' ],
+      body: { 
+        type: 'call',
+        name: 'add',
+        args: [
+          { type: 'get', name: 'x' }, 
+          { type: 'call', name: 'select', args: [ {type: 'get', name: 'this'}, 'y'], namedArgs: {} }
+        ], 
+        namedArgs: {}
+      }
+    })
+  }).catch(error => {
+    console.error(error)
+    t.fail()
+  })
+  context.evaluate('call(fun(x, y) x + y, [1, 2])').then((res) => {
+    t.deepEqual(res, 3, 'call with two arguments')
+  })
+  context.evaluate('call(fun() this, [], 3)').then((res) => {
+    t.deepEqual(res, 3, 'call with no args but a binding')
+  })
+  context.evaluate('call(fun() this.a + this.b, [], {a: 1, b: 2})').then((res) => {
+    t.deepEqual(res, 3, 'call function using select from this')
+  })
+  context.evaluate('with({a: 1, b: 2}, fun() this.a + this.b)').then((res) => {
+    t.deepEqual(res, 3, 'using a function as an argument to another function')
+  })
+  context.evaluate('filter([0, 1, 2, 3], fun() this < 2)').then((res) => {
+    t.deepEqual(res, [0, 1], 'using a function as an argument to another function')
+  })
+  context.evaluate('filter([0, 1, 2, 3], this < 2)').then((res) => {
+    t.deepEqual(res, [0, 1], 'using a function as an argument to another function')
   })
 })
 

@@ -1,0 +1,3 @@
+- <span class="project">Stencila Mini</span>
+  - [Stencila](https://stenci.la)
+  - [Github repo](https://github.com/stencila/mini)

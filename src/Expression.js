@@ -70,6 +70,10 @@ class Expression extends EventEmitter {
     return this.context
   }
 
+  evaluate () {
+    this.root.evaluate()
+  }
+
   // gets call by node.setValue() if the value has updated
   _requestPropagation(node) {
     if (this._cursor < 0) {

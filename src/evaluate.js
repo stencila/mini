@@ -11,7 +11,7 @@ export default function evaluate(str, context) {
         resolve(val)
       })
       expr.context = context
-      expr.propagate()
+      expr.evaluate()
     })
   }
 }

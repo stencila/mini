@@ -1,20 +1,27 @@
 import { evaluate } from 'stencila-mini'
 
+const FUNCTIONS = {
+  // Call a function
+  call,
+  // Operator functions in order of precedence; equal precedence if on same line.
+  select,
+  not, positive, negative,
+  pow,
+  multiply, divide, remainder,
+  add, subtract,
+  less, less_or_equal, greater, greater_or_equal,
+  equal, not_equal,
+  and, or,
+  // Example functions that take functions as arguments
+  with: with_,
+  filter
+}
+
 // An execution used for testing. Exposes the same API as `MiniContext` in the stencila/stencila repo
 export default class TestContext {
 
   constructor() {
-    this._funs = {
-      // Operator functions in order of precedence; equal precedence if on same line.
-      select,
-      not, positive, negative,
-      pow,
-      multiply, divide, remainder,
-      add, subtract,
-      less, less_or_equal, greater, greater_or_equal,
-      equal, not_equal,
-      and, or
-    }
+    this._funs = FUNCTIONS
     this._vals = {}
   }
 
@@ -22,11 +29,10 @@ export default class TestContext {
     this._funs[name] = fn
   }
 
-  callFunction(funCall) {
-    let fun = this._funs[funCall.name]
-    if (!fun) throw new Error(`Function "${funCall.name}" does not exist`)
-    let argValues = funCall.args.map((arg) => arg.getValue())
-    return fun(...argValues)
+  callFunction(name, args/*, namedArgs*/) {
+    let fun = this._funs[name]
+    if (!fun) throw new Error(`Function "${name}" does not exist`)
+    return fun(...args)
   }
 
   setValue(name, val) {
@@ -89,6 +95,35 @@ export default class TestContext {
     return val
   }
 
+}
+
+// Evaluation function for evaluating expressions
+function call(fun, args, binding = null) {
+  const variables = {}
+  let index = 0
+  fun.params.forEach((name) => {
+    variables[name] = args[index++]
+  })
+  variables['this'] = binding
+  return eval_(fun.body, variables)
+}
+
+function eval_(node, variables) {
+  let func
+  let args
+  let value
+  switch (node.type) {
+    case 'get':
+      value = variables[node.name]
+      return value
+    case 'call':
+      func = FUNCTIONS[node.name]
+      if (!func) throw new Error(`Unknown function "${node.name}"`) 
+      args = node.args.map(arg => eval_(arg, variables))
+      return func(...args)
+    default:
+      return node
+  }
 }
 
 // Operator functions in order of precedence
@@ -167,4 +202,15 @@ function and(a, b) {
 
 function or(a, b) {
   return a || b
+}
+
+
+// Filter function
+
+function with_(object, func) {
+  return call(func, [], object)
+}
+
+function filter(array, func) {
+  return array.filter(value => with_(value, func))
 }

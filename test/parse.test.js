@@ -19,6 +19,14 @@ test('Number', (t) => {
   t.end()
 })
 
+test.skip('Symbol', (t) => {
+  _equal(t, getNodeTypes(parse('.')), ['symbol'], MESSAGE_CORRECT_AST)
+  _equal(t, getNodeTypes(parse('.x')), ['symbol'], MESSAGE_CORRECT_AST)
+  _equal(t, getNodeTypes(parse('.x + .y')), ['call:add', 'symbol', 'symbol'], MESSAGE_CORRECT_AST)
+  _equal(t, getNodeTypes(parse('with(object, .x + 1')), ['call:with', 'var', 'call:add', 'symbol', 'number'], MESSAGE_CORRECT_AST)
+  t.end()
+})
+
 test('Variable', (t) => {
   const expr = parse('x')
   const expectedTypes = ['var']
@@ -56,6 +64,13 @@ test('Object', (t) => {
   t.end()
 })
 
+test('Function', (t) => {
+  const expr = parse('fun(x,y) x + y * 2')
+  const expectedTypes = ['fun', 'var', 'var', 'call:add', 'var', 'call:multiply', 'var', 'number']
+  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
+  t.end()
+})
+
 test('Group', (t) => {
   const expr = parse('(1+2)*3')
   const expectedTypes = ['call:multiply', 'call:add', 'number', 'number', 'number']
@@ -66,7 +81,7 @@ test('Group', (t) => {
 test('Cell', (t) => {
   const expr = parse('B3')
   const expectedTypes = ['cell']
-  const root = expr.root
+  const root = expr.root.child
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.equal(root.row, 2, 'Cell should have correct row')
   t.equal(root.col, 1, '.. and correct column')
@@ -76,7 +91,7 @@ test('Cell', (t) => {
 test('Range', (t) => {
   const expr = parse('A1:C4')
   const expectedTypes = ['range']
-  const root = expr.root
+  const root = expr.root.child
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.equal(root.startRow, 0, 'Cell should have correct start row')
   t.equal(root.startCol, 0, '.. correct start column')
@@ -88,7 +103,7 @@ test('Range', (t) => {
 test('Sheet Reference', (t) => {
   const expr = parse('sheet1!A1:C4')
   const expectedTypes = ['range']
-  const root = expr.root
+  const root = expr.root.child
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.equal(root.sheetId, 'sheet1', 'Sheet reference should have correct sheet id')
   t.deepEqual([root.startRow, root.startCol, root.endRow, root.endCol], [0,0,3,2], '.. and correct cell range')
@@ -220,7 +235,6 @@ test('1+x+A1', (t) => {
   t.end()
 })
 
-
 test('Definition', (t) => {
   const expr = parse('x = 42')
   const expectedTypes = ['definition', 'number']
@@ -228,9 +242,9 @@ test('Definition', (t) => {
   t.end()
 })
 
-test('Function definition', (t) => {
-  const expr = parse('x = function(x,y)')
-  const expectedTypes = ['definition', 'function', 'var', 'var']
+test('Definition', (t) => {
+  const expr = parse('answer = fun (x) x * 7')
+  const expectedTypes = ['definition', 'fun', 'var', 'call:multiply', 'var', 'number']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.end()
 })
@@ -279,7 +293,7 @@ test('Function call with multiple positional and multiple named arguments', (t) 
 
 test('Piping a function call into another', (t) => {
   const expr = parse('foo() | bar()')
-  const expectedTypes = ['pipe', 'call:foo', 'call:bar']
+  const expectedTypes = ['call:bar', 'call:foo']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.end()
 })
@@ -327,6 +341,7 @@ function _equal(t, arr1, arr2, msg) {
 function getNodeTypes(expr) {
   let types = []
   walk(expr, (node) => {
+    if (node.type === 'value') return
     let name
     if (node.type === 'call') name = `call:${node.name}`
     else name = node.type

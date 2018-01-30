@@ -12,9 +12,13 @@ export default function walk(expr, fn) {
       case 'definition':
         stack.push(next.rhs)
         break
-      case 'function':
-        for (let i = next.args.length - 1; i >= 0; i--) {
-          stack.push(next.args[i])
+      case 'value':
+        stack.push(next.child)
+        break
+      case 'fun':
+        stack.push(next.body)
+        for (let i = next.params.length - 1; i >= 0; i--) {
+          stack.push(next.params[i])
         }
         break
       case 'call':

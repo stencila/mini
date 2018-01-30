@@ -10,7 +10,9 @@
     "start": "node make lib test -s -w",
     "dev": "node make lib test -s -w",
     "test": "npm run lint && node make test",
-    "cover": "node make cover  && codecov"
+    "cover": "node make cover  && codecov",
+    "docs-upgrade": "stencila-docket upgrade docs \"Stencila Mini\"",
+    "docs-serve": "stencila-docket serve"
   },
   "author": "",
   "license": "MIT",
@@ -25,6 +27,7 @@
     "karma-source-map-support": "^1.2.0",
     "karma-tap": "^3.1.1",
     "karma-tape-reporter": "^1.0.3",
+    "stencila-docket": "^1.0.4",
     "substance": "1.0.0-beta.7-preview.7",
     "substance-bundler": "^0.16.4",
     "substance-test": "^0.9.4"

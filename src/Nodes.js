@@ -14,7 +14,7 @@ class ExprNode {
 
   setValue(val) {
     this.value = val
-    this.getExpression()._requestPropagation(this)
+    //this.getExpression()._requestPropagation(this)
   }
 
   getValue() {
@@ -68,6 +68,37 @@ export class Definition extends ExprNode {
 
 }
 
+export class ValueNode extends ExprNode {
+
+  constructor(id, start, end, child) {
+    super(id, start, end)
+    this.child = child
+    child.parent = this
+  }
+
+  get type() { return 'value' }
+
+  evaluate() {
+    super.evaluate()
+
+    this.child.evaluate()
+    let value = this.child.getValue()
+    if (isAst(value) && value.type !== 'fun') {
+      value = {
+        type: 'fun',
+        params: [],
+        body: value
+      }
+    }
+    this.setValue(value)
+
+    if (this.child.errors) {
+      this.addErrors(this.child.errors)
+    }
+  }
+
+}
+
 export class ArrayNode extends ExprNode {
   constructor(id, start, end, vals) {
     super(id, start, end)
@@ -85,6 +116,7 @@ export class ArrayNode extends ExprNode {
     // we would unmarshal values, and compute a coerced array type here
     // and not in the marshaller
     let vals = this.vals.map((val) => {
+      val.evaluate()
       return val.getValue()
     })
     this.setValue(context.marshal('array', vals))
@@ -106,6 +138,7 @@ export class ObjectNode extends ExprNode {
     const context = this.getContext()
     let obj = {}
     this.entries.forEach((entry) => {
+      entry.val.evaluate()
       obj[entry.key] = context.unmarshal(entry.val.getValue())
     })
     this.setValue(context.marshal('object', obj))
@@ -163,6 +196,31 @@ export class StringNode extends ExprNode {
 
 }
 
+export class FunctionNode extends ExprNode {
+
+  constructor(id, start, end, params, body) {
+    super(id, start, end)
+    this.params = params
+    params.forEach((param) => {
+      param.parent = this
+    })
+    this.body = body
+    body.parent = this
+  }
+
+  get type() { return 'fun' }
+
+  evaluate() {
+    const value = {
+      type: 'fun',
+      params: this.params.map(param => param.name),
+      body: astify(this.body)
+    }
+    this.setValue(value)
+  }
+
+}
+
 export class Var extends ExprNode {
 
   constructor(id, start, end, name) {
@@ -173,12 +231,20 @@ export class Var extends ExprNode {
   get type() { return 'var' }
 
   evaluate() {
-    const context = this.getContext()
-    let val = context.lookup({
-      type: 'var',
-      name: this.name
-    })
-    this.setValue(val)
+    let value
+    if (this.name === 'this') {
+      value = {
+        type: 'get',
+        name: 'this'
+      }
+    } else {
+      const context = this.getContext()
+      value = context.lookup({
+        type: 'var',
+        name: this.name
+      })
+    }
+    this.setValue(value)
   }
 
 }
@@ -253,35 +319,19 @@ export class Range extends ExprNode {
 
 }
 
-export class ExternalFunction extends ExprNode {
-  constructor(id, start, end, args = []) {
-    super(id, start, end)
-    this.args = args
-    args.forEach((c) => {
-      c.parent = this
-    })
-  }
-
-  get type() { return 'function' }
-
-  evaluate() {
-    console.error('TODO: implement this')
-    this.setValue(undefined)
-  }
-
-}
-
 export class FunctionCall extends ExprNode {
 
-  constructor(id, start, end, name, args = [], namedArgs=[], modifiers=[]) {
+  constructor(id, start, end, name, args = [], namedArgs=[]) {
     super(id, start, end)
+    
     this.name = name
+    
     this.args = args
-    this.modifiers = modifiers
-    this.namedArgs = namedArgs
     args.forEach((arg) => {
       arg.parent = this
     })
+    
+    this.namedArgs = namedArgs
     namedArgs.forEach((arg) => {
       arg.parent = this
     })
@@ -296,25 +346,48 @@ export class FunctionCall extends ExprNode {
   }
 
   evaluate() {
-    // HACK: when this is used as RHS of a pipe operator
-    // this is skipped and called manually
-    if (this.skip) return
-
     super.evaluate()
 
-    const self = this
-    const context = this.getContext()
-    this._pending = true
-    let res = context.callFunction(this)
-    if (res instanceof Promise) {
-      res.then(_done)
-    } else {
-      _done(res)
-    }
+    // Evaluate and each argument and check if any is an AST node
+    let ast = false
+    const argsValues = this.args.map((arg) => {
+      arg.evaluate()
+      const value = arg.getValue()
+      if (isAst(value) && value.type !== 'fun') ast = true
+      return value
+    })
+    const namedArgsValues = {}
+    Object.keys(this.namedArgs).forEach((name) => {
+      const arg = this.namedArgs[name]
+      arg.evaluate()
+      const value = arg.getValue()
+      if (isAst(value) && value.type !== 'fun') ast = true
+      return value
+    })
 
+    const self = this
     function _done(val) {
       self._pending = false
       self.setValue(val)
+    }
+    if (ast) {
+      this.setValue({
+        type: 'call',
+        name: this.name,
+        // Transform any non-AST arguments (i.e those that were able to be evaluated) into AST nodes
+        args: astifyArray(argsValues),
+        namedArgs: astifyObject(namedArgsValues)
+      })
+      return
+    } else {
+      const context = this.getContext()
+      this._pending = true
+      let res = context.callFunction(this.name, argsValues, namedArgsValues)
+      if (res instanceof Promise) {
+        res.then(_done)
+      } else {
+        _done(res)
+      }
     }
   }
 }
@@ -341,94 +414,6 @@ export class NamedArgument extends ExprNode {
 
 }
 
-export class PipeOp extends ExprNode {
-
-  constructor(id, start, end, left, right) {
-    super(id, start, end)
-    this.left = left
-    this.right = right
-    this.left.parent = this
-    this.right.parent = this
-    // do not evaluate the rhs funtion automatically
-    this.right.skip = true
-    this.right._pending = false
-
-    this._pending = true
-  }
-
-  get type() { return "pipe" }
-
-  isPending() {
-    return this._pending
-  }
-
-  evaluate() {
-    super.evaluate()
-
-    const self = this
-    const left = this.left
-    const right = this.right
-
-    this._pending = true
-
-    if (left.isPending() || right.isPending()) {
-      // don't do anything as long children are pending
-      return
-    }
-    // don't proceed if left has an error already
-    if (left.errors) {
-      self.addErrors(left.errors)
-    } else {
-      // f(x) | g()
-      let pipeArg = left.getValue()
-      // We need to prepare the args for the right function
-      // using the output of the left as first argument
-      // TODO: maybe we could use a real node here instead of
-      // a duck-typed one?
-      let rightProxy = {
-        name: right.name,
-        expr: right.expr,
-        args: [{
-          name: '_pipe',
-          getValue() {
-            return pipeArg
-          }
-        }].concat(right.args),
-        namedArgs: right.namedArgs,
-        addErrors: ExprNode.prototype.addErrors
-      }
-      const context = this.getContext()
-      if (context) {
-        rightProxy.errors = null
-        let res = context.callFunction(rightProxy)
-        if (res instanceof Promise) {
-          res.then((val) => {
-            this._pending = false
-            _collectErrors(left, rightProxy)
-            this.setValue(val)
-          })
-        } else {
-          this._pending = false
-          _collectErrors(left, rightProxy)
-          this.setValue(res)
-        }
-      } else {
-        this._pending = false
-        _collectErrors(left, rightProxy)
-      }
-    }
-
-    function _collectErrors(left, right) {
-      if (left && left.errors) {
-        self.addErrors(left.errors)
-      }
-      if (right && right.errors) {
-        self.addErrors(right.errors)
-      }
-    }
-  }
-}
-
 export class ErrorNode extends ExprNode {
 
   constructor(id, start, end, exception) {
@@ -442,4 +427,47 @@ export class ErrorNode extends ExprNode {
   evaluate() {
     return undefined
   }
+}
+
+function isAst (value) {
+  return value && value.type && ['set','get','fun','call'].indexOf(value.type)
+}
+
+function astify (node) {
+  if (node instanceof ExprNode) {
+    switch (node.type) {
+      case 'number':
+        return node.number
+      case 'string':
+        return node.str
+      case 'var':
+        return {
+          type: 'get',
+          name: node.name
+        }
+      case 'call':
+        return {
+          type: 'call',
+          name: node.name,
+          args: astifyArray(node.args),
+          namedArgs: astifyObject(node.namedArgs)
+        }
+      default:
+        throw new Error(`Unhandled node type ${node.type} : ${node}`)
+    }
+  } else {
+    return node
+  }
+}
+
+function astifyArray (nodes) {
+  return nodes.map(item => astify(item))
+}
+
+function astifyObject (nodes) {
+  let astified = {}
+  Object.keys(nodes).forEach(key => {
+    astified[key] = astify(nodes[key])
+  })
+  return astified
 }

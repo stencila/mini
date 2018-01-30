@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stencila Mini</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="description" content="Description">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+  <link rel="stylesheet" href="//unpkg.com/docsify@4.5.4/lib/themes/vue.css">
+
+  <script src="//unpkg.com/docsify-copy-code@1.0.0/index.js"></script>
+  <link rel="stylesheet" href="//unpkg.com/docsify-copy-code@1.0.0/styles.css">
+
+  <link rel="stylesheet" href="index.css">
+  
+  <link rel="stylesheet" href="local.css">
+  <script src="local.js"></script>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    window.$docsify = {
+      themeColor: '#2568ef',
+      search: {
+        placeholder: 'Search',
+        noData: 'No results'
+      },
+      homepage: 'home.md',
+      loadSidebar: 'sidebar.md',
+      loadNavbar: 'navbar.md',
+      plugins: [
+        window.DocsifyCopyCodePlugin.init(),
+        window.localPlugin
+      ]
+    }
+  </script>
+  <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
+  <script src="//unpkg.com/docsify/lib/plugins/search.min.js"></script>
+  <script src="//unpkg.com/docsify/lib/plugins/emoji.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-bash.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-json.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-python.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-r.min.js"></script>
+  <script src="//unpkg.com/prismjs/components/prism-markdown.min.js"></script>
+  <script src="//unpkg.com/stencila-docket/src/prism-mini.js"></script>
+  <script src="prism-mini.js"></script>
+</body>
+</html>
