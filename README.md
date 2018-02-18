@@ -8,7 +8,7 @@ A minimal, functional language focused on data analysis and visualization and av
 
 ## Documentation
 
-See the documentation at https://github.com/stencila/stencila/docs/mini.
+See the documentation at https://github.com/stencila/stencila/tree/master/docs/languages/mini.
 
 ## Development
 
