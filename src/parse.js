@@ -3,14 +3,22 @@ import ErrorListener from './ErrorListener'
 import Expression from './Expression'
 
 export default function parse(expr, options={}) {
-  const errorListener = new ErrorListener()
+  // Could the expression be incomplete? Alters how
+  // syntax errors are reported by `ErrorListener`
+  if (options.incomplete !== false) options.incomplete = true
+
   const lexer = new MiniLexer(new InputStream(expr))
   const parser = new MiniParser(new CommonTokenStream(lexer))
   parser.buildParseTrees = true
+  
   if (!options.debug) {
     parser.removeErrorListeners()
   }
+  const errorListener = new ErrorListener({
+    incomplete: options.incomplete
+  })
   parser.addErrorListener(errorListener)
+  
   // NOTE: 'mini' is the start rule as defined in the grammar file
   let ast = parser.mini()
   let syntaxError = errorListener.syntaxErrors[0]

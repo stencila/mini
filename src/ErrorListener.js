@@ -1,11 +1,26 @@
 export default
 class ErrorListener {
 
-  constructor() {
+  /**
+   * Constructor
+   * 
+   * @param  {Object} ignore Errors to ignore
+   */
+  constructor(ignore={}) {
+    // Ignore incomplete expressions?
+    if (ignore.incomplete !== false) ignore.incomplete = true
+    this.ignore = ignore
+
     this.syntaxErrors = []
   }
 
   syntaxError(recognizer, offendingSymbol, line, column, msg, error) {
+    if (this.ignore.incomplete) {
+      // Ignore syntax errors that are often associated with incomplete expressions
+      if (/^missing '.+' at '<EOF>'/.test(msg)) return
+      if (/^mismatched input '<EOF>'/.test(msg)) return
+    }
+
     let expectedTokens
     if (error) {
       expectedTokens = error.getExpectedTokens().toString(recognizer.literalNames, recognizer.symbolicNames)
