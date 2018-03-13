@@ -149,15 +149,18 @@ export default function createFromAST(state, ast) {
       let ctx = ast
       state.tokens.push(new Token('input-cell', ctx.children[0].symbol))
       state.tokens.push(new Token('input-cell', ctx.children[2].symbol))
-      let [startRow, startCol] = getRowCol(ctx.children[0].toString())
-      let [endRow, endCol] = getRowCol(ctx.children[2].toString())
+      let anchorStr = ctx.children[0].toString()
+      let focusStr = ctx.children[2].toString()
+      let [startRow, startCol] = getRowCol(anchorStr)
+      let [endRow, endCol] = getRowCol(focusStr)
+      let str = anchorStr + ':' + focusStr
       if (startRow > endRow) {
         [startRow, endRow] = [endRow, startRow]
       }
       if (startCol > endCol) {
         [startCol, endCol] = [endCol, startCol]
       }
-      node = new Range(state.nodeId++, start, end, startRow, startCol, endRow, endCol)
+      node = new Range(state.nodeId++, start, end, startRow, startCol, endRow, endCol, str)
       state.inputs.push(node)
       break
     }
@@ -167,8 +170,9 @@ export default function createFromAST(state, ast) {
     case '_cell': {
       let ctx = ast
       state.tokens.push(new Token('input-cell', ctx.children[0].symbol))
-      let [row, col] = getRowCol(ctx.children[0].toString())
-      node = new Cell(state.nodeId++, start, end, row, col)
+      let str = ctx.children[0].toString()
+      let [row, col] = getRowCol(str)
+      node = new Cell(state.nodeId++, start, end, row, col, str)
       state.inputs.push(node)
       break
     }

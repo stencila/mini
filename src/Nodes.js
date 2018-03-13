@@ -199,8 +199,9 @@ export class EmptyArgument extends ExprNode {
 
 export class Cell extends ExprNode {
 
-  constructor(id, start, end, row, col) {
+  constructor(id, start, end, row, col, name) {
     super(id, start, end)
+    this.name = name
     this.row = row
     this.col = col
     // Note: the tableName is only set when used in a sheet reference expression
@@ -224,8 +225,9 @@ export class Cell extends ExprNode {
 
 export class Range extends ExprNode {
 
-  constructor(id, start, end, startRow, startCol, endRow, endCol) {
+  constructor(id, start, end, startRow, startCol, endRow, endCol, name) {
     super(id, start, end)
+    this.name = name
     this.startRow = startRow
     this.startCol = startCol
     this.endRow = endRow
