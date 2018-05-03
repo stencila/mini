@@ -84,9 +84,13 @@ export default function createFromAST(state, ast) {
     case 'int':
     case 'float':
     case 'number': {
-      let token = ast.children[0].children[0]
-      state.tokens.push(new Token('number-literal', token.symbol))
-      node = new NumberNode(state.nodeId++, start, end, Number(token.getText()))
+      if (ast.children.length !== 1) {
+        node = new ErrorNode(state.nodeId++, start, end, 'Invalid number.')
+      } else {
+        let token = ast.children[0].children[0]
+        state.tokens.push(new Token('number-literal', token.symbol))
+        node = new NumberNode(state.nodeId++, start, end, Number(token.getText()))
+      }
       break
     }
     case 'boolean': {
