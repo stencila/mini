@@ -106,6 +106,8 @@ test('Select using expression', (t) => {
   _equal(t, getNodeTypes(parse('[0,1][0]')), ['call:select', 'array', 'number', 'number', 'number'], MESSAGE_CORRECT_AST)
   _equal(t, getNodeTypes(parse('b[i+1]')), ['call:select', 'var', 'call:add', 'var', 'number'], MESSAGE_CORRECT_AST)
   _equal(t, getNodeTypes(parse('table[["col1","col2"]]')), ['call:select', 'var', 'array', 'string', 'string'], MESSAGE_CORRECT_AST)
+  // this should not be a 'select'
+  _equal(t, getNodeTypes(parse('sum([1,2,3])')), ['call:sum', 'array', 'number', 'number', 'number'], MESSAGE_CORRECT_AST)
   t.end()
 })
 
