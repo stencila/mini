@@ -322,6 +322,13 @@ test(", '2'}", (t) => {
   t.end()
 })
 
+
+test("sum([,5])", (t) => {
+  const expr = parse("sum([,5])")
+  t.notNil(expr.syntaxError, 'There should be a syntaxError.')
+  t.end()
+})
+
 function _equal(t, arr1, arr2, msg) {
   return t.equal(String(arr1), String(arr2), msg)
 }
