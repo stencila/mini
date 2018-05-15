@@ -8,8 +8,10 @@ export default function parse(expr, options={}) {
   const parser = new MiniParser(new CommonTokenStream(lexer))
   parser.buildParseTrees = true
   if (!options.debug) {
+    lexer.removeErrorListeners()
     parser.removeErrorListeners()
   }
+  lexer.addErrorListener(errorListener)
   parser.addErrorListener(errorListener)
   // NOTE: 'mini' is the start rule as defined in the grammar file
   let ast = parser.mini()

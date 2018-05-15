@@ -6,19 +6,16 @@ class ErrorListener {
   }
 
   syntaxError(recognizer, offendingSymbol, line, column, msg, error) {
-    let expectedTokens
-    if (error) {
-      expectedTokens = error.getExpectedTokens().toString(recognizer.literalNames, recognizer.symbolicNames)
+    let row = line - 1
+    let start, token
+    if (offendingSymbol) {
+      start = offendingSymbol.start
+      token = offendingSymbol.text
     }
     this.syntaxErrors.push({
       type: "syntax-error",
-      row: line - 1,
-      column,
-      start: offendingSymbol.start,
-      token: offendingSymbol.text,
-      msg: msg,
-      error,
-      expectedTokens,
+      row, column, start, token,
+      msg, error
     })
   }
 
