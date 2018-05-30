@@ -19,7 +19,7 @@
     "esm": "^3.0.37",
     "nyc": "^11.8.0",
     "standard": "^11.0.1",
-    "substance": "1.0.0-preview.64",
+    "substance": "1.0.0-preview.65",
     "substance-bundler": "0.25.0",
     "substance-test": "0.11.0",
     "tap-spec": "^4.1.1"

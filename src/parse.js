@@ -2,9 +2,9 @@ import { MiniLexer, MiniParser, InputStream, CommonTokenStream } from '../parser
 import ErrorListener from './ErrorListener'
 import Expression from './Expression'
 
-export default function parse (expr, options = {}) {
+export default function parse (source, options = {}) {
   const errorListener = new ErrorListener()
-  const lexer = new MiniLexer(new InputStream(expr))
+  const lexer = new MiniLexer(new InputStream(source))
   const parser = new MiniParser(new CommonTokenStream(lexer))
   parser.buildParseTrees = true
   if (!options.debug) {
@@ -16,12 +16,10 @@ export default function parse (expr, options = {}) {
   // NOTE: 'mini' is the start rule as defined in the grammar file
   let ast = parser.mini()
   let syntaxError = errorListener.syntaxErrors[0]
-  let result = Expression.createFromAST(expr, ast)
   if (syntaxError) {
     _enhanceSyntaxError(parser, syntaxError)
-    result.syntaxError = syntaxError
   }
-  return result
+  return Expression.create(source, ast, syntaxError)
 }
 
 function _enhanceSyntaxError(parser, syntaxError) { // eslint-disable-line

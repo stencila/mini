@@ -31,36 +31,33 @@ export default class TestContext {
     this._funs[name] = fn
   }
 
-  callFunction (funCall) {
-    let fun = this._funs[funCall.name]
-    if (!fun) throw new Error(`Function "${funCall.name}" does not exist`)
-    let argValues = funCall.args.map((arg) => arg.getValue())
-    return fun(...argValues)
+  callFunction (name, args, namedArgs) {
+    let fun = this._funs[name]
+    if (!fun) throw new Error(`Function "${name}" does not exist`)
+    let named = {}
+    namedArgs.forEach(a => {
+      named[a.name] = a.value
+    })
+    return fun(...args, named)
   }
 
   setValue (name, val) {
     this._vals[name] = val
   }
 
-  lookup (symbol) {
-    switch (symbol.type) {
-      case 'var': {
-        return this._vals[symbol.name]
-      }
-      default:
-        throw new Error('Unsupported symbol')
-    }
+  resolve (name) {
+    return this._vals[name]
   }
 
   evaluate (str) {
     return evaluate(str, this)
   }
 
-  marshal (type, val) {
+  pack (val) {
     return val
   }
 
-  unmarshal (val) {
+  unpack (val) {
     return val
   }
 }

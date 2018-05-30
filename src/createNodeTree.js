@@ -8,7 +8,25 @@ import {
   EmptyArgument
 } from './Nodes'
 
-export default function createFromAST (state, ast) {
+/**
+* Maps the ANTLR4 AST to a our custom tree model.
+*/
+export default function createNodeTree (ast) {
+  let state = {
+    // generating ids by counting created nodes
+    nodeId: 0,
+    nodes: [],
+    // extra list to all variables, cells, ranges
+    // to be able to compute dependencies
+    inputs: [],
+    // tokens for code highlighting
+    tokens: []
+  }
+  let root = createFromAST(state, ast)
+  return { root, state }
+}
+
+function createFromAST (state, ast) {
   let node
   let [start, end] = _getStartStop(ast)
   switch (ast.type) {
