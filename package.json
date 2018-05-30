@@ -5,7 +5,7 @@
   "main": "dist/stencila-mini.cjs.js",
   "jsntext:main": "index.js",
   "scripts": {
-    "prepack": "node make",
+    "prepack": "npm install && node make",
     "lint": "standard src/*.js test/*.js",
     "start": "node make -w",
     "pretest": "npm run lint",
