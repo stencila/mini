@@ -1,14 +1,14 @@
-export default function walk(expr, fn) {
+export default function walk (expr, fn) {
   // pre-fix dfs walk
-  let stack=[expr.root]
+  let stack = [expr.root]
   // ATTENTION: to get the correct order of children
   // we must push children in reverse order, as we are using
   // a stack
-  while(stack.length) {
+  while (stack.length) {
     const next = stack.pop()
     // visit before descending
     fn(next)
-    switch(next.type) {
+    switch (next.type) {
       case 'definition':
         stack.push(next.rhs)
         break

@@ -1,11 +1,10 @@
 export default
 class ErrorListener {
-
-  constructor() {
+  constructor () {
     this.syntaxErrors = []
   }
 
-  syntaxError(recognizer, offendingSymbol, line, column, msg, error) {
+  syntaxError (recognizer, offendingSymbol, line, column, msg, error) {
     let row = line - 1
     let start, token
     if (offendingSymbol) {
@@ -13,22 +12,25 @@ class ErrorListener {
       token = offendingSymbol.text
     }
     this.syntaxErrors.push({
-      type: "syntax-error",
-      row, column, start, token,
-      msg, error
+      type: 'syntax-error',
+      row,
+      column,
+      start,
+      token,
+      msg,
+      error
     })
   }
 
-  reportAttemptingFullContext() {
+  reportAttemptingFullContext () {
     console.error('Attempting Full Context: ', arguments)
   }
 
-  reportAmbiguity() {
+  reportAmbiguity () {
     console.error('Ambiguity:', arguments)
   }
 
-  reportContextSensitivity() {
+  reportContextSensitivity () {
     console.error('ContextSensitivity:', arguments)
   }
-
 }

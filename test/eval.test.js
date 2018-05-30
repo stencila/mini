@@ -25,7 +25,7 @@ testAsync('Eval: String', async t => {
   let res
   const context = new TestContext()
   res = await context.evaluate('"foo"')
-  t.equal(res, "foo", MESSAGE_CORRECT_VALUE)
+  t.equal(res, 'foo', MESSAGE_CORRECT_VALUE)
   t.end()
 })
 
@@ -33,7 +33,7 @@ testAsync('Eval: Array', async t => {
   let res
   const context = new TestContext()
   res = await context.evaluate('[1,2,3]')
-  t.deepEqual(res, [1,2,3], MESSAGE_CORRECT_VALUE)
+  t.deepEqual(res, [1, 2, 3], MESSAGE_CORRECT_VALUE)
   t.end()
 })
 

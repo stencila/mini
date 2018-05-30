@@ -16,7 +16,7 @@ export function testAsync (name, func) {
   })
 }
 
-export function wait(ms) {
+export function wait (ms) {
   return () => {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -26,7 +26,7 @@ export function wait(ms) {
   }
 }
 
-export function getMountPoint(t) {
+export function getMountPoint (t) {
   let mountPoint
   if (platform.inBrowser) {
     mountPoint = t.sandbox
@@ -37,4 +37,3 @@ export function getMountPoint(t) {
   }
   return mountPoint
 }
-
