@@ -1,38 +1,38 @@
 {
   "name": "stencila-mini",
-  "version": "0.14.2",
+  "version": "0.15.0",
   "description": "",
   "main": "dist/stencila-mini.cjs.js",
   "jsntext:main": "index.js",
   "scripts": {
-    "prepublish": "node make",
-    "lint": "eslint -c .eslintrc.js src test",
-    "start": "node make lib test -s -w",
-    "dev": "node make lib test -s -w",
-    "test": "npm run lint && node make test",
-    "cover": "node make cover  && codecov"
+    "prepack": "npm install && node make",
+    "lint": "standard src/*.js test/*.js",
+    "start": "node make -w",
+    "pretest": "npm run lint",
+    "test": "node make && node --require esm test | tap-spec",
+    "cover": "nyc --require esm --reporter=lcov --reporter=text node test"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
     "browserify": "^14.0.0",
-    "codecov": "^1.0.1",
-    "eslint": "^3.17.1",
-    "istanbul": "^0.4.5",
-    "karma": "^1.5.0",
-    "karma-chrome-launcher": "^2.0.0",
-    "karma-coverage": "^1.1.1",
-    "karma-source-map-support": "^1.2.0",
-    "karma-tap": "^3.1.1",
-    "karma-tape-reporter": "^1.0.3",
-    "substance": "1.0.0-beta.7-preview.7",
-    "substance-bundler": "^0.16.4",
-    "substance-test": "^0.9.4"
+    "esm": "^3.0.37",
+    "nyc": "^11.8.0",
+    "standard": "^11.0.1",
+    "substance": "1.0.0-preview.64",
+    "substance-bundler": "0.25.0",
+    "substance-test": "0.11.0",
+    "tap-spec": "^4.1.1"
   },
   "files": [
     "dist",
     "src",
     "parser",
     "README.md"
-  ]
+  ],
+  "nyc": {
+    "include": [
+      "src/*.js"
+    ]
+  }
 }

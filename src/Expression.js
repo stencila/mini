@@ -7,8 +7,7 @@ const READY = Symbol('READY')
 
 export default
 class Expression extends EventEmitter {
-
-  constructor(source, root, nodes, inputs, tokens) {
+  constructor (source, root, nodes, inputs, tokens) {
     super()
 
     this.source = source
@@ -40,46 +39,46 @@ class Expression extends EventEmitter {
     this._cursor = -1
   }
 
-  getSource() {
+  getSource () {
     return this.source
   }
 
-  getValue() {
+  getValue () {
     return this.value
   }
 
-  get name() {
+  get name () {
     if (this.isDefinition()) {
       return this.root.name
     }
   }
 
-  isDefinition() {
+  isDefinition () {
     return (this.root && this.root.type === 'definition')
   }
 
-  isPending() {
+  isPending () {
     return this.state === PENDING
   }
 
-  isReady() {
+  isReady () {
     return this.state === READY
   }
 
-  getContext() {
+  getContext () {
     return this.context
   }
 
   // gets call by node.setValue() if the value has updated
-  _requestPropagation(node) {
+  _requestPropagation (node) {
     if (this._cursor < 0) {
-      this.propagate(node.pos+1)
-    } else if (this._cursor>node.pos) {
+      this.propagate(node.pos + 1)
+    } else if (this._cursor > node.pos) {
       console.error('FIXME: we thought this could not happen.')
     }
   }
 
-  propagate(start = 0) {
+  propagate (start = 0) {
     // TODO: we could use a 'PENDING' value while evaluating
     this.state = PENDING
     this.value = undefined
@@ -102,10 +101,9 @@ class Expression extends EventEmitter {
       this._cursor = -1
     }
   }
-
 }
 
-Expression.createFromAST = function(source, ast) {
+Expression.createFromAST = function (source, ast) {
   let state = {
     // generating ids by counting created nodes
     nodeId: 0,

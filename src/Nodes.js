@@ -1,8 +1,7 @@
 import {isNumber} from 'substance'
 
 class ExprNode {
-
-  constructor(id, start, end) {
+  constructor (id, start, end) {
     this.id = id
     this.start = start
     this.end = end
@@ -12,32 +11,32 @@ class ExprNode {
     this.errors = null
   }
 
-  setValue(val) {
+  setValue (val) {
     this.value = val
     this.getExpression()._requestPropagation(this)
   }
 
-  getValue() {
+  getValue () {
     return this.value
   }
 
-  getContext() {
+  getContext () {
     return this.getExpression().getContext()
   }
 
-  getExpression() {
+  getExpression () {
     return this.expr
   }
 
-  isPending() {
+  isPending () {
     return false
   }
 
-  evaluate() {
+  evaluate () {
     this.errors = null
   }
 
-  addErrors(errors) {
+  addErrors (errors) {
     if (!this.errors) {
       this.errors = errors.slice()
     } else {
@@ -47,17 +46,16 @@ class ExprNode {
 }
 
 export class Definition extends ExprNode {
-
-  constructor(id, start, end, name, rhs) {
+  constructor (id, start, end, name, rhs) {
     super(id, start, end)
     this.name = name
     this.rhs = rhs
     rhs.parent = this
   }
 
-  get type() { return 'definition' }
+  get type () { return 'definition' }
 
-  evaluate() {
+  evaluate () {
     super.evaluate()
 
     if (this.rhs.errors) {
@@ -65,11 +63,10 @@ export class Definition extends ExprNode {
     }
     this.setValue(this.rhs.getValue())
   }
-
 }
 
 export class ArrayNode extends ExprNode {
-  constructor(id, start, end, vals) {
+  constructor (id, start, end, vals) {
     super(id, start, end)
     this.vals = vals
     vals.forEach((val) => {
@@ -77,9 +74,9 @@ export class ArrayNode extends ExprNode {
     })
   }
 
-  get type() { return 'array' }
+  get type () { return 'array' }
 
-  evaluate() {
+  evaluate () {
     const context = this.getContext()
     // HACK: if mini was supporting types explicitly
     // we would unmarshal values, and compute a coerced array type here
@@ -92,7 +89,7 @@ export class ArrayNode extends ExprNode {
 }
 
 export class ObjectNode extends ExprNode {
-  constructor(id, start, end, entries) {
+  constructor (id, start, end, entries) {
     super(id, start, end)
     this.entries = entries
     entries.forEach((entry) => {
@@ -100,9 +97,9 @@ export class ObjectNode extends ExprNode {
     })
   }
 
-  get type() { return 'object' }
+  get type () { return 'object' }
 
-  evaluate() {
+  evaluate () {
     const context = this.getContext()
     let obj = {}
     this.entries.forEach((entry) => {
@@ -116,63 +113,56 @@ export class ObjectNode extends ExprNode {
   A constant value.
 */
 export class NumberNode extends ExprNode {
-
-  constructor(id, start, end, number) {
+  constructor (id, start, end, number) {
     super(id, start, end)
     this.number = number
   }
 
-  get type() { return 'number' }
+  get type () { return 'number' }
 
-  evaluate() {
+  evaluate () {
     const context = this.getContext()
     this.setValue(context.marshal('number', this.number))
   }
-
 }
 
 export class BooleanNode extends ExprNode {
-
-  constructor(id, start, end, bool) {
+  constructor (id, start, end, bool) {
     super(id, start, end)
     this.bool = bool
   }
 
-  get type() { return 'boolean' }
+  get type () { return 'boolean' }
 
-  evaluate() {
+  evaluate () {
     const context = this.getContext()
     this.setValue(context.marshal('boolean', this.bool))
   }
 }
 
-
 export class StringNode extends ExprNode {
-
-  constructor(id, start, end, str) {
+  constructor (id, start, end, str) {
     super(id, start, end)
     this.str = str
   }
 
-  get type() { return 'string' }
+  get type () { return 'string' }
 
-  evaluate() {
+  evaluate () {
     const context = this.getContext()
     this.setValue(context.marshal('string', this.str))
   }
-
 }
 
 export class Var extends ExprNode {
-
-  constructor(id, start, end, name) {
+  constructor (id, start, end, name) {
     super(id, start, end)
     this.name = name
   }
 
-  get type() { return 'var' }
+  get type () { return 'var' }
 
-  evaluate() {
+  evaluate () {
     const context = this.getContext()
     let val = context.lookup({
       type: 'var',
@@ -180,102 +170,18 @@ export class Var extends ExprNode {
     })
     this.setValue(val)
   }
-
 }
 
 export class EmptyArgument extends ExprNode {
+  get type () { return 'empty-arg' }
 
-  constructor(id, start, end) {
-    super(id, start, end)
-  }
-
-  get type() { return 'empty-arg' }
-
-  evaluate() {
+  evaluate () {
     this.setValue(undefined)
   }
-
-}
-
-export class Cell extends ExprNode {
-
-  constructor(id, start, end, row, col, name) {
-    super(id, start, end)
-    this.name = name
-    this.row = row
-    this.col = col
-    // Note: the tableName is only set when used in a sheet reference expression
-    this.sheetId = null
-  }
-
-  get type() { return 'cell' }
-
-  evaluate() {
-    const context = this.getContext()
-    let val = context.lookup({
-      type: 'cell',
-      sheetId: this.sheetId,
-      row: this.row,
-      col: this.col
-    })
-    this.setValue(val)
-  }
-
-}
-
-export class Range extends ExprNode {
-
-  constructor(id, start, end, startRow, startCol, endRow, endCol, name) {
-    super(id, start, end)
-    this.name = name
-    this.startRow = startRow
-    this.startCol = startCol
-    this.endRow = endRow
-    this.endCol = endCol
-    // Note: the tableName is only set when used in a sheet reference expression
-    this.sheetId = null
-  }
-
-  get type() { return 'range' }
-
-  evaluate() {
-    // TODO: rethink, it seems a bit heavy to implement
-    // range -> matrix conversion in lookup
-    const context = this.getContext()
-    let matrix = context.lookup({
-      type: 'range',
-      sheetId: this.sheetId,
-      startRow: this.startRow,
-      startCol: this.startCol,
-      endRow: this.endRow,
-      endCol: this.endCol,
-    })
-    this.setValue(context.marshal('range', matrix))
-  }
-
-}
-
-export class ExternalFunction extends ExprNode {
-  constructor(id, start, end, args = []) {
-    super(id, start, end)
-    this.args = args
-    args.forEach((c) => {
-      c.parent = this
-    })
-  }
-
-  get type() { return 'function' }
-
-  evaluate() {
-    console.error('TODO: implement this')
-    this.setValue(undefined)
-  }
-
 }
 
 export class FunctionCall extends ExprNode {
-
-  constructor(id, start, end, name, args = [], namedArgs=[], modifiers=[]) {
+  constructor (id, start, end, name, args = [], namedArgs = [], modifiers = []) {
     super(id, start, end)
     this.name = name
     this.args = args
@@ -291,13 +197,13 @@ export class FunctionCall extends ExprNode {
     this._pending = true
   }
 
-  get type() { return 'call' }
+  get type () { return 'call' }
 
-  isPending() {
+  isPending () {
     return this._pending
   }
 
-  evaluate() {
+  evaluate () {
     // HACK: when this is used as RHS of a pipe operator
     // this is skipped and called manually
     if (this.skip) return
@@ -314,7 +220,7 @@ export class FunctionCall extends ExprNode {
       _done(res)
     }
 
-    function _done(val) {
+    function _done (val) {
       self._pending = false
       self.setValue(val)
     }
@@ -322,17 +228,16 @@ export class FunctionCall extends ExprNode {
 }
 
 export class NamedArgument extends ExprNode {
-
-  constructor(id, start, end, name, rhs) {
+  constructor (id, start, end, name, rhs) {
     super(id, start, end)
     this.name = name
     this.rhs = rhs
     rhs.parent = this
   }
 
-  get type() { return 'named-argument' }
+  get type () { return 'named-argument' }
 
-  evaluate() {
+  evaluate () {
     super.evaluate()
 
     if (this.rhs.errors) {
@@ -340,12 +245,10 @@ export class NamedArgument extends ExprNode {
     }
     this.setValue(this.rhs.getValue())
   }
-
 }
 
 export class PipeOp extends ExprNode {
-
-  constructor(id, start, end, left, right) {
+  constructor (id, start, end, left, right) {
     super(id, start, end)
     this.left = left
     this.right = right
@@ -358,13 +261,13 @@ export class PipeOp extends ExprNode {
     this._pending = true
   }
 
-  get type() { return "pipe" }
+  get type () { return 'pipe' }
 
-  isPending() {
+  isPending () {
     return this._pending
   }
 
-  evaluate() {
+  evaluate () {
     super.evaluate()
 
     const self = this
@@ -392,7 +295,7 @@ export class PipeOp extends ExprNode {
         expr: right.expr,
         args: [{
           name: '_pipe',
-          getValue() {
+          getValue () {
             return pipeArg
           }
         }].concat(right.args),
@@ -420,7 +323,7 @@ export class PipeOp extends ExprNode {
       }
     }
 
-    function _collectErrors(left, right) {
+    function _collectErrors (left, right) {
       if (left && left.errors) {
         self.addErrors(left.errors)
       }
@@ -432,16 +335,15 @@ export class PipeOp extends ExprNode {
 }
 
 export class ErrorNode extends ExprNode {
-
-  constructor(id, start, end, exception) {
+  constructor (id, start, end, exception) {
     super(id, start, end)
 
     this.exception = exception
   }
 
-  get type() { return "error" }
+  get type () { return 'error' }
 
-  evaluate() {
+  evaluate () {
     return undefined
   }
 }

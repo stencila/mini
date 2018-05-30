@@ -1,5 +1,5 @@
 import { module } from 'substance-test'
-import { parse, walk } from 'stencila-mini'
+import { parse, walk } from '../index'
 
 const test = module('Parse')
 
@@ -43,15 +43,15 @@ test('String', (t) => {
 })
 
 test('Array', (t) => {
-  const expr = parse('[1,x,A1]')
-  const expectedTypes = ['array', 'number', 'var', 'cell']
+  const expr = parse('[1,x,true]')
+  const expectedTypes = ['array', 'number', 'var', 'boolean']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.end()
 })
 
 test('Object', (t) => {
-  const expr = parse('{foo: 1, bar: x, baz: A1}')
-  const expectedTypes = ['object', 'number', 'var', 'cell']
+  const expr = parse('{foo: 1, bar: x, baz: true}')
+  const expectedTypes = ['object', 'number', 'var', 'boolean']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.end()
 })
@@ -60,38 +60,6 @@ test('Group', (t) => {
   const expr = parse('(1+2)*3')
   const expectedTypes = ['call:multiply', 'call:add', 'number', 'number', 'number']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
-  t.end()
-})
-
-test('Cell', (t) => {
-  const expr = parse('B3')
-  const expectedTypes = ['cell']
-  const root = expr.root
-  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
-  t.equal(root.row, 2, 'Cell should have correct row')
-  t.equal(root.col, 1, '.. and correct column')
-  t.end()
-})
-
-test('Range', (t) => {
-  const expr = parse('A1:C4')
-  const expectedTypes = ['range']
-  const root = expr.root
-  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
-  t.equal(root.startRow, 0, 'Cell should have correct start row')
-  t.equal(root.startCol, 0, '.. correct start column')
-  t.equal(root.endRow, 3, '.. correct end row')
-  t.equal(root.endCol, 2, '.. correct end column')
-  t.end()
-})
-
-test('Sheet Reference', (t) => {
-  const expr = parse('sheet1!A1:C4')
-  const expectedTypes = ['range']
-  const root = expr.root
-  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
-  t.equal(root.sheetId, 'sheet1', 'Sheet reference should have correct sheet id')
-  t.deepEqual([root.startRow, root.startCol, root.endRow, root.endCol], [0,0,3,2], '.. and correct cell range')
   t.end()
 })
 
@@ -215,24 +183,16 @@ test('Or', (t) => {
   t.end()
 })
 
-test('1+x+A1', (t) => {
-  const expr = parse('1+x+A1')
-  const expectedTypes = ['call:add', 'call:add', 'number', 'var', 'cell']
+test('1+x+2', (t) => {
+  const expr = parse('1+x+2')
+  const expectedTypes = ['call:add', 'call:add', 'number', 'var', 'number']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.end()
 })
-
 
 test('Definition', (t) => {
   const expr = parse('x = 42')
   const expectedTypes = ['definition', 'number']
-  _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
-  t.end()
-})
-
-test('Function definition', (t) => {
-  const expr = parse('x = function(x,y)')
-  const expectedTypes = ['definition', 'function', 'var', 'var']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.end()
 })
@@ -252,8 +212,8 @@ test('Function call with one argument', (t) => {
 })
 
 test('Function call with mixed arguments', (t) => {
-  const expr = parse('sum(1,x,A1)')
-  const expectedTypes = ['call:sum', 'number', 'var', 'cell']
+  const expr = parse('sum(1,x,2)')
+  const expectedTypes = ['call:sum', 'number', 'var', 'number']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.end()
 })
@@ -273,8 +233,8 @@ test('Function call with one positional and one named argument', (t) => {
 })
 
 test('Function call with multiple positional and multiple named arguments', (t) => {
-  const expr = parse('foo(1, x, A1, x=2, y=x, z=A1)')
-  const expectedTypes = ['call:foo', 'number', 'var', 'cell', 'named-argument', 'number', 'named-argument', 'var', 'named-argument', 'cell']
+  const expr = parse('foo(1, x, true, x=2, y=x, z=false)')
+  const expectedTypes = ['call:foo', 'number', 'var', 'boolean', 'named-argument', 'number', 'named-argument', 'var', 'named-argument', 'boolean']
   _equal(t, getNodeTypes(expr), expectedTypes, MESSAGE_CORRECT_AST)
   t.end()
 })
@@ -322,18 +282,17 @@ test(", '2'}", (t) => {
   t.end()
 })
 
-
-test("sum([,5])", (t) => {
-  const expr = parse("sum([,5])")
+test('sum([,5])', (t) => {
+  const expr = parse('sum([,5])')
   t.notNil(expr.syntaxError, 'There should be a syntaxError.')
   t.end()
 })
 
-function _equal(t, arr1, arr2, msg) {
+function _equal (t, arr1, arr2, msg) {
   return t.equal(String(arr1), String(arr2), msg)
 }
 
-function getNodeTypes(expr) {
+function getNodeTypes (expr) {
   let types = []
   walk(expr, (node) => {
     let name

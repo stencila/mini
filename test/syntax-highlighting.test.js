@@ -1,5 +1,5 @@
 import { module } from 'substance-test'
-import { parse } from 'stencila-mini'
+import { parse } from '../index'
 
 const test = module('Syntax Highlighting')
 
@@ -43,7 +43,7 @@ test('String', (t) => {
 })
 
 test('Boolean', (t) => {
-  const expr = parse("true")
+  const expr = parse('true')
   const expectedTokens = [{
     type: 'boolean-literal',
     start: 0,
@@ -54,7 +54,7 @@ test('Boolean', (t) => {
 })
 
 test('Definition', (t) => {
-  const expr = parse("x=1")
+  const expr = parse('x=1')
   const expectedTokens = [{
     type: 'output-name',
     start: 0,
@@ -99,7 +99,7 @@ test('Object', (t) => {
   t.end()
 })
 
-function _checkTokens(t, act, exp, msg) {
+function _checkTokens (t, act, exp, msg) {
   // only check for some fields
   const keys = ['type', 'start', 'end']
   let _act = act.map((t) => {
