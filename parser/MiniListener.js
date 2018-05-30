@@ -38,33 +38,6 @@ MiniListener.prototype.exitExpr = function(ctx) {
 };
 
 
-// Enter a parse tree produced by MiniParser#range.
-MiniListener.prototype.enterRange = function(ctx) {
-};
-
-// Exit a parse tree produced by MiniParser#range.
-MiniListener.prototype.exitRange = function(ctx) {
-};
-
-
-// Enter a parse tree produced by MiniParser#cell.
-MiniListener.prototype.enterCell = function(ctx) {
-};
-
-// Exit a parse tree produced by MiniParser#cell.
-MiniListener.prototype.exitCell = function(ctx) {
-};
-
-
-// Enter a parse tree produced by MiniParser#sheet_ref.
-MiniListener.prototype.enterSheet_ref = function(ctx) {
-};
-
-// Exit a parse tree produced by MiniParser#sheet_ref.
-MiniListener.prototype.exitSheet_ref = function(ctx) {
-};
-
-
 // Enter a parse tree produced by MiniParser#function_call.
 MiniListener.prototype.enterFunction_call = function(ctx) {
 };
