@@ -1,4 +1,4 @@
-import { evaluate } from 'stencila-mini'
+import { evaluate } from '../index'
 
 // An execution used for testing. Exposes the same API as `MiniContext` in the stencila/stencila repo
 export default class TestContext {

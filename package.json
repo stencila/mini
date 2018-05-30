@@ -1,16 +1,15 @@
 {
   "name": "stencila-mini",
-  "version": "0.14.2",
+  "version": "0.15.0",
   "description": "",
   "main": "dist/stencila-mini.cjs.js",
   "jsntext:main": "index.js",
   "scripts": {
     "prepack": "node make",
     "lint": "standard src/*.js test/*.js",
-    "start": "node make lib test -s -w",
-    "dev": "node make lib test -s -w",
+    "start": "node make -w",
     "pretest": "npm run lint",
-    "test": "node make test",
+    "test": "node make && node --require esm test | tap-spec",
     "cover": "nyc --require esm --reporter=lcov --reporter=text node test"
   },
   "author": "",
@@ -21,13 +20,19 @@
     "nyc": "^11.8.0",
     "standard": "^11.0.1",
     "substance": "1.0.0-preview.64",
-    "substance-bundler": "0.24.3",
-    "substance-test": "0.11.0"
+    "substance-bundler": "0.24.4",
+    "substance-test": "0.11.0",
+    "tap-spec": "^4.1.1"
   },
   "files": [
     "dist",
     "src",
     "parser",
     "README.md"
-  ]
+  ],
+  "nyc": {
+    "include": [
+      "src/*.js"
+    ]
+  }
 }

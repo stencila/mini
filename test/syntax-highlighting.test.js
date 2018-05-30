@@ -1,5 +1,5 @@
 import { module } from 'substance-test'
-import { parse } from 'stencila-mini'
+import { parse } from '../index'
 
 const test = module('Syntax Highlighting')
 

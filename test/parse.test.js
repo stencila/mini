@@ -1,5 +1,5 @@
 import { module } from 'substance-test'
-import { parse, walk } from 'stencila-mini'
+import { parse, walk } from '../index'
 
 const test = module('Parse')
 
