@@ -133,7 +133,7 @@ export class FunctionCall extends ExprNode {
   async evaluate (context) {
     // TODO: we could cleanup this API now
     let args = await Promise.all(this.args.map(a => a.evaluate(context)))
-    let namedArgs = await Promise.all(this.args.map(a => {
+    let namedArgs = await Promise.all(this.namedArgs.map(a => {
       return {
         name: a.name,
         value: a.evaluate(context)
