@@ -38,40 +38,6 @@ export default class TestContext {
       case 'var': {
         return this._vals[symbol.name]
       }
-      case 'cell': {
-        let sheetId = symbol.sheetId || 'data'
-        let table = this._vals[sheetId]
-        if (!table) throw new Error('Invalid name.')
-        let row = table[symbol.row]
-        if (row) {
-          return row[symbol.col]
-        }
-        break
-      }
-      case 'range': {
-        let sheetId = symbol.sheetId || 'data'
-        let table = this._vals[sheetId]
-        if (!table) throw new Error('Invalid name.')
-        let res = []
-        if (symbol.startRow === symbol.endRow) {
-          for(let j = symbol.startCol; j <= symbol.endCol; j++) {
-            res.push(table[symbol.startRow][j])
-          }
-        } else if (symbol.startCol === symbol.endCol) {
-          for(let i = symbol.startRow; i <= symbol.endRow; i++) {
-            res.push(table[i][symbol.startCol])
-          }
-        } else {
-          for(let i = symbol.startRow; i <= symbol.endRow; i++) {
-            let row = []
-            for(let j = symbol.startCol; j <= symbol.endCol; j++) {
-              row.push(table[i][j])
-            }
-            res.push(row)
-          }
-        }
-        return res
-      }
       default:
         throw new Error('Unsupported symbol')
     }

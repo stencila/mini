@@ -223,42 +223,6 @@ test('Var', (t) => {
   })
 })
 
-test('Cell', (t) => {
-  t.plan(1)
-  const context = new TestContext()
-  context.setValue('data', [[0,0],[0,0],[0,10]])
-  context.evaluate('B3').then((res) => {
-    t.equal(res, 10, MESSAGE_CORRECT_VALUE)
-  })
-})
-
-test('Range', (t) => {
-  t.plan(1)
-  const context = new TestContext()
-  context.setValue('data', [[1,2,3],[4,5,6],[7,8,9],[10,11,12]])
-  context.evaluate('A1:C4').then((res) => {
-    t.deepEqual(res, [[1,2,3],[4,5,6],[7,8,9],[10,11,12]], MESSAGE_CORRECT_VALUE)
-  })
-})
-
-test('Cross-sheet referenced cell', (t) => {
-  t.plan(1)
-  const context = new TestContext()
-  context.setValue('sheet1', [[0,0],[0,0],[0,10]])
-  context.evaluate('sheet1!B3').then((res) => {
-    t.equal(res, 10, MESSAGE_CORRECT_VALUE)
-  })
-})
-
-test('Cross-sheet referenced range', (t) => {
-  t.plan(1)
-  const context = new TestContext()
-  context.setValue('sheet1', [[1,2,3],[4,5,6],[7,8,9],[10,11,12]])
-  context.evaluate('sheet1!A1:C4').then((res) => {
-    t.deepEqual(res, [[1,2,3],[4,5,6],[7,8,9],[10,11,12]], MESSAGE_CORRECT_VALUE)
-  })
-})
-
 test('Pipe', (t) => {
   t.plan(3)
   const context = new TestContext()
@@ -284,13 +248,13 @@ test('2*-x', (t) => {
   })
 })
 
-test('1+x+A1', (t) => {
+test('1+x+2', (t) => {
   t.plan(1)
   const context = new TestContext()
   context.setValue('x', 4)
   context.setValue('data', [[10]])
-  context.evaluate('1+x+A1').then((res) => {
-    t.equal(res, 15, MESSAGE_CORRECT_VALUE)
+  context.evaluate('1+x+2').then((res) => {
+    t.equal(res, 7, MESSAGE_CORRECT_VALUE)
   })
 })
 
