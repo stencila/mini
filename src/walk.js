@@ -1,6 +1,7 @@
 export default function walk (expr, fn) {
   // pre-fix dfs walk
-  let stack = [expr.root]
+  let stack = []
+  if (expr && expr.root) stack.push(expr.root)
   // ATTENTION: to get the correct order of children
   // we must push children in reverse order, as we are using
   // a stack
@@ -33,8 +34,8 @@ export default function walk (expr, fn) {
         stack.push(next.left)
         break
       case 'array':
-        for (let i = next.vals.length - 1; i >= 0; i--) {
-          stack.push(next.vals[i])
+        for (let i = next.items.length - 1; i >= 0; i--) {
+          stack.push(next.items[i])
         }
         break
       case 'object':

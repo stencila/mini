@@ -3,45 +3,15 @@ import {isNumber} from 'substance'
 class ExprNode {
   constructor (id, start, end) {
     this.id = id
-    this.start = start
-    this.end = end
     if (!isNumber(start) || !isNumber(end)) {
       throw new Error("'start' and 'end' are mandatory")
     }
-    this.errors = null
+    this.start = start
+    this.end = end
   }
 
-  setValue (val) {
-    this.value = val
-    this.getExpression()._requestPropagation(this)
-  }
-
-  getValue () {
-    return this.value
-  }
-
-  getContext () {
-    return this.getExpression().getContext()
-  }
-
-  getExpression () {
-    return this.expr
-  }
-
-  isPending () {
-    return false
-  }
-
-  evaluate () {
-    this.errors = null
-  }
-
-  addErrors (errors) {
-    if (!this.errors) {
-      this.errors = errors.slice()
-    } else {
-      this.errors = this.errors.concat(errors)
-    }
+  async evaluate (context) {
+    throw new Error('This is abstract')
   }
 }
 
@@ -55,36 +25,25 @@ export class Definition extends ExprNode {
 
   get type () { return 'definition' }
 
-  evaluate () {
-    super.evaluate()
-
-    if (this.rhs.errors) {
-      this.addErrors(this.rhs.errors)
-    }
-    this.setValue(this.rhs.getValue())
+  async evaluate (context) {
+    return this.rhs.evaluate(context)
   }
 }
 
 export class ArrayNode extends ExprNode {
-  constructor (id, start, end, vals) {
+  constructor (id, start, end, items) {
     super(id, start, end)
-    this.vals = vals
-    vals.forEach((val) => {
-      val.parent = this
+    this.items = items
+    items.forEach(item => {
+      item.parent = this
     })
   }
 
   get type () { return 'array' }
 
-  evaluate () {
-    const context = this.getContext()
-    // HACK: if mini was supporting types explicitly
-    // we would unmarshal values, and compute a coerced array type here
-    // and not in the marshaller
-    let vals = this.vals.map((val) => {
-      return val.getValue()
-    })
-    this.setValue(context.marshal('array', vals))
+  async evaluate (context) {
+    let vals = await Promise.all(this.items.map(i => i.evaluate(context)))
+    return context.marshal('array', vals)
   }
 }
 
@@ -92,66 +51,47 @@ export class ObjectNode extends ExprNode {
   constructor (id, start, end, entries) {
     super(id, start, end)
     this.entries = entries
-    entries.forEach((entry) => {
+    entries.forEach(entry => {
       entry.parent = this
     })
   }
 
   get type () { return 'object' }
 
-  evaluate () {
-    const context = this.getContext()
+  async evaluate (context) {
+    let vals = await Promise.all(this.entries.map(e => e.val.evaluate(context)))
     let obj = {}
-    this.entries.forEach((entry) => {
-      obj[entry.key] = context.unmarshal(entry.val.getValue())
+    this.entries.forEach((entry, idx) => {
+      obj[entry.key] = context.unmarshal(vals[idx])
     })
-    this.setValue(context.marshal('object', obj))
+    return obj
+  }
+}
+
+class ConstantNode extends ExprNode {
+  constructor (id, start, end, val) {
+    super(id, start, end)
+    this.val = val
+  }
+
+  async evaluate (context) {
+    return context.marshal(this.type, this.val)
   }
 }
 
 /*
   A constant value.
 */
-export class NumberNode extends ExprNode {
-  constructor (id, start, end, number) {
-    super(id, start, end)
-    this.number = number
-  }
-
+export class NumberNode extends ConstantNode {
   get type () { return 'number' }
-
-  evaluate () {
-    const context = this.getContext()
-    this.setValue(context.marshal('number', this.number))
-  }
 }
 
-export class BooleanNode extends ExprNode {
-  constructor (id, start, end, bool) {
-    super(id, start, end)
-    this.bool = bool
-  }
-
+export class BooleanNode extends ConstantNode {
   get type () { return 'boolean' }
-
-  evaluate () {
-    const context = this.getContext()
-    this.setValue(context.marshal('boolean', this.bool))
-  }
 }
 
-export class StringNode extends ExprNode {
-  constructor (id, start, end, str) {
-    super(id, start, end)
-    this.str = str
-  }
-
+export class StringNode extends ConstantNode {
   get type () { return 'string' }
-
-  evaluate () {
-    const context = this.getContext()
-    this.setValue(context.marshal('string', this.str))
-  }
 }
 
 export class Var extends ExprNode {
@@ -162,22 +102,18 @@ export class Var extends ExprNode {
 
   get type () { return 'var' }
 
-  evaluate () {
-    const context = this.getContext()
-    let val = context.lookup({
+  async evaluate (context) {
+    return context.lookup({
       type: 'var',
       name: this.name
     })
-    this.setValue(val)
   }
 }
 
 export class EmptyArgument extends ExprNode {
   get type () { return 'empty-arg' }
 
-  evaluate () {
-    this.setValue(undefined)
-  }
+  async evaluate () {}
 }
 
 export class FunctionCall extends ExprNode {
@@ -193,37 +129,20 @@ export class FunctionCall extends ExprNode {
     namedArgs.forEach((arg) => {
       arg.parent = this
     })
-
-    this._pending = true
   }
 
   get type () { return 'call' }
 
-  isPending () {
-    return this._pending
-  }
-
-  evaluate () {
-    // HACK: when this is used as RHS of a pipe operator
-    // this is skipped and called manually
-    if (this.skip) return
-
-    super.evaluate()
-
-    const self = this
-    const context = this.getContext()
-    this._pending = true
-    let res = context.callFunction(this)
-    if (res instanceof Promise) {
-      res.then(_done)
-    } else {
-      _done(res)
-    }
-
-    function _done (val) {
-      self._pending = false
-      self.setValue(val)
-    }
+  async evaluate (context) {
+    // TODO: we could cleanup this API now
+    let args = await Promise.all(this.args.map(a => a.evaluate(context)))
+    let namedArgs = await Promise.all(this.args.map(a => {
+      return {
+        name: a.name,
+        value: a.evaluate(context)
+      }
+    }))
+    return context.callFunction(this.name, args, namedArgs)
   }
 }
 
@@ -237,13 +156,8 @@ export class NamedArgument extends ExprNode {
 
   get type () { return 'named-argument' }
 
-  evaluate () {
-    super.evaluate()
-
-    if (this.rhs.errors) {
-      this.addErrors(this.rhs.errors)
-    }
-    this.setValue(this.rhs.getValue())
+  async evaluate (context) {
+    return this.rhs.evaluate(context)
   }
 }
 
@@ -254,83 +168,25 @@ export class PipeOp extends ExprNode {
     this.right = right
     this.left.parent = this
     this.right.parent = this
-    // do not evaluate the rhs funtion automatically
-    this.right.skip = true
-    this.right._pending = false
-
-    this._pending = true
   }
 
   get type () { return 'pipe' }
 
-  isPending () {
-    return this._pending
-  }
+  async evaluate (context) {
+    // first call the left one
+    let pipeArg = await this.left.evaluate(context)
 
-  evaluate () {
-    super.evaluate()
-
-    const self = this
-    const left = this.left
+    // HACK: adding an additional argument to the RHS
     const right = this.right
-
-    this._pending = true
-
-    if (left.isPending() || right.isPending()) {
-      // don't do anything as long children are pending
-      return
-    }
-    // don't proceed if left has an error already
-    if (left.errors) {
-      self.addErrors(left.errors)
-    } else {
-      // f(x) | g()
-      let pipeArg = left.getValue()
-      // We need to prepare the args for the right function
-      // using the output of the left as first argument
-      // TODO: maybe we could use a real node here instead of
-      // a duck-typed one?
-      let rightProxy = {
-        name: right.name,
-        expr: right.expr,
-        args: [{
-          name: '_pipe',
-          getValue () {
-            return pipeArg
-          }
-        }].concat(right.args),
-        namedArgs: right.namedArgs,
-        addErrors: ExprNode.prototype.addErrors
+    const args = [{
+      name: '_pipe',
+      async evaluate (context) {
+        return pipeArg
       }
-      const context = this.getContext()
-      if (context) {
-        rightProxy.errors = null
-        let res = context.callFunction(rightProxy)
-        if (res instanceof Promise) {
-          res.then((val) => {
-            this._pending = false
-            _collectErrors(left, rightProxy)
-            this.setValue(val)
-          })
-        } else {
-          this._pending = false
-          _collectErrors(left, rightProxy)
-          this.setValue(res)
-        }
-      } else {
-        this._pending = false
-        _collectErrors(left, rightProxy)
-      }
-    }
-
-    function _collectErrors (left, right) {
-      if (left && left.errors) {
-        self.addErrors(left.errors)
-      }
-      if (right && right.errors) {
-        self.addErrors(right.errors)
-      }
-    }
+    }].concat(right.args)
+    let rightProxy = new FunctionCall(right.id, right.start, right.end,
+      right.name, args, right.namedArgs, right.modifiers)
+    return rightProxy.evaluate(context)
   }
 }
 
@@ -343,7 +199,5 @@ export class ErrorNode extends ExprNode {
 
   get type () { return 'error' }
 
-  evaluate () {
-    return undefined
-  }
+  async evaluate () {}
 }

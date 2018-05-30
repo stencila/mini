@@ -31,11 +31,14 @@ export default class TestContext {
     this._funs[name] = fn
   }
 
-  callFunction (funCall) {
-    let fun = this._funs[funCall.name]
-    if (!fun) throw new Error(`Function "${funCall.name}" does not exist`)
-    let argValues = funCall.args.map((arg) => arg.getValue())
-    return fun(...argValues)
+  callFunction (name, args, namedArgs) {
+    let fun = this._funs[name]
+    if (!fun) throw new Error(`Function "${name}" does not exist`)
+    let named = {}
+    namedArgs.forEach(a => {
+      named[a.name] = a.value
+    })
+    return fun(...args, named)
   }
 
   setValue (name, val) {
