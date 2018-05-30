@@ -45,25 +45,19 @@ export default class TestContext {
     this._vals[name] = val
   }
 
-  lookup (symbol) {
-    switch (symbol.type) {
-      case 'var': {
-        return this._vals[symbol.name]
-      }
-      default:
-        throw new Error('Unsupported symbol')
-    }
+  resolve (name) {
+    return this._vals[name]
   }
 
   evaluate (str) {
     return evaluate(str, this)
   }
 
-  marshal (type, val) {
+  pack (val) {
     return val
   }
 
-  unmarshal (val) {
+  unpack (val) {
     return val
   }
 }

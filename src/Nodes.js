@@ -43,7 +43,7 @@ export class ArrayNode extends ExprNode {
 
   async evaluate (context) {
     let vals = await Promise.all(this.items.map(i => i.evaluate(context)))
-    return context.marshal('array', vals)
+    return context.pack(vals, this.type)
   }
 }
 
@@ -62,7 +62,7 @@ export class ObjectNode extends ExprNode {
     let vals = await Promise.all(this.entries.map(e => e.val.evaluate(context)))
     let obj = {}
     this.entries.forEach((entry, idx) => {
-      obj[entry.key] = context.unmarshal(vals[idx])
+      obj[entry.key] = context.unpack(vals[idx])
     })
     return obj
   }
@@ -75,7 +75,7 @@ class ConstantNode extends ExprNode {
   }
 
   async evaluate (context) {
-    return context.marshal(this.type, this.val)
+    return context.pack(this.val, this.type)
   }
 }
 
@@ -103,10 +103,7 @@ export class Var extends ExprNode {
   get type () { return 'var' }
 
   async evaluate (context) {
-    return context.lookup({
-      type: 'var',
-      name: this.name
-    })
+    return context.resolve(this.name)
   }
 }
 
