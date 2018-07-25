@@ -61,9 +61,10 @@ export class ObjectNode extends ExprNode {
   async evaluate (context) {
     let vals = await Promise.all(this.entries.map(e => e.val.evaluate(context)))
     let obj = {}
-    this.entries.forEach((entry, idx) => {
-      obj[entry.key] = context.unpack(vals[idx])
-    })
+    for (let i = 0; i < this.entries.length; i++) {
+      let entry = this.entries[i]
+      obj[entry.key] = context.unpack(vals[i])
+    }
     return obj
   }
 }

@@ -2,7 +2,7 @@ import { MiniLexer, MiniParser, InputStream, CommonTokenStream } from '../parser
 import ErrorListener from './ErrorListener'
 import Expression from './Expression'
 
-export default function parse (source, options = {}) {
+export default function parse (source = '', options = {}) {
   const errorListener = new ErrorListener()
   const lexer = new MiniLexer(new InputStream(source))
   const parser = new MiniParser(new CommonTokenStream(lexer))

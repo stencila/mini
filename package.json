@@ -3,7 +3,7 @@
   "version": "0.15.0",
   "description": "",
   "main": "dist/stencila-mini.cjs.js",
-  "jsntext:main": "index.js",
+  "jsnext:main": "index.js",
   "scripts": {
     "prepack": "npm install && node make",
     "lint": "standard src/*.js test/*.js",
