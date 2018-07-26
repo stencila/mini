@@ -28,6 +28,7 @@
     "dist",
     "src",
     "parser",
+    "index.js",
     "README.md"
   ],
   "nyc": {
