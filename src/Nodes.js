@@ -1,5 +1,13 @@
 import {isNumber} from 'substance'
 
+// TODO: we need to think about this more
+// we allow to pack primitive values by the calling environment
+// e.g. to add type information or apply some encoding
+// With nested types e.g. single values of an array or object
+// the packing should not be done, instead the packer would need to do something
+// on the higher level
+const UNPACKED = true
+
 class ExprNode {
   constructor (id, start, end) {
     this.id = id
@@ -10,7 +18,7 @@ class ExprNode {
     this.end = end
   }
 
-  async evaluate (context) {
+  async evaluate (context, unpacked) {
     throw new Error('This is abstract')
   }
 }
@@ -25,8 +33,8 @@ export class Definition extends ExprNode {
 
   get type () { return 'definition' }
 
-  async evaluate (context) {
-    return this.rhs.evaluate(context)
+  async evaluate (context, unpacked) {
+    return this.rhs.evaluate(context, unpacked)
   }
 }
 
@@ -41,9 +49,13 @@ export class ArrayNode extends ExprNode {
 
   get type () { return 'array' }
 
-  async evaluate (context) {
-    let vals = await Promise.all(this.items.map(i => i.evaluate(context)))
-    return context.pack(vals, this.type)
+  async evaluate (context, unpacked) {
+    let vals = await Promise.all(this.items.map(i => i.evaluate(context, UNPACKED)))
+    if (unpacked) {
+      return vals
+    } else {
+      return context.pack(vals, this.type)
+    }
   }
 }
 
@@ -58,14 +70,18 @@ export class ObjectNode extends ExprNode {
 
   get type () { return 'object' }
 
-  async evaluate (context) {
-    let vals = await Promise.all(this.entries.map(e => e.val.evaluate(context)))
+  async evaluate (context, unpacked) {
+    let vals = await Promise.all(this.entries.map(e => e.val.evaluate(context, UNPACKED)))
     let obj = {}
     for (let i = 0; i < this.entries.length; i++) {
       let entry = this.entries[i]
-      obj[entry.key] = context.unpack(vals[i])
+      obj[entry.key] = vals[i]
     }
-    return obj
+    if (unpacked) {
+      return obj
+    } else {
+      return context.pack(obj)
+    }
   }
 }
 
@@ -75,8 +91,12 @@ class ConstantNode extends ExprNode {
     this.val = val
   }
 
-  async evaluate (context) {
-    return context.pack(this.val, this.type)
+  async evaluate (context, unpacked) {
+    if (unpacked) {
+      return this.val
+    } else {
+      return context.pack(this.val, this.type)
+    }
   }
 }
 
@@ -103,8 +123,13 @@ export class Var extends ExprNode {
 
   get type () { return 'var' }
 
-  async evaluate (context) {
-    return context.resolve(this.name)
+  async evaluate (context, unpacked) {
+    let val = await context.resolve(this.name)
+    if (unpacked) {
+      return context.unpack(val)
+    } else {
+      return val
+    }
   }
 }
 
@@ -131,8 +156,9 @@ export class FunctionCall extends ExprNode {
 
   get type () { return 'call' }
 
-  async evaluate (context) {
-    // TODO: we could cleanup this API now
+  async evaluate (context, unpacked) {
+    // TODO: what do we expect here? do we want to
+    // pack the args, or leave this to context.callFunction()
     let args = await Promise.all(this.args.map(a => a.evaluate(context)))
     let namedArgs = await Promise.all(this.namedArgs.map(a => {
       return {
@@ -140,7 +166,12 @@ export class FunctionCall extends ExprNode {
         value: a.evaluate(context)
       }
     }))
-    return context.callFunction(this.name, args, namedArgs)
+    let result = await context.callFunction(this.name, args, namedArgs)
+    if (unpacked) {
+      return context.unpack(result)
+    } else {
+      return result
+    }
   }
 }
 
@@ -154,8 +185,8 @@ export class NamedArgument extends ExprNode {
 
   get type () { return 'named-argument' }
 
-  async evaluate (context) {
-    return this.rhs.evaluate(context)
+  async evaluate (context, unpacked) {
+    return this.rhs.evaluate(context, unpacked)
   }
 }
 
@@ -170,7 +201,7 @@ export class PipeOp extends ExprNode {
 
   get type () { return 'pipe' }
 
-  async evaluate (context) {
+  async evaluate (context, unpacked) {
     // first call the left one
     let pipeArg = await this.left.evaluate(context)
 
@@ -184,7 +215,8 @@ export class PipeOp extends ExprNode {
     }].concat(right.args)
     let rightProxy = new FunctionCall(right.id, right.start, right.end,
       right.name, args, right.namedArgs, right.modifiers)
-    return rightProxy.evaluate(context)
+
+    return rightProxy.evaluate(context, unpacked)
   }
 }
 
